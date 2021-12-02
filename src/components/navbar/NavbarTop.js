@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Collapse, Navbar, NavItem, Nav } from 'reactstrap';
+import { Collapse, Navbar, NavItem, Nav, Button } from 'reactstrap';
 import classNames from 'classnames';
 import AppContext from '../../context/Context';
 import Logo from './Logo';
@@ -8,6 +8,8 @@ import TopNavRightSideNavItem from './TopNavRightSideNavItem';
 import NavbarTopDropDownMenus from './NavbarTopDropDownMenus';
 import { navbarBreakPoint, topNavbarBreakpoint } from '../../config';
 import autoCompleteInitialItem from '../../data/autocomplete/autocomplete';
+import 'bootstrap/dist/css/bootstrap.css';
+import { Link } from 'react-router-dom';
 
 const NavbarTop = () => {
   const {
@@ -49,7 +51,11 @@ const NavbarTop = () => {
       {isTopNav ? (
         <Collapse navbar isOpen={navbarCollapsed} className="scrollbar">
           <Nav navbar>
-            <NavbarTopDropDownMenus setNavbarCollapsed={setNavbarCollapsed} />
+            <Button tag={Link} to="/" outline color={'info'} className="mr-2">프로젝트</Button>
+            <Button tag={Link} to="/calendar" outline color={'info'} className="mr-2">캘린더</Button>
+            <Button tag={Link} to="/kanban" outline color={'info'} className="mr-2">칸반차트</Button>
+            {/* <Button tag={Link} color="outline-light" className="mt-2 px-4" to="/authentication/card/login"></Button> */}
+            {/* <NavbarTopDropDownMenus setNavbarCollapsed={setNavbarCollapsed} /> */}
           </Nav>
         </Collapse>
       ) : (

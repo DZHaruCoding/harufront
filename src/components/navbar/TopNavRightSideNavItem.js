@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Nav, NavItem, NavLink, UncontrolledTooltip } from 'reactstrap';
+import { Button, Nav, NavItem, NavLink, UncontrolledTooltip } from 'reactstrap';
 import ProfileDropdown from './ProfileDropdown';
 import NotificationDropdown from './NotificationDropdown';
 import SettingsAnimatedIcon from './SettingsAnimatedIcon';
@@ -15,9 +15,9 @@ const TopNavRightSideNavItem = () => {
   return (
     <Nav navbar className="navbar-nav-icons ml-auto flex-row align-items-center">
       <NavItem>
-        <SettingsAnimatedIcon />
+        {/* <SettingsAnimatedIcon /> */}
       </NavItem>
-      {(isCombo || isTopNav) && (
+      {/* {(isCombo || isTopNav) && (
         <NavItem className={classNames(`p-2 px-lg-0 cursor-pointer`, { [`d-${navbarBreakPoint}-none`]: isCombo })}>
           <NavLink tag={Link} to="/changelog" id="changelog">
             <FontAwesomeIcon icon="code-branch" transform="right-6 grow-4" />
@@ -26,8 +26,9 @@ const TopNavRightSideNavItem = () => {
             Changelog
           </UncontrolledTooltip>
         </NavItem>
-      )}
-      <CartNotification />
+      )} */}
+      {/* <CartNotification /> */}
+      <Button tag={Link} color="primary" size="sm" className="mt-3" to={`/authentication/basic/login`}>Login</Button>
       <NotificationDropdown />
       <ProfileDropdown />
     </Nav>
