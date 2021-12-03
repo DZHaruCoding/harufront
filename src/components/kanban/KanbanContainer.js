@@ -7,6 +7,7 @@ import { isIterableArray } from '../../helpers/utils';
 import KanbanColumn from './KanbanColumn';
 import AddAnotherList from './AddAnotherList';
 import KanbanModal from './KanbanModal';
+import { localIp } from '../../config';
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -81,10 +82,19 @@ const KanbanContainer = () => {
     }
   };
 
+  fetch(`${localIp}/api/tasklist/data/1`, {
+      method:"GET",
+      headers: {
+        'Content-type': 'application/json'
+      }
+  })
+    .then(response => response.json)
+    .then()
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="kanban-container scrollbar" ref={containerRef}>
-        {isIterableArray(kanbanColumns) &&
+      {isIterableArray(kanbanColumns) &&
           kanbanColumns.map((kanbanColumnItem, index) => {
             return <KanbanColumn kanbanColumnItem={kanbanColumnItem} key={index} index={index} />;
           })}
