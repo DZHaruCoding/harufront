@@ -11,7 +11,7 @@ const Main = props => {
   const [isDark, setIsDark] = useState(getItemFromStore('isDark', settings.isDark));
   const [isTopNav, setIsTopNav] = useState(getItemFromStore('isTopNav', settings.isTopNav));
   const [isCombo, setIsCombo] = useState(getItemFromStore('isCombo', settings.isCombo));
-  const [isVertical, setIsVertical] = useState(getItemFromStore('isVertical', settings.isVertical));
+  // const [isVertical, setIsVertical] = useState(getItemFromStore('isVertical', settings.isVertical));
   const [isNavbarVerticalCollapsed, setIsNavbarVerticalCollapsed] = useState(
     getItemFromStore('isNavbarVerticalCollapsed', settings.isNavbarVerticalCollapsed)
   );
@@ -35,12 +35,12 @@ const Main = props => {
     setIsDark,
     setIsCombo,
     setIsFluid,
-    isVertical,
+    // isVertical,
     toggleModal,
     setIsTopNav,
     navbarStyle,
     setCurrency,
-    setIsVertical,
+    // setIsVertical,
     showBurgerMenu,
     setNavbarStyle,
     isOpenSidePanel,
@@ -87,10 +87,10 @@ const Main = props => {
     setItemToStore('isCombo', isCombo);
     // eslint-disable-next-line
   }, [isCombo]);
-  useEffect(() => {
-    setItemToStore('isVertical', isVertical);
-    // eslint-disable-next-line
-  }, [isVertical]);
+  // useEffect(() => {
+  //   setItemToStore('isVertical', isVertical);
+  //   // eslint-disable-next-line
+  // }, [isVertical]);
 
   useEffect(() => {
     setItemToStore('navbarStyle', navbarStyle);

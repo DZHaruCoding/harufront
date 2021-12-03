@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { KanbanContext } from '../../context/Context';
 import { Button, Form, Input, Row, Col } from 'reactstrap';
 import ButtonIcon from '../common/ButtonIcon';
+import {localIp} from '../../config';
 
 const AddAnotherList = () => {
   const { kanbanColumns, kanbanColumnsDispatch } = useContext(KanbanContext);
@@ -22,6 +23,8 @@ const AddAnotherList = () => {
     handleAddColumn(columnHeaderTitle);
     setShowForm(false);
     setColumnHeaderTitle('');
+
+    // const response = fetch(`${localIp}/}`)
   };
 
   return (

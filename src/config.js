@@ -15,4 +15,10 @@ export const settings = {
   isNavbarVerticalCollapsed: false,
   navbarStyle: 'transparent'
 };
+
+export const localIp = 'http://localhost:3000';
+export const gcpIp = 'http://34.64.174.225:22';
+const API_HEADERS = {
+  "Content-Type": "application/json",
+};
 export default { version, navbarBreakPoint, topNavbarBreakpoint, settings };
