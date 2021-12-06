@@ -5,6 +5,7 @@ import AppContext from '../../context/Context';
 import KanbanHeader from './KanbanHeader';
 import KanbanContainer from './KanbanContainer';
 import KanbanProvider from './KanbanProvider';
+import kanbanService from '../../service/kanbanService';
 
 const Kanban = () => {
   const { setIsNavbarVerticalCollapsed } = useContext(AppContext);

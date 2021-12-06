@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useEffect } from 'react';
+import React, { useContext, useRef, useEffect, useState } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import is from 'is_js';
 
@@ -7,6 +7,7 @@ import { isIterableArray } from '../../helpers/utils';
 import KanbanColumn from './KanbanColumn';
 import AddAnotherList from './AddAnotherList';
 import KanbanModal from './KanbanModal';
+import {kanbanList} from '../../service/kanbanService';
 import { localIp } from '../../config';
 
 const reorder = (list, startIndex, endIndex) => {
@@ -18,6 +19,7 @@ const reorder = (list, startIndex, endIndex) => {
 };
 
 const move = (source, destination, droppableSource, droppableDestination) => {
+
   const sourceClone = Array.from(source);
   const destClone = Array.from(destination);
   const [removed] = sourceClone.splice(droppableSource.index, 1);
@@ -33,7 +35,9 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 
 const KanbanContainer = () => {
   const { kanbanColumns, UpdateColumnData, modalContent, modal, setModal } = useContext(KanbanContext);
+  const { kanban2, UpdateColumnData2, kanbanDispatch2} = useContext(KanbanContext);
   const containerRef = useRef(null);
+  const [kanban, setKanban] = useState();
 
   // Detect device
   useEffect(() => {
@@ -51,9 +55,26 @@ const KanbanContainer = () => {
     }
   }, []);
 
+  // useEffect(() => {
+  //   const fetchEvent = async () => {
+  //     try {
+  //       const res = await fetch(`${localIp}/api/tasklist/data/2`)
+  //                           .then(data => data.json());
+
+  //       setKanban(res);
+  //       kanbanDispatch2(res);
+  //       console.log(res);
+  //     } catch(err) {
+  //       console.log(err);
+  //     }
+  //   }
+
+  //   fetchEvent();
+  // }, []);
+
   const getList = id => {
-    const targetColumn = kanbanColumns.find(item => item.id === id);
-    return targetColumn.items;
+    const targetColumn = kanbanColumns.find(item => item.taskListNo === id);
+    return targetColumn.taskVoList;
   };
 
   const onDragEnd = result => {
@@ -66,14 +87,14 @@ const KanbanContainer = () => {
 
     if (source.droppableId === destination.droppableId) {
       const items = reorder(getList(source.droppableId), source.index, destination.index);
-      const column = kanbanColumns.find(item => item.id === source.droppableId);
+      const column = kanbanColumns.find(item => item.taskListNo === source.droppableId);
       // update individual column
       UpdateColumnData(column, items);
     } else {
       const result = move(getList(source.droppableId), getList(destination.droppableId), source, destination);
 
-      const sourceColumn = kanbanColumns.find(item => item.id === source.droppableId);
-      const destinationColumn = kanbanColumns.find(item => item.id === destination.droppableId);
+      const sourceColumn = kanbanColumns.find(item => item.taskListNo === source.droppableId);
+      const destinationColumn = kanbanColumns.find(item => item.taskListNo === destination.droppableId);
       // update source
       UpdateColumnData(sourceColumn, result[source.droppableId]);
 
@@ -82,21 +103,12 @@ const KanbanContainer = () => {
     }
   };
 
-  fetch(`${localIp}/api/tasklist/data/1`, {
-      method:"GET",
-      headers: {
-        'Content-type': 'application/json'
-      }
-  })
-    .then(response => response.json)
-    .then()
-
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="kanban-container scrollbar" ref={containerRef}>
-      {isIterableArray(kanbanColumns) &&
+        {kanbanColumns &&
           kanbanColumns.map((kanbanColumnItem, index) => {
-            return <KanbanColumn kanbanColumnItem={kanbanColumnItem} key={index} index={index} />;
+            return <KanbanColumn kanbanColumnItem={kanbanColumnItem} key={kanbanColumnItem.taskListNo} index={kanbanColumnItem.taskListNo} />;
           })}
         <AddAnotherList />
         <KanbanModal modal={modal} setModal={setModal} modalContent={modalContent} />

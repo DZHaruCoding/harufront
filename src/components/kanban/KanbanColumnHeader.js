@@ -5,7 +5,7 @@ const KanbanColumnHeder = ({ kanbanColumnItem }) => {
   return (
     <div className="kanban-column-header">
       <h5 className="text-serif fs-0 mb-0">
-        {kanbanColumnItem.name} <span className="text-500">({kanbanColumnItem.items.length})</span>
+        {kanbanColumnItem.taskListName} <span className="text-500">({kanbanColumnItem.taskVoList.length})</span>
       </h5>
       <UncontrolledDropdown className="text-sans-serif btn-reveal-trigger">
         <DropdownToggle color="reveal" size="sm" className="py-0 px-2">
