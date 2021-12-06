@@ -37,7 +37,7 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
               setModal(true);
             }}
           >
-            {taskCardImage && (
+            {/* {taskCardImage && (
               <CardImg
                 top
                 width="100%"
@@ -45,29 +45,35 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
                 className="overflow-hidden position-relative"
                 alt="Card image cap"
               />
-            )}
+            )} */}
 
             <CardBody>
-              {taskCard.labels && (
+              {taskCard.taskLabel && (
                 <div className="mb-2">
-                  {taskCard.labels.map((label, index) => (
-                    <Badge className={`badge-soft-${label.color} d-inline-block py-1 mr-1 mb-1`} key={index + 10}>
-                      {label.text}
+                    <Badge className={`badge-soft-${taskCard.taskLabel} d-inline-block py-1 mr-1 mb-1`} key={taskCard.taskNo}>
+                      {taskCard.taskLabel.text}
                     </Badge>
-                  ))}
                 </div>
               )}
               <p
                 className="mb-0 font-weight-medium text-sans-serif"
-                dangerouslySetInnerHTML={{ __html: taskCard.title }}
+                dangerouslySetInnerHTML={{ __html: taskCard.taskContents }}
               />
-              {(taskCard.members || taskCard.attachments || taskCard.checklist) && (
+              <div className="kanban-item-footer">
+                  <div className="text-500" style={{}}>
+                      
+                  </div>
+                  <div>
+                    {taskCard.taskWriter}
+                  </div>
+              </div>
+              {/* {(taskCard.members || taskCard.attachments || taskCard.checklist) && (
                 <div className="kanban-item-footer">
                   <div className="text-500">
                     {taskCard.members && members.find(member => member.id === 1) && (
                       <>
-                        <FontAwesomeIcon icon="eye" className="mr-2" id={`cardId-${taskCard.id}`} transform="grow-1" />
-                        <UncontrolledTooltip target={`cardId-${taskCard.id}`}>
+                        <FontAwesomeIcon icon="eye" className="mr-2" id={`cardId-${taskCard.taskNo}`} transform="grow-1" />
+                        <UncontrolledTooltip target={`cardId-${taskCard.taskNo}`}>
                           You're assigned in this card
                         </UncontrolledTooltip>
                       </>
@@ -106,7 +112,7 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
                       ))}
                   </div>
                 </div>
-              )}
+              )} */}
               <UncontrolledDropdown
                 className="position-absolute text-sans-serif t-0 r-0 mt-card mr-card hover-actions"
                 onClick={e => {

@@ -5,6 +5,9 @@ import { toast } from 'react-toastify';
 export const arrayReducer = (state, action) => {
   const { type, id, payload, sortBy, order, isAddToStart, isUpdatedStart } = action;
   switch (type) {
+    case "ALLADD": {
+      return payload.data;
+    }
     case 'ADD':
       if (!payload) {
         console.error('payload is required!');
@@ -33,7 +36,7 @@ export const arrayReducer = (state, action) => {
         const filteredState = state.filter(item => item.id !== id);
         return [payload, ...filteredState];
       }
-      return state.map(item => (item.id === id ? payload : item));
+      return state.map(item => (item.taskListNo === id ? payload : item));
     case 'SORT':
       if (!sortBy || !order) {
         console.error('sortBy and order, both are required!');
