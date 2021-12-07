@@ -7,8 +7,6 @@ import { isIterableArray } from '../../helpers/utils';
 import KanbanColumn from './KanbanColumn';
 import AddAnotherList from './AddAnotherList';
 import KanbanModal from './KanbanModal';
-import {kanbanList} from '../../service/kanbanService';
-import { localIp } from '../../config';
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -106,7 +104,7 @@ const KanbanContainer = () => {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="kanban-container scrollbar" ref={containerRef}>
-        {kanbanColumns &&
+        {isIterableArray(kanbanColumns) &&
           kanbanColumns.map((kanbanColumnItem, index) => {
             return <KanbanColumn kanbanColumnItem={kanbanColumnItem} key={kanbanColumnItem.taskListNo} index={kanbanColumnItem.taskListNo} />;
           })}

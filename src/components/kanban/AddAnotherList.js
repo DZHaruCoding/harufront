@@ -10,10 +10,38 @@ const AddAnotherList = () => {
   const [showForm, setShowForm] = useState(false);
   const [columnHeaderTitle, setColumnHeaderTitle] = useState('');
 
-  const handleAddColumn = value => {
+  const handleAddColumn = async value => {
+
+    const json = {
+      projectNo : 2,
+      taskListName: value,
+      taskListOrder: kanbanColumns.length + 1
+    }
+
+    const response = await fetch(`${localIp}/api/tasklist/add`, {
+      method: 'post',
+      headers: {
+        "Content-Type": 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(json)
+    });
+
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+
+    const jsonResult = await response.json();
+
+    if (jsonResult.result != 'success') {
+      throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+    }
+
+    const nextKanbanColumnNum = jsonResult;
+
     kanbanColumnsDispatch({
       type: 'ADD',
-      payload: { id: `${kanbanColumns.length + 1}`, name: value, items: [] },
+      payload: {taskListNo: nextKanbanColumnNum.data, taskListOrder: kanbanColumns.length + 1, taskListName: value, taskVoList: [] },
       id: kanbanColumns.length + 1
     });
   };

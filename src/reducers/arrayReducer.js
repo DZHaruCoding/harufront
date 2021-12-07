@@ -1,9 +1,10 @@
 import React from 'react';
 import orderBy from 'lodash/orderBy';
 import { toast } from 'react-toastify';
+import { localIp } from '../config';
 
 export const arrayReducer = (state, action) => {
-  const { type, id, payload, sortBy, order, isAddToStart, isUpdatedStart } = action;
+  const { type, id, payload, sortBy, order, isAddToStart, isUpdatedStart, isCard } = action;
   switch (type) {
     case "ALLADD": {
       return payload.data;
@@ -13,15 +14,24 @@ export const arrayReducer = (state, action) => {
         console.error('payload is required!');
         return state;
       }
-      if (state.find(item => item.id === payload.id)) {
-        toast(<span className="text-warning">Item already exists in the list!</span>);
-        return state;
+
+      if (isCard) {
+        if (state.find(item => item.taskNo === payload.taskNo)) {
+          toast(<span className="text-warning">Item already exists in the list!</span>);
+          return state;
+        }
+      } else {
+        if (state.find(item => item.taskListOrder === payload.taskListOrder)) {
+          toast(<span className="text-warning">Item already exists in the list!</span>);
+          return state;
+        }
       }
+      
       if (isAddToStart) {
         return [payload, ...state];
       }
       return [...state, payload];
-    case 'REMOVE':
+    case 'REMOVE': 
       if (id !== 0 && !id) {
         console.error('id is required!');
         return state;
@@ -36,6 +46,7 @@ export const arrayReducer = (state, action) => {
         const filteredState = state.filter(item => item.id !== id);
         return [payload, ...filteredState];
       }
+
       return state.map(item => (item.taskListNo === id ? payload : item));
     case 'SORT':
       if (!sortBy || !order) {

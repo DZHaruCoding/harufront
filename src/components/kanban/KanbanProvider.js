@@ -10,8 +10,7 @@ import { kanbanList } from '../../service/kanbanService';
 
 const KanbanProvider = ({ children }) => {
   const [kanbanColumns, kanbanColumnsDispatch] = useReducer(arrayReducer, []);
-  const [kanbanTaskCards, kanbanTaskCardsDispatch] = useReducer(arrayReducer, rawItems);
-  const [kanban2, kanbanDispatch2] = useReducer(arrayReducer, []);
+  const [kanbanTaskCards, kanbanTaskCardsDispatch] = useReducer(arrayReducer, []);
 
   const [modal, setModal] = useState(false);
 
@@ -32,9 +31,9 @@ const KanbanProvider = ({ children }) => {
         console.log("Asdad");
         const response = await fetch(`${localIp}/api/tasklist/data/2`, {
           method: 'get',
-          header: {
-            "Content-Type:": 'application/json',
-            'Accept': 'application'
+          headers: {
+            "Content-Type": 'application/json',
+            'Accept': 'application/json'
           },
           body: null
         });
@@ -58,6 +57,17 @@ const KanbanProvider = ({ children }) => {
           },
           id: 1
         });
+
+        jsonResult.data.map(item =>
+          item.taskVoList.map(item2 =>
+            kanbanTaskCardsDispatch({
+              type: 'ADD',
+              payload: item2,
+              id: item2.taskNo,
+              isCard: true
+            })
+          ));
+
         console.log(jsonResult.data);
       } catch(err) {
         console.log(err);
@@ -70,7 +80,8 @@ const KanbanProvider = ({ children }) => {
 
   
 
-  const UpdateColumnData = (column, taskVoList) => {
+  const UpdateColumnData = async (column, taskVoList) => {
+
     kanbanColumnsDispatch({
       type: 'EDIT',
       payload: {
@@ -79,17 +90,42 @@ const KanbanProvider = ({ children }) => {
       },
       id: column.taskListNo
     });
-  };
 
-  const UpdateColumnData2 = (column, items) => {
-    kanbanDispatch2({
-      type: 'EDIT',
-      payload: {
-        ...column,
-        items
-      },
-      id: column.id
-    });
+    try {
+
+    const requestData = taskVoList;
+
+    const json = {
+      taskListNo : column.taskListNo,
+      taskVoList : requestData
+    };
+
+      const response = await fetch(`${localIp}/api/task/dropTask`, {
+        method: 'post',
+        headers: {
+          "Content-Type": 'application/json',
+          "Accept": 'application/json'
+        },
+        body: JSON.stringify(json)
+      });
+      
+      console.log(response);
+
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+
+      const jsonResult = await response.json();
+
+      if (jsonResult.result != 'success') {
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      }
+
+      return "true";
+    } catch(err) {
+      console.error(err);
+      return "fail";
+    }
   };
 
   const value = {
@@ -97,11 +133,8 @@ const KanbanProvider = ({ children }) => {
     kanbanTaskCardsDispatch,
     kanbanColumns,
     kanbanColumnsDispatch,
-    kanban2,
-    kanbanDispatch2,
     getItemStyle,
     UpdateColumnData,
-    UpdateColumnData2,
     modalContent,
     setModalContent,
     modal,
