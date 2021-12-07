@@ -32,7 +32,7 @@ const KanbanColumn = ({ kanbanColumnItem, index }) => {
               ref={provided.innerRef}
               {...provided.droppableProps}
             >
-              {kanbanColumnItem.taskVoList.map((taskCardItemId, taskCardIndex) => {
+              {kanbanColumnItem.taskVoList && kanbanColumnItem.taskVoList.map((taskCardItemId, taskCardIndex) => {
                 // const taskCard = kanbanTaskCards.find(({ id }) => id === taskCardItemId);
                 const taskCard = taskCardItemId;
                 // const taskCardImage = taskCard.attachments && taskCard.attachments.find(({ type }) => type === 'image');
