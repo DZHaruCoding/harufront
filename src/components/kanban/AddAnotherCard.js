@@ -43,7 +43,8 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm }) => {
       taskContents: value,
       taskListNo: kanbanColumnItem.taskListNo,
       taskOrder: kanbanColumnItem.taskVoList.length,
-      taskWriter: '조진석'
+      taskWriter: '조진석',
+      taskLabel:'red'
     };
 
     kanbanTaskCardsDispatch({
@@ -56,7 +57,7 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm }) => {
     kanbanColumnsDispatch({
       type: 'EDIT',
       payload: { ...kanbanColumnItem, taskVoList: [...kanbanColumnItem.taskVoList, taskVoList] },
-      id: kanbanColumnItem.taskListOrder
+      id: kanbanColumnItem.taskListNo
     });
   };
 
