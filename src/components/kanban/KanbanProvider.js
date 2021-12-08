@@ -28,7 +28,6 @@ const KanbanProvider = ({ children }) => {
   useEffect(() => {
     const fun = async () => {
       try {
-        console.log("Asdad");
         const response = await fetch(`${localIp}/api/tasklist/data/2`, {
           method: 'get',
           headers: {
@@ -68,7 +67,6 @@ const KanbanProvider = ({ children }) => {
             })
           ));
 
-        console.log(jsonResult.data);
       } catch(err) {
         console.log(err);
       }
@@ -108,8 +106,6 @@ const KanbanProvider = ({ children }) => {
         },
         body: JSON.stringify(json)
       });
-      
-      console.log(response);
 
       if (!response.ok) {
         throw new Error(`${response.status} ${response.statusText}`);

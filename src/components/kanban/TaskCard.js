@@ -16,8 +16,46 @@ import { Link } from 'react-router-dom';
 import Avatar from '../common/Avatar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { KanbanContext } from '../../context/Context';
+import { localIp } from '../../config';
 
 const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIndex }) => {
+  const { kanbanColumns, kanbanColumnsDispatch, kanbanTaskCardsDispatch } = useContext(KanbanContext);
+
+  const taskCardDelete = async () => {
+    
+    
+    const response = await fetch(`${localIp}/api/task/delete`, {
+      method: 'post',
+      headers: {
+        "Content-Type": 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(taskCardItemId)
+    });
+  
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+  
+    const jsonResult = await response.json();
+  
+    if (jsonResult.result != 'success') {
+      throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+    }
+
+    kanbanTaskCardsDispatch({
+      type: 'REMOVE',
+      id: taskCardItemId,
+      isCard: true
+    })
+
+    kanbanColumnsDispatch({
+      type: 'TASKREMOVE',
+      id: taskCardItemId,
+    })
+  }
+
+
   const { getItemStyle, setModalContent, setModal } = useContext(KanbanContext);
   return (
     <Draggable draggableId={`draggableId${taskCardItemId}`} index={taskCardIndex}>
@@ -113,22 +151,24 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
                   </div>
                 </div>
               )} */}
+              
               <UncontrolledDropdown
                 className="position-absolute text-sans-serif t-0 r-0 mt-card mr-card hover-actions"
                 onClick={e => {
                   e.stopPropagation();
+                  taskCardDelete();
                 }}
               >
                 <DropdownToggle color="falcon-default" size="sm" className="py-0 px-2">
-                  <FontAwesomeIcon icon="ellipsis-h" />
+                  <FontAwesomeIcon icon="trash-alt" />
                 </DropdownToggle>
-                <DropdownMenu right className="py-0">
+                {/* <DropdownMenu right className="py-0">
                   <DropdownItem>Add Card</DropdownItem>
                   <DropdownItem>Edit</DropdownItem>
                   <DropdownItem>Copy link</DropdownItem>
                   <DropdownItem divider />
                   <DropdownItem className="text-danger">Remove</DropdownItem>
-                </DropdownMenu>
+                </DropdownMenu> */}
               </UncontrolledDropdown>
             </CardBody>
           </Card>

@@ -23,7 +23,7 @@ const KanbanColumn = ({ kanbanColumnItem, index }) => {
   return (
     <div className={classNames('kanban-column', { 'form-added': showForm })}>
       <KanbanColumnHeder kanbanColumnItem={kanbanColumnItem} />
-      <Droppable droppableId={kanbanColumnItem.taskListNo}>
+      <Droppable droppableId={`${kanbanColumnItem.taskListNo}`}>
         {(provided, snapshot) => (
           <>
             <div

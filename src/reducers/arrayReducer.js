@@ -36,7 +36,23 @@ export const arrayReducer = (state, action) => {
         console.error('id is required!');
         return state;
       }
-      return state.filter(item => item.id !== id);
+      if (isCard) {
+        return state.filter(item => item.taskNo !== id);
+      } else {
+        return state.filter(item => item.taskListNo !== id);
+      }
+    case 'TASKREMOVE':
+      if (id !== 0 && !id) {
+        console.error('id is required!');
+        return state;
+      }
+      let item = [...state];
+
+
+      state.map((item1, i) => item[i].taskVoList = item1.taskVoList.filter(item2 => item2.taskNo !== id));
+
+      return item;
+      
     case 'EDIT':
       if (id !== 0 && !id) {
         console.error('id is required!');

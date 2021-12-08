@@ -53,25 +53,8 @@ const KanbanContainer = () => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   const fetchEvent = async () => {
-  //     try {
-  //       const res = await fetch(`${localIp}/api/tasklist/data/2`)
-  //                           .then(data => data.json());
-
-  //       setKanban(res);
-  //       kanbanDispatch2(res);
-  //       console.log(res);
-  //     } catch(err) {
-  //       console.log(err);
-  //     }
-  //   }
-
-  //   fetchEvent();
-  // }, []);
-
   const getList = id => {
-    const targetColumn = kanbanColumns.find(item => item.taskListNo === id);
+    const targetColumn = kanbanColumns.find(item => item.taskListNo == id);
     return targetColumn.taskVoList;
   };
 
@@ -91,8 +74,8 @@ const KanbanContainer = () => {
     } else {
       const result = move(getList(source.droppableId), getList(destination.droppableId), source, destination);
 
-      const sourceColumn = kanbanColumns.find(item => item.taskListNo === source.droppableId);
-      const destinationColumn = kanbanColumns.find(item => item.taskListNo === destination.droppableId);
+      const sourceColumn = kanbanColumns.find(item => item.taskListNo == source.droppableId);
+      const destinationColumn = kanbanColumns.find(item => item.taskListNo == destination.droppableId);
       // update source
       UpdateColumnData(sourceColumn, result[source.droppableId]);
 
@@ -100,11 +83,11 @@ const KanbanContainer = () => {
       UpdateColumnData(destinationColumn, result[destination.droppableId]);
     }
   };
-
+  // isIterableArray
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="kanban-container scrollbar" ref={containerRef}>
-        {isIterableArray(kanbanColumns) &&
+        {kanbanColumns &&
           kanbanColumns.map((kanbanColumnItem, index) => {
             return <KanbanColumn kanbanColumnItem={kanbanColumnItem} key={kanbanColumnItem.taskListNo} index={kanbanColumnItem.taskListNo} />;
           })}
