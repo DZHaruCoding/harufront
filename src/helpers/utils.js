@@ -16,6 +16,14 @@ export const breakpoints = {
 
 //===============================
 // Store
+// Store 관리 Store를 여기서는 localStorage 라고도 쓰는거 같음.
+// getItemFromStore == KEY값 JSON 객체로 만들어 주는 함수 key값이 없으면 기본값으로 설정한다. 필자는 Java의 getter와 비슷한거 같다..
+// setItemToStore == payload(화물 == JSX에서 보내준 값)를 key 값과 묶어서 저장한다.
+// getStoreSpace == 뭐지 ?????
+//    ※parseFloat()==함수는 문자열을 분석해 부동소수점 실수로 반환합니다
+//    ※escape()==16진수로 반환합니다.
+//    ※encodeURIComponent()==encodeURIComponent() 함수는 URI의 특정한 문자를 UTF-8로 인코딩해서 16진수 반환
+//    ※toFixed()==Number 인스턴스의 소수 부분 자릿수를 전달받은 값으로 고정한 후, 그 값을 문자열로 반환합니다.
 //===============================
 export const getItemFromStore = (key, defaultValue, store = localStorage) =>
   JSON.parse(store.getItem(key)) || defaultValue;
@@ -25,6 +33,8 @@ export const getStoreSpace = (store = localStorage) =>
 
 //===============================
 // Cookie
+// getCookieValue == 쿠키 값 가져오기
+// createCookie == 이름 값 쿠키만료시간 입력하고 쿠키 만들기
 //===============================
 export const getCookieValue = name => {
   const value = document.cookie.match('(^|[^;]+)\\s*' + name + '\\s*=\\s*([^;]+)');
@@ -39,7 +49,9 @@ export const createCookie = (name, value, cookieExpireTime) => {
 };
 
 //===============================
-// Moment
+// Moment(날짜 객체 관련)
+// getDuration == 기간 가져오기 함수 (Moment 객체 (날짜 객체)가 아니면 애러)
+//             == // (December 8, 2021 - December 29, 2021) ==>> 이런 포맷으로 만들어줌
 //===============================
 export const getDuration = (startDate, endDate) => {
   if (!moment.isMoment(startDate)) throw new Error(`Start date must be a moment object, received ${typeof startDate}`);
@@ -52,10 +64,17 @@ export const getDuration = (startDate, endDate) => {
   )}`;
 };
 
+//===============================
+// 숫자 포멧 셋팅
+// >=1.0e9  ==  GB ??
+// >=1.0e6  ==  M 메가
+// >=1.0e3  ==  K 킬로
+// Math.abs() == 절대값 관리
+//===============================
 export const numberFormatter = (number, fixed = 2) => {
   // Nine Zeroes for Billions
   return Math.abs(Number(number)) >= 1.0e9
-    ? (Math.abs(Number(number)) / 1.0e9).toFixed(fixed) + 'B'
+    ? (Math.abs(Number(number)) / 1.0e9).toFixed(fixed) + 'G'
     : // Six Zeroes for Millions
     Math.abs(Number(number)) >= 1.0e6
     ? (Math.abs(Number(number)) / 1.0e6).toFixed(fixed) + 'M'
@@ -66,7 +85,9 @@ export const numberFormatter = (number, fixed = 2) => {
 };
 
 //===============================
-// Colors
+// Colors HEX( #000000 이렇게 생긴거 ) 값 RGB (rgb 255,255,255 이렇게) 로 바꾸기
+// 맨 앞의 "#" 기호를 삭제하기
+// rgb로 각각 분리해서 배열에 담기
 //===============================
 export const hexToRgb = hexValue => {
   let hex;
@@ -164,6 +185,8 @@ export const getTotalPrice = (cart, baseItems) =>
 
 //===============================
 // Helpers
+// getPaginationArray == totalSize(=총 게시물 수)    sizePerPage (한 페이지의 게시물 수 )
+//                    == noOfPages(=총 페이지들 수)
 //===============================
 export const getPaginationArray = (totalSize, sizePerPage) => {
   const noOfPages = Math.ceil(totalSize / sizePerPage);
@@ -176,8 +199,23 @@ export const getPaginationArray = (totalSize, sizePerPage) => {
   return array;
 };
 
+//===============================
+// capitalize == 대문자 변환
+// ※ .replace(/\-/g,'')  : -(마이너스) 제거
+//===============================
 export const capitalize = str => (str.charAt(0).toUpperCase() + str.slice(1)).replace(/-/g, ' ');
 
+//===============================
+// routesSlicer
+// "라우터들"을 넣어서 뽑아낸다.
+// 조건
+// "라우터"가 자녀라우터(라우터 속의 라우터)라면
+//       ▶ "라우터" 아이템의 자녀(속성) 이라면
+//              ▶ 자녀라우터의 "속성" 들을 넣는다. ex) <Route path=":id" component={Bar}/> 여기서 "path=":id" component={Bar}""<<<< 이놈들이 item 이다.
+//              ▶ 아니라면 그냥 그 아이템을 라우터에 넣는다.
+// "라우터"가 자녀라우터가 아니면
+//              ▶ 그냥 라우터컬렉션에 넣는다.
+//===============================
 export const routesSlicer = ({ routes, columns = 3, rows }) => {
   const routesCollection = [];
   routes.map(route => {
@@ -192,8 +230,13 @@ export const routesSlicer = ({ routes, columns = 3, rows }) => {
     return routesCollection.push(route);
   });
 
+  // 총 라우터 크기 보여줘..
   const totalRoutes = routesCollection.length;
+
+  // Rows(행?)계산
   const calculatedRows = rows || Math.ceil(totalRoutes / columns);
+
+  // 이건 뭐지?
   const routesChunks = [];
   for (let i = 0; i < totalRoutes; i += calculatedRows) {
     routesChunks.push(routesCollection.slice(i, i + calculatedRows));
@@ -201,10 +244,11 @@ export const routesSlicer = ({ routes, columns = 3, rows }) => {
   return routesChunks;
 };
 
+// 페이지 이름 불러오기
 export const getPageName = pageName => {
   return window.location.pathname.split('/').slice(-1)[0] === pageName;
 };
-
+// 클립보드 복사하기
 export const copyToClipBoard = textFieldRef => {
   const textField = textFieldRef.current;
   textField.focus();

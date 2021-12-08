@@ -4,7 +4,7 @@ import AppContext from './context/Context';
 import { settings } from './config';
 import toggleStylesheet from './helpers/toggleStylesheet';
 import { getItemFromStore, setItemToStore, themeColors } from './helpers/utils';
-
+//fluid는 가로 해상도에 상관없이 100%의 width를 갖는다. 말그대로 Layout 설정이다. 다른 예시로는 fixed 가 있고 이는 Media query에 의해 반응형을 동작하는 layout이다.
 const Main = props => {
   const [isFluid, setIsFluid] = useState(getItemFromStore('isFluid', settings.isFluid));
   const [isRTL, setIsRTL] = useState(getItemFromStore('isRTL', settings.isRTL));
