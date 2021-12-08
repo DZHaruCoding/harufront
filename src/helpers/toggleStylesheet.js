@@ -1,3 +1,6 @@
+//===============================
+// isRTL == 좌우반전 모드 설정 , isDark == 다크모드 설정
+//===============================
 const insertStylesheet = ({ isRTL, isDark }, cb) => {
   const link = document.createElement('link');
   link.href = `${process.env.PUBLIC_URL}/css/theme${isDark ? '-dark' : ''}${isRTL ? '-rtl' : ''}.css`;

@@ -1,3 +1,6 @@
+//===============================
+// 이모티콘 & 이모지 들
+//===============================
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faFacebook,
