@@ -5,7 +5,7 @@ export const settings = {
   isFluid: false,
   isRTL: false,
   isDark: false,
-  isTopNav: true,
+  isTopNav: false,
   isVertical: false,
   get isCombo() {
     return this.isVertical && this.isTopNav;
@@ -19,6 +19,6 @@ export const settings = {
 export const localIp = 'http://localhost:3000';
 export const gcpIp = 'http://34.64.174.225:22';
 const API_HEADERS = {
-  "Content-Type": "application/json",
+  'Content-Type': 'application/json'
 };
 export default { version, navbarBreakPoint, topNavbarBreakpoint, settings };

@@ -10,7 +10,7 @@ const WizardLayout = () => {
     <Section className="py-0">
       <Row className="flex-center min-vh-100 py-6">
         <Col sm={10} lg={7} className="col-xxl-5">
-          <Logo />
+          <Logo width={100} />
           <AuthWizardProvider>
             <UserForm />
           </AuthWizardProvider>
