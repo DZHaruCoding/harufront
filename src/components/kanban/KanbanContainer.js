@@ -7,6 +7,11 @@ import { isIterableArray } from '../../helpers/utils';
 import KanbanColumn from './KanbanColumn';
 import AddAnotherList from './AddAnotherList';
 import KanbanModal from './KanbanModal';
+import { localIp } from '../../config';
+import SockJS from 'sockjs-client';
+import StompJs from 'stompjs';
+import SockJsClient from 'react-stomp';
+import { Fragment } from 'react';
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -35,7 +40,9 @@ const KanbanContainer = () => {
   const { kanbanColumns, UpdateColumnData, modalContent, modal, setModal } = useContext(KanbanContext);
   const { kanban2, UpdateColumnData2, kanbanDispatch2} = useContext(KanbanContext);
   const containerRef = useRef(null);
+  let clientRef = useRef(null);
   const [kanban, setKanban] = useState();
+  const API_URL = "http://localhost:8080/haru";
 
   // Detect device
   useEffect(() => {
@@ -83,8 +90,18 @@ const KanbanContainer = () => {
       UpdateColumnData(destinationColumn, result[destination.droppableId]);
     }
   };
+
   // isIterableArray
   return (
+    <Fragment>
+      {/* <SockJsClient
+          url={`${API_URL}/socket`}
+          topics={[`/topic/test`]}
+          onMessage={mes => {console.log("테스트")}}
+          ref={(client) => {
+            clientRef = client
+          }}
+      /> */}
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="kanban-container scrollbar" ref={containerRef}>
         {kanbanColumns &&
@@ -95,6 +112,7 @@ const KanbanContainer = () => {
         <KanbanModal modal={modal} setModal={setModal} modalContent={modalContent} />
       </div>
     </DragDropContext>
+    </Fragment>
   );
 };
 
