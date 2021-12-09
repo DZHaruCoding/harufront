@@ -19,8 +19,18 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
   // Handler
   const handleSubmit = e => {
     e.preventDefault();
+
+    console.log(`name: ${name}`);
+  
+    try {
+      
+    } catch(err) {
+      console.log(err);
+    }
+
+
     toast.success(`Successfully registered as ${name}`);
-    setRedirect(true);
+    //setRedirect(false);
   };
 
   useEffect(() => {
@@ -28,16 +38,18 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
   }, [setRedirectUrl, layout]);
 
   useEffect(() => {
-    setIsDisabled(!name || !email || !password || !confirmPassword || !isAccepted || password !== confirmPassword);
-  }, [name, email, password, confirmPassword, isAccepted]);
+    setIsDisabled(!name || !email || !password);
+  }, [name, email, password]);
 
   return (
     <Form onSubmit={handleSubmit}>
+      {/* 이름입력 */}
       <FormGroup>
         {hasLabel && <Label>Name</Label>}
         <Input placeholder={!hasLabel ? 'Name' : ''} value={name} onChange={({ target }) => setName(target.value)} />
       </FormGroup>
-      <FormGroup>
+      {/* 이메일 입력 */}
+      {/* <FormGroup>
         {hasLabel && <Label>Email address</Label>}
         <Input
           placeholder={!hasLabel ? 'Email address' : ''}
@@ -45,9 +57,10 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
           onChange={({ target }) => setEmail(target.value)}
           type="email"
         />
-      </FormGroup>
-      <div className="form-row">
-        <FormGroup className="col-6">
+      </FormGroup> */}
+      {/* 비밀번호 입력 */}
+      <div>
+        <FormGroup>
           {hasLabel && <Label>Password</Label>}
           <Input
             placeholder={!hasLabel ? 'Password' : ''}
@@ -56,7 +69,7 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
             type="password"
           />
         </FormGroup>
-        <FormGroup className="col-6">
+        {/* <FormGroup className="col-6">
           {hasLabel && <Label>Confirm Password</Label>}
           <Input
             placeholder={!hasLabel ? 'Confirm Password' : ''}
@@ -64,10 +77,10 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
             onChange={({ target }) => setConfirmPassword(target.value)}
             type="password"
           />
-        </FormGroup>
+        </FormGroup> */}
       </div>
 
-      <CustomInput
+      {/* <CustomInput
         id="customCheckTerms"
         label={
           <Fragment>
@@ -77,14 +90,14 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
         checked={isAccepted}
         onChange={({ target }) => setIsAccepted(target.checked)}
         type="checkbox"
-      />
+      /> */}
       <FormGroup>
-        <Button color="primary" block className="mt-3" disabled={isDisabled}>
+        <Button color="primary" block className="mt-3">
           Register
         </Button>
       </FormGroup>
       <Divider className="mt-4">or register with</Divider>
-      <SocialAuthButtons />
+      {/* <SocialAuthButtons /> */}
     </Form>
   );
 };

@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Button, Form, Row, Col, FormGroup, Input, CustomInput, Label } from 'reactstrap';
-import Divider from '../common/Divider';
-import SocialAuthButtons from './SocialAuthButtons';
+// import Divider from '../common/Divider';
+// import SocialAuthButtons from './SocialAuthButtons';
 import withRedirect from '../../hoc/withRedirect';
 
 const LoginForm = ({ setRedirect, hasLabel, layout }) => {
@@ -66,8 +66,8 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
           Log in
         </Button>
       </FormGroup>
-      <Divider className="mt-4">or log in with</Divider>
-      <SocialAuthButtons />
+      {/* <Divider className="mt-4">or log in with</Divider>
+      <SocialAuthButtons /> */}
     </Form>
   );
 };
