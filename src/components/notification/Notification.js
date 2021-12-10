@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 import Avatar from '../common/Avatar';
 import createMarkup from '../../helpers/createMarkup';
 
-const Notification = ({ to, avatar, time, className, unread, flush, emoji, children }) => (
-  <Link className={classNames('notification', { 'bg-200': unread, 'notification-flush': flush }, className)} to={to}>
+const Notification = ({ to, avatar, time, className, unread, flush, emoji, children, noticeNo, noticeMessage, noticeDate, noticLink, messageCk  }) => (
+  <Link className={classNames('notification', { 'bg-200': messageCk === 'N' ? true : false , 'notification-flush': flush }, className)} to={to}>
     {avatar && (
       <div className="notification-avatar">
         <Avatar {...avatar} className="mr-3" />

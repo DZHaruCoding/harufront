@@ -1,10 +1,11 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, Dropdown, DropdownMenu, DropdownToggle } from 'reactstrap';
 import ListGroup from 'reactstrap/es/ListGroup';
 import ListGroupItem from 'reactstrap/es/ListGroupItem';
+import { localIp } from '../../config';
 import { rawEarlierNotifications, rawNewNotifications } from '../../data/notification/notification';
 import { isIterableArray } from '../../helpers/utils';
 import useFakeFetch from '../../hooks/useFakeFetch';
@@ -13,10 +14,37 @@ import Notification from '../notification/Notification';
 
 const NotificationDropdown = () => {
   // State
-  const { data: newNotifications, setData: setNewNotifications } = useFakeFetch(rawNewNotifications);
-  const { data: earlierNotifications, setData: setEarlierNotifications } = useFakeFetch(rawEarlierNotifications);
+  const { data: newNotifications, setData: setNewNotifications } = useFakeFetch([]);
+  const { data: earlierNotifications, setData: setEarlierNotifications } = useFakeFetch([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [isAllRead, setIsAllRead] = useState(false);
+  const [isAllRead, setIsAllRead] = useState(true);
+
+  useEffect(() => {
+    const noticeFetch = async () => {
+      const response = await fetch(`${localIp}/api/notice/getMyNotice`, {
+        method: 'post',
+        headers: {
+          "Content-Type": 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(1)
+      }, []);
+    
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+    
+      const jsonResult = await response.json();
+      console.log(jsonResult);
+    
+      if (jsonResult.result != 'success') {
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      }
+
+      // setNewNotifications(jsonResult.data);
+    }
+    noticeFetch();
+  }, []);
 
   // Handler
   const handleToggle = e => {
@@ -81,20 +109,20 @@ const NotificationDropdown = () => {
             </Link>
           </FalconCardHeader>
           <ListGroup flush className="font-weight-normal fs--1">
-            <div className="list-group-title">NEW</div>
+            {/* <div className="list-group-title">NEW</div> */}
             {isIterableArray(newNotifications) &&
               newNotifications.map((notification, index) => (
-                <ListGroupItem key={index} onClick={handleToggle}>
+                <ListGroupItem key={notification.noticeNo} onClick={handleToggle}>
                   <Notification {...notification} flush />
                 </ListGroupItem>
               ))}
-            <div className="list-group-title">EARLIER</div>
+            {/* <div className="list-group-title">EARLIER</div>
             {isIterableArray(earlierNotifications) &&
               earlierNotifications.map((notification, index) => (
                 <ListGroupItem key={index} onClick={handleToggle}>
                   <Notification {...notification} flush />
                 </ListGroupItem>
-              ))}
+              ))} */}
           </ListGroup>
           <div className="card-footer text-center border-top" onClick={handleToggle}>
             <Link className="card-link d-block" to="/pages/notifications">
