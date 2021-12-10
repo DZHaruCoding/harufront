@@ -6,13 +6,14 @@ import Notification from '../notification/Notification';
 import { isIterableArray } from '../../helpers/utils';
 import useFakeFetch from '../../hooks/useFakeFetch';
 import rawActivities from '../../data/activity/activities';
+import KanbanHeader from './KanbanHeader';
 
 const Activity = () => {
   const { loading, data: activities } = useFakeFetch(rawActivities);
-
   return (
     <Card>
-      <FalconCardHeader title="Activity log" />
+      <KanbanHeader />
+      <FalconCardHeader title="Activity Log" />
       <CardBody className="fs--1 p-0">
         {loading ? (
           <Loader />

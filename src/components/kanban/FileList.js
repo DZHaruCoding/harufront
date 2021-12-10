@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { calculateSale, isIterableArray } from '../../helpers/utils';
 import FalconCardHeader from '../common/FalconCardHeader';
 import ButtonIcon from '../common/ButtonIcon';
+import KanbanHeader from './KanbanHeader';
 
 const FavouriteItem = ({ id }) => {
   const { currency } = useContext(AppContext);
@@ -92,6 +93,7 @@ const FavouriteItems = () => {
 
   return (
     <Card>
+      <KanbanHeader />
       <FalconCardHeader
         title={`Favourites (${favouriteItems.length} Item${favouriteItems.length === 1 ? '' : 's'})`}
         light={false}
