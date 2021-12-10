@@ -49,7 +49,8 @@ import InboxProvider from '../components/email/inbox/InboxProvider';
 import Starter from '../components/extra/Starter';
 import Feed from '../components/feed/Feed';
 import Kanban from '../components/kanban/Kanban';
-import Activity from '../components/page/Activity';
+import Activity from '../components/kanban/Activity'; //JONGYOON
+import FileList from '../components/kanban/FileList'; //JONGYOON
 import Associations from '../components/page/Associations';
 import Billing from '../components/page/Billing';
 import CustomerDetails from '../components/page/CustomerDetails';
@@ -176,6 +177,7 @@ const DashboardRoutes = () => (
     {/*activity*/}
     {/* 종윤 */}
     <Route path="/activity" exact component={Activity} />
+    <Route path="/filelist" exact component={FileList} />
 
     {/*Email*/}
     {/* <Route path="/email" component={InboxRoutes} /> */}

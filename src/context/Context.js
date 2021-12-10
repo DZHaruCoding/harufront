@@ -15,4 +15,6 @@ export const ChatContext = createContext();
 
 export const KanbanContext = createContext({ KanbanColumns: [], kanbanTasks: [] });
 
+export const ActivityContext = createContext({ activityLog: [] });
+
 export default AppContext;
