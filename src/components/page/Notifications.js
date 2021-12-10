@@ -20,6 +20,7 @@ import {
   Row
 } from 'reactstrap';
 import Notification from '../notification/Notification';
+import NotificationBell from '../notification/NotificationBell';
 import FalconCardHeader from '../common/FalconCardHeader';
 import Loader from '../common/Loader';
 import { isIterableArray } from '../../helpers/utils';
@@ -113,9 +114,9 @@ const Notifications = ({ items = rawNotifications.length, children }) => {
           <Link className="text-sans-serif" to="#!" onClick={markAsRead}>
             Mark all as read
           </Link>
-          <Link className="text-sans-serif ml-2 ml-sm-3" to="#!" onClick={toggleSettingsModal}>
+          {/* <Link className="text-sans-serif ml-2 ml-sm-3" to="#!" onClick={toggleSettingsModal}>
             Notification settings
-          </Link>
+          </Link> */}
         </div>
 
         <Modal isOpen={settingsIsOpen} toggle={toggleSettingsModal} centered size="lg">

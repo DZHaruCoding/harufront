@@ -152,13 +152,14 @@ const DashboardRoutes = () => (
     <Route path="/pages/faq" exact component={Faq} />
     <Route path="/pages/invoice" exact component={Invoice} />
     <Route path="/pages/invite-people" exact component={InvitePeople} />
-    <Route path="/pages/notifications" exact component={Notifications} />
+    
     <Route path="/pages/people" exact component={People} />
     <Route path="/pages/pricing" exact component={Pricing} />
     <Route path="/pages/pricing-alt" exact component={PricingAlt} />
     <Route path="/pages/profile" exact component={Profile} />
     <Route path="/pages/settings" exact component={Settings} />
     <Route path="/pages/starter" exact component={Starter} /> */}
+    <Route path="/pages/notifications" exact component={Notifications} />
     {/*chat*/}
     {/* <Route path="/chat" exact component={Chat} /> */}
 

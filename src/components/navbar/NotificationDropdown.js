@@ -9,47 +9,116 @@ import { localIp } from '../../config';
 import { rawEarlierNotifications, rawNewNotifications } from '../../data/notification/notification';
 import { isIterableArray } from '../../helpers/utils';
 import useFakeFetch from '../../hooks/useFakeFetch';
+import useFakeFetchV2 from '../../hooks/useFakeFetchV2';
 import FalconCardHeader from '../common/FalconCardHeader';
 import Notification from '../notification/Notification';
+import NotificationBell from '../notification/NotificationBell';
 
 const NotificationDropdown = () => {
   // State
-  const { data: newNotifications, setData: setNewNotifications } = useFakeFetch([]);
+  const { data: newNotifications, setData: setNewNotifications } = useFakeFetchV2([]);
   const { data: earlierNotifications, setData: setEarlierNotifications } = useFakeFetch([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isAllRead, setIsAllRead] = useState(true);
 
   useEffect(() => {
     const noticeFetch = async () => {
-      const response = await fetch(`${localIp}/api/notice/getMyNotice`, {
-        method: 'post',
-        headers: {
-          "Content-Type": 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(1)
-      }, []);
-    
-      if (!response.ok) {
-        throw new Error(`${response.status} ${response.statusText}`);
-      }
-    
-      const jsonResult = await response.json();
-      console.log(jsonResult);
-    
-      if (jsonResult.result != 'success') {
-        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
-      }
 
-      // setNewNotifications(jsonResult.data);
+      try {
+        const response = await fetch(`${localIp}/api/notice/getMyNotice`, {
+          method: 'post',
+          headers: {
+            "Content-Type": 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(1)
+        }, []);
+      
+        if (!response.ok) {
+          throw new Error(`${response.status} ${response.statusText}`);
+        }
+      
+        const jsonResult = await response.json();
+        console.log(jsonResult);
+      
+        if (jsonResult.result != 'success') {
+          throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+        }
+
+        for (let i = 0; i < jsonResult.data.length; i++) {
+          if (jsonResult.data[i].messageCk === 'N') {
+            setIsAllRead(false);
+            break;
+          }
+        }
+
+        setNewNotifications(jsonResult.data);
+      } catch(err) {
+        console.log(err);
+      }
+      
     }
     noticeFetch();
   }, []);
 
   // Handler
-  const handleToggle = e => {
+  const handleToggle = async (e, k) => {
     e.preventDefault();
-    setIsOpen(!isOpen);
+
+    try {
+      //TODO 조진석 : 더미데이터 사용
+    const json = {
+      noticeNo : k,
+      userNo : '1'
+    }
+
+    const response = await fetch(`${localIp}/api/notice/noticeCheck`, {
+      method: 'post',
+      headers: {
+        "Content-Type": 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(json)
+    }, []);
+  
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+  
+    const jsonResult = await response.json();
+    console.log("확인",jsonResult);
+  
+    if (jsonResult.result != 'success') {
+      throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+    }
+
+    let arr = newNotifications;
+    arr.map(notification => {
+      if (notification.noticeNo === k) {
+        notification.messageCk = 'Y'
+        return notification;
+      } else {
+        return notification;
+      }
+    })
+
+    setNewNotifications(arr);
+
+    for (let i = 0; i < newNotifications.length; i++) {
+      if (newNotifications[i].messageCk === 'N') {
+        setIsAllRead(false);
+        break;
+      }
+      
+      if (i == newNotifications.length - 1) {
+        setIsAllRead(true)
+      }
+    }
+
+    } catch(err) {
+      console.log(err);
+    }
+    setIsOpen(!isOpen);    
   };
 
   const markAsRead = e => {
@@ -112,8 +181,10 @@ const NotificationDropdown = () => {
             {/* <div className="list-group-title">NEW</div> */}
             {isIterableArray(newNotifications) &&
               newNotifications.map((notification, index) => (
-                <ListGroupItem key={notification.noticeNo} onClick={handleToggle}>
-                  <Notification {...notification} flush />
+                <ListGroupItem key={notification.noticeNo} onClick={(e) => handleToggle(e, notification.noticeNo)}>
+                  <NotificationBell {...notification} flush 
+                      className={"rounded-0 border-x-0 border-300 border-bottom-0"} 
+                      messageCk={notification.messageCk == 'N' ? true : false} />
                 </ListGroupItem>
               ))}
             {/* <div className="list-group-title">EARLIER</div>
