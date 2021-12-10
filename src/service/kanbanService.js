@@ -1,15 +1,14 @@
-import { localIp } from "../config"
+import { localIp } from '../config';
 import React from 'react';
 
 export const kanbanList = async () => {
-
   try {
-    console.log("Asdad");
+    console.log('Asdad');
     const response = await fetch(`${localIp}/api/tasklist/data/2`, {
       method: 'get',
       header: {
-        "Content-Type:": 'application/json',
-        'Accept': 'application'
+        'Content-Type:': 'application/json',
+        Accept: 'application'
       },
       body: null
     });
@@ -26,10 +25,10 @@ export const kanbanList = async () => {
 
     return jsonResult.data;
     console.log(jsonResult.data);
-  } catch(err) {
+  } catch (err) {
     console.log(err);
     return null;
   }
-}
+};
 
-export default {kanbanList}
+export default { kanbanList };
