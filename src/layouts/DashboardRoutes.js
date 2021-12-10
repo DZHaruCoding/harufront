@@ -140,9 +140,9 @@ const ProductRoutes = ({ match: { url } }) => (
 
 const DashboardRoutes = () => (
   <Switch>
-    <Route path="/feed" exact component={Feed} />
+    {/* <Route path="/feed" exact component={Feed} /> */}
     {/*Pages*/}
-    <Route path="/pages/activity" exact component={Activity} />
+    {/* <Route path="/pages/activity" exact component={Activity} />
     <Route path="/pages/associations" exact component={Associations} />
     <Route path="/pages/billing" exact component={Billing} />
     <Route path="/pages/customer-details" exact component={CustomerDetails} />
@@ -158,30 +158,39 @@ const DashboardRoutes = () => (
     <Route path="/pages/pricing-alt" exact component={PricingAlt} />
     <Route path="/pages/profile" exact component={Profile} />
     <Route path="/pages/settings" exact component={Settings} />
-    <Route path="/pages/starter" exact component={Starter} />
+    <Route path="/pages/starter" exact component={Starter} /> */}
     {/*chat*/}
-    <Route path="/chat" exact component={Chat} />
+    {/* <Route path="/chat" exact component={Chat} /> */}
+
     {/*calendar*/}
+    {/* 행운 */}
     <Route path="/calendar" exact component={Calendar} />
+
     {/*kanban*/}
+    {/* 진석 */}
     <Route path="/kanban" exact component={Kanban} />
+
     {/*E commerce*/}
-    <Route path="/e-commerce" component={ProductRoutes} />
+    {/* <Route path="/e-commerce" component={ProductRoutes} /> */}
+
+    {/*activity*/}
+    {/* 종윤 */}
+    <Route path="/activity" exact component={Activity} />
 
     {/*Email*/}
-    <Route path="/email" component={InboxRoutes} />
+    {/* <Route path="/email" component={InboxRoutes} /> */}
 
     {/*widgets*/}
-    <Route path="/widgets" component={Widgets} />
+    {/* <Route path="/widgets" component={Widgets} /> */}
 
     {/*Documentation*/}
-    <Route path="/documentation" exact component={GettingStarted} />
+    {/* <Route path="/documentation" exact component={GettingStarted} /> */}
 
     {/*Changelog*/}
-    <Route path="/changelog" exact component={ChangeLog} />
+    {/* <Route path="/changelog" exact component={ChangeLog} /> */}
 
     {/*Components*/}
-    <Route path="/components/alerts" exact component={Alerts} />
+    {/* <Route path="/components/alerts" exact component={Alerts} />
     <Route path="/components/autocomplete" exact component={AutocompleteExample} />
     <Route path="/components/accordions" exact component={FalconAccordions} />
     <Route path="/components/avatar" exact component={Avatar} />
@@ -210,10 +219,10 @@ const DashboardRoutes = () => (
     <Route path="/components/tables" exact component={Tables} />
     <Route path="/components/tooltips" exact component={Tooltips} />
     <Route path="/components/spinners" exact component={Spinners} />
-    <Route path="/components/carousel" exact component={Carousel} />
+    <Route path="/components/carousel" exact component={Carousel} /> */}
 
     {/*Utilities*/}
-    <Route path="/utilities/borders" exact component={Borders} />
+    {/* <Route path="/utilities/borders" exact component={Borders} />
     <Route path="/utilities/clearfix" exact component={Clearfix} />
     <Route path="/utilities/closeIcon" exact component={CloseIcon} />
     <Route path="/utilities/colors" exact component={Colors} />
@@ -227,10 +236,10 @@ const DashboardRoutes = () => (
     <Route path="/utilities/stretchedLink" exact component={StretchedLink} />
     <Route path="/utilities/typography" exact component={Typography} />
     <Route path="/utilities/verticalAlign" exact component={VerticalAlign} />
-    <Route path="/utilities/visibility" exact component={Visibility} />
+    <Route path="/utilities/visibility" exact component={Visibility} /> */}
 
     {/*Plugins*/}
-    <Route path="/plugins/calendar-example" exact component={CalendarExample} />
+    {/* <Route path="/plugins/calendar-example" exact component={CalendarExample} />
     <Route path="/plugins/bulk-select" exact component={BulkSelect} />
     <Route path="/plugins/typed" exact component={Typed} />
     <Route path="/plugins/image-lightbox" exact component={ImageLightbox} />
@@ -255,7 +264,7 @@ const DashboardRoutes = () => (
     <Route path="/plugins/code-highlight" exact component={CodeHighlightDoc} />
     <Route path="/plugins/emoji-mart" exact component={EmojiMart} />
     <Route path="/plugins/react-bootstrap-table2" exact component={ReactBootstrapTable2} />
-    <Route path="/plugins/react-beautiful-dnd" exact component={ReactBeautifulDnD} />
+    <Route path="/plugins/react-beautiful-dnd" exact component={ReactBeautifulDnD} /> */}
 
     {/*Redirect*/}
     <Redirect to="/errors/404" />

@@ -11,6 +11,7 @@ import AppContext from '../context/Context';
 import ProductProvider from '../components/e-commerce/ProductProvider';
 import SidePanelModal from '../components/side-panel/SidePanelModal';
 import { getPageName } from '../helpers/utils';
+
 import Events from '../components/page/Events';
 
 const DashboardRoutes = loadable(() => import('./DashboardRoutes'));
@@ -36,12 +37,12 @@ const DashboardLayout = ({ location }) => {
           <NavbarTop />
           <Switch>
             <Route path="/" exact component={Events} />
-            <Route path="/dashboard-alt" exact component={DashboardAlt} />
+            {/* <Route path="/dashboard-alt" exact component={DashboardAlt} /> */}
             <DashboardRoutes />
           </Switch>
           {!isKanban && <Footer />}
         </div>
-        <SidePanelModal path={location.pathname} />
+        {/* <SidePanelModal path={location.pathname} /> */}
       </ProductProvider>
     </div>
   );

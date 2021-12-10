@@ -119,8 +119,7 @@ const ProductProvider = ({ children }) => {
 
   return (
     <ProductContext.Provider value={value}>
-      {children}
-      <CartModal {...cartModal} modal={modal} setModal={setModal} />
+      {children} <CartModal {...cartModal} modal={modal} setModal={setModal} />{' '}
     </ProductContext.Provider>
   );
 };
