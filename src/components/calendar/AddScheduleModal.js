@@ -15,6 +15,7 @@ import {
 import Datetime from 'react-datetime';
 import { v4 as uuid } from 'uuid';
 import Flex from '../common/Flex';
+import { localIp } from '../../config';
 
 const AddScheduleModal = ({
   setIsOpenScheduleModal,
@@ -26,9 +27,11 @@ const AddScheduleModal = ({
 }) => {
   const toggle = () => setIsOpenScheduleModal(!isOpenScheduleModal);
 
-  const [formObj, setFormObj] = useState({ id: uuid() });
+  const [formObj, setFormObj] = useState();
   const [endDate, setEndDate] = useState();
   const [startDate, setStartDate] = useState();
+  
+  
   const closeBtn = (
     <button className="close font-weight-normal" onClick={toggle}>
       &times;
@@ -39,7 +42,39 @@ const AddScheduleModal = ({
     let name = target.name;
     let value = name === 'allDay' ? target.checked : target.value;
     setFormObj({ ...formObj, [name]: value });
+    console.log(formObj);  
   };
+
+const handleAdd = async (formObj) =>{
+  try {
+    const response = await fetch(`${localIp}/api/calendar/add`,{
+      method : "post",
+      headers:{
+        'Content-Type':'application/json',
+        'Accept':'application/json'
+      },
+      body:JSON.stringify(formObj)
+    });
+
+    if(!response.ok){
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+
+    const jsonResult = await response.json();
+    console.log('add',jsonResult.data);
+    let data ={
+      title: jsonResult.data.scheduleContents,
+      start: jsonResult.data.scheduleStart,
+      end: jsonResult.data.scheduleEnd
+    };
+    console.log(data);
+    setInitialEvents([...initialEvents, data]);
+
+
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   useEffect(() => {
     !isOpenScheduleModal && setAddScheduleStartDate(null);
@@ -54,24 +89,27 @@ const AddScheduleModal = ({
       <Form
         onSubmit={e => {
           e.preventDefault();
+          handleAdd(formObj);
           setIsOpenScheduleModal(false);
           setInitialEvents([...initialEvents, formObj]);
         }}
       >
         <ModalHeader toggle={toggle} className="bg-light d-flex flex-between-center border-bottom-0" close={closeBtn}>
-          Create Schedule
+          일정 추가
         </ModalHeader>
         <ModalBody>
           <FormGroup>
             <Label className="fs-0" for="eventTitle">
-              Title
+              제목
             </Label>
-            <Input name="title" id="eventTitle" required onChange={({ target }) => handleChange(target)} />
+            <Input name="scheduleContents" id="eventTitle" required onChange={({ target }) => handleChange(target)} />
           </FormGroup>
+
           <FormGroup>
             <Label className="fs-0" for="eventStart">
-              Start Date
+              시작일
             </Label>
+            {/* 시작일 날짜 */}
             <Datetime
               timeFormat={true}
               value={startDate || addScheduleStartDate}
@@ -79,19 +117,21 @@ const AddScheduleModal = ({
                 if (dateTime._isValid) {
                   setStartDate(dateTime);
                   let date = {};
-                  date.value = dateTime.format();
-                  date.name = 'start';
+                  date.value = dateTime.format('YYYY-MM-DD HH:mm:ss');
+                  date.name = 'scheduleStart';
                   handleChange(date);
                 }
               }}
-              dateFormat="MM-DD-YYYY"
-              inputProps={{ placeholder: 'MM-DD-YYYY H:M', id: 'eventStart' }}
+              dateFormat="YYYY-DD-MM HH:mm:ss"
+              inputProps={{ placeholder: 'YYYY-MM-DD HH:mm:ss', id: 'eventStart' }}
             />
           </FormGroup>
+          
           <FormGroup>
             <Label className="fs-0" for="eventEnd">
-              End Date
+              마감일
             </Label>
+            {/* 마감일 날짜 */}
             <Datetime
               value={endDate}
               timeFormat={true}
@@ -99,59 +139,19 @@ const AddScheduleModal = ({
                 if (dateTime._isValid) {
                   setEndDate(dateTime);
                   let date = {};
-                  date.value = dateTime.format();
-                  date.name = 'end';
+                  date.value = dateTime.format('YYYY-MM-DD HH:mm:ss');
+                  date.name = 'scheduleEnd';
                   handleChange(date);
                 }
               }}
-              dateFormat="MM-DD-YYYY"
-              inputProps={{ placeholder: 'MM-DD-YYYY H:M', id: 'eventEnd' }}
+              dateFormat="YYYY-DD-MM HH:mm:ss"
+              inputProps={{ placeholder: 'YYYY-DD-MM HH:mm:ss', id: 'eventEnd' }}
             />
           </FormGroup>
-          <FormGroup>
-            <CustomInput
-              name="allDay"
-              type="checkbox"
-              id="allDay"
-              label="All Day"
-              onChange={({ target }) => handleChange(target)}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label className="fs-0">Schedule Meeting</Label>
-            <div>
-              <Button color="" type="button" className="text-left bg-soft-info text-info">
-                <FontAwesomeIcon icon="video" className="mr-2" />
-                <span>Add video conference link</span>
-              </Button>
-            </div>
-          </FormGroup>
-          <FormGroup>
-            <Label className="fs-0" for="eventDescription">
-              Description
-            </Label>
-            <Input
-              type="textarea"
-              name="description"
-              id="eventDescription"
-              onChange={({ target }) => handleChange(target)}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label for="eventLabel">Label</Label>
-            <CustomInput type="select" id="eventLabel" name="className" onChange={({ target }) => handleChange(target)}>
-              <option>None</option>
-              <option value="bg-soft-info">Business</option>
-              <option value="bg-soft-danger">Important</option>
-              <option value="bg-soft-warning">Personal</option>
-              <option value="bg-soft-success">Must Attend</option>
-            </CustomInput>
-          </FormGroup>
+          
         </ModalBody>
         <ModalFooter tag={Flex} justify="end" align="center" className="bg-light border-top-0">
-          <Button color="link" tag="a" href="pages/event-create" className="text-600">
-            More Option
-          </Button>
+
           <Button color="primary" type="submit" className="px-4">
             Save
           </Button>
