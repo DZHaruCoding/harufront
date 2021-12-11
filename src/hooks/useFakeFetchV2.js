@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 const useFakeFetchV2 = (resolvedData, waitingTime = 500) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
 
   useEffect(() => {

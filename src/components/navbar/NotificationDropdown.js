@@ -1,65 +1,68 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, Dropdown, DropdownMenu, DropdownToggle } from 'reactstrap';
 import ListGroup from 'reactstrap/es/ListGroup';
 import ListGroupItem from 'reactstrap/es/ListGroupItem';
 import { localIp } from '../../config';
+import AppContext from '../../context/Context';
 import { rawEarlierNotifications, rawNewNotifications } from '../../data/notification/notification';
 import { isIterableArray } from '../../helpers/utils';
 import useFakeFetch from '../../hooks/useFakeFetch';
 import useFakeFetchV2 from '../../hooks/useFakeFetchV2';
 import FalconCardHeader from '../common/FalconCardHeader';
+import ProductProvider from '../e-commerce/ProductProvider';
 import Notification from '../notification/Notification';
 import NotificationBell from '../notification/NotificationBell';
 
 const NotificationDropdown = () => {
   // State
-  const { data: newNotifications, setData: setNewNotifications } = useFakeFetchV2([]);
+  // const { data: newNotifications, setData: setNewNotifications } = useFakeFetchV2([]);
   const { data: earlierNotifications, setData: setEarlierNotifications } = useFakeFetch([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [isAllRead, setIsAllRead] = useState(true);
+  const {isAllRead, setIsAllRead} = useContext(AppContext);
+  const { loading, notifications, setNotifications } = useContext(AppContext);
 
-  useEffect(() => {
-    const noticeFetch = async () => {
+  // useEffect(() => {
+  //   const noticeFetch = async () => {
 
-      try {
-        const response = await fetch(`${localIp}/api/notice/getMyNotice`, {
-          method: 'post',
-          headers: {
-            "Content-Type": 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(1)
-        }, []);
+  //     try {
+  //       const response = await fetch(`${localIp}/api/notice/getMyNotice`, {
+  //         method: 'post',
+  //         headers: {
+  //           "Content-Type": 'application/json',
+  //           'Accept': 'application/json'
+  //         },
+  //         body: JSON.stringify(1)
+  //       }, []);
       
-        if (!response.ok) {
-          throw new Error(`${response.status} ${response.statusText}`);
-        }
+  //       if (!response.ok) {
+  //         throw new Error(`${response.status} ${response.statusText}`);
+  //       }
       
-        const jsonResult = await response.json();
-        console.log(jsonResult);
+  //       const jsonResult = await response.json();
+  //       console.log(jsonResult);
       
-        if (jsonResult.result != 'success') {
-          throw new Error(`${jsonResult.result} ${jsonResult.message}`);
-        }
+  //       if (jsonResult.result != 'success') {
+  //         throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+  //       }
 
-        for (let i = 0; i < jsonResult.data.length; i++) {
-          if (jsonResult.data[i].messageCk === 'N') {
-            setIsAllRead(false);
-            break;
-          }
-        }
+  //       for (let i = 0; i < jsonResult.data.length; i++) {
+  //         if (jsonResult.data[i].messageCk === 'N') {
+  //           setIsAllRead(false);
+  //           break;
+  //         }
+  //       }
 
-        setNewNotifications(jsonResult.data);
-      } catch(err) {
-        console.log(err);
-      }
+  //       setNewNotifications(jsonResult.data);
+  //     } catch(err) {
+  //       console.log(err);
+  //     }
       
-    }
-    noticeFetch();
-  }, []);
+  //   }
+  //   noticeFetch();
+  // }, []);
 
   // Handler
   const handleToggle = async (e, k) => {
@@ -92,7 +95,7 @@ const NotificationDropdown = () => {
       throw new Error(`${jsonResult.result} ${jsonResult.message}`);
     }
 
-    let arr = newNotifications;
+    let arr = notifications;
     arr.map(notification => {
       if (notification.noticeNo === k) {
         notification.messageCk = 'Y'
@@ -102,15 +105,15 @@ const NotificationDropdown = () => {
       }
     })
 
-    setNewNotifications(arr);
+    setNotifications(arr);
 
-    for (let i = 0; i < newNotifications.length; i++) {
-      if (newNotifications[i].messageCk === 'N') {
+    for (let i = 0; i < notifications.length; i++) {
+      if (notifications[i].messageCk === 'N') {
         setIsAllRead(false);
         break;
       }
       
-      if (i == newNotifications.length - 1) {
+      if (i == notifications.length - 1) {
         setIsAllRead(true)
       }
     }
@@ -123,7 +126,7 @@ const NotificationDropdown = () => {
 
   const markAsRead = e => {
     e.preventDefault();
-    const updatedNewNotifications = newNotifications.map(notification => {
+    const updatedNewNotifications = notifications.map(notification => {
       if (notification.hasOwnProperty('unread')) {
         return {
           ...notification,
@@ -143,7 +146,7 @@ const NotificationDropdown = () => {
       return notification;
     });
 
-    setNewNotifications(updatedNewNotifications);
+    setNotifications(updatedNewNotifications);
     setEarlierNotifications(updatedEarlierNotifications);
   };
 
@@ -179,8 +182,8 @@ const NotificationDropdown = () => {
           </FalconCardHeader>
           <ListGroup flush className="font-weight-normal fs--1">
             {/* <div className="list-group-title">NEW</div> */}
-            {isIterableArray(newNotifications) &&
-              newNotifications.map((notification, index) => (
+            {isIterableArray(notifications) &&
+              notifications.map((notification, index) => (
                 <ListGroupItem key={notification.noticeNo} onClick={(e) => handleToggle(e, notification.noticeNo)}>
                   <NotificationBell {...notification} flush 
                       className={"rounded-0 border-x-0 border-300 border-bottom-0"} 
