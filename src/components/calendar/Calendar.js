@@ -13,7 +13,7 @@ import AddScheduleModal from './AddScheduleModal';
 import Flex from '../common/Flex';
 
 import events from '../../data/calendar/events';
-
+import { localIp } from '../../config';
 const Calendar = () => {
   const calendarRef = useRef();
   const [calendarApi, setCalendarApi] = useState({});
@@ -53,10 +53,60 @@ const Calendar = () => {
     []
   );
 
-  const [initialEvents, setInitialEvents] = useState(eventList);
+  const [initialEvents, setInitialEvents] = useState(null);
 
   useEffect(() => {
     setCalendarApi(calendarRef.current.getApi());
+  }, []);
+
+  useEffect( () => {
+   const fetchfun = async () => {
+    try {
+      const response = await fetch(`${localIp}/api/calendar/1`,{
+        method: 'get',
+        headers:{
+          'Content-Type':'application/json',
+          'Accept':'application/json'
+        },
+        body:null
+      });
+
+      //fetch 성공하면
+      if(!response.ok){
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+      //결과를 json으로 변환하기
+      const jsonResult = await response.json();
+      console.log(jsonResult.data);
+
+      //통신 했지만 결과값이 success가 아니면
+      if(jsonResult.result !== 'success'){
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      } 
+
+      //setInitialEvents에 데이터 셋팅하기
+      setInitialEvents(jsonResult.data);
+      console.log('init',initialEvents);
+      let test = [];
+      jsonResult.data.scheduleList.map(schedule => test = [...test,{ 
+                                id: schedule.scheduleNo,
+                                title: schedule.scheduleContents,
+                                start: schedule.scheduleStart,
+                                end: schedule.scheduleEnd
+                                }]);
+      jsonResult.data.taskList.map(task => test = [...test,{
+                                id: task.taskNo,
+                                title: task.taskContents,
+                                start: task.taskStart,
+                                end: task.taskEnd
+                                }]);
+      console.log(test);
+      setInitialEvents(test);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  fetchfun();
   }, []);
 
   const handleFilter = filter => {
@@ -204,6 +254,7 @@ const Calendar = () => {
       <CalendarEventModal
         isOpenModal={isOpenModal}
         setIsOpenModal={setIsOpenModal}
+        setInitialEvents={setInitialEvents}
         modalEventContent={modalEventContent}
       />
     </>

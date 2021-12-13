@@ -25,8 +25,8 @@ const EventModalMediaContent = ({ icon, heading, content, children }) => (
 
 const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent }) => {
   const toggle = () => setIsOpenModal(!isOpenModal);
-
-  const { title, end, start } = isOpenModal && modalEventContent.event;
+  console.log('오빠 바보',modalEventContent.event);
+  const { id,title, end, start } = isOpenModal && modalEventContent.event;
   const { description, location, organizer, schedules } = isOpenModal && modalEventContent.event.extendedProps;
 
   const closeBtn = (
@@ -37,6 +37,7 @@ const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent }) 
 
   return (
     <Modal isOpen={isOpenModal} toggle={toggle} modalClassName="theme-modal" contentClassName="border" centered>
+      {/* title (제목) */}
       <ModalHeader toggle={toggle} tag="div" className="px-card bg-light border-0 flex-between-center" close={closeBtn}>
         <h5 className="mb-0">{title}</h5>
         {organizer && (
@@ -45,20 +46,22 @@ const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent }) 
           </p>
         )}
       </ModalHeader>
+      
+      {/* 모달창 body */}
       <ModalBody className="px-card pb-card pt-1 fs--1">
         {description && <EventModalMediaContent icon="align-left" heading="Description" content={description} />}
         {(end || start) && (
-          <EventModalMediaContent icon="calendar-check" heading="Time and Date">
-            <span>{moment(start).format('LLLL')}</span>
+          <EventModalMediaContent icon="calendar-check" heading="Date and Time">
+            <span>시작일 : {moment(start).format('YYYY-MM-DD HH:mm:ss')}</span>
             {end && (
               <>
                 {' '}
-                – <br /> <span>{moment(end).format('LLLL')}</span>
+                 <br /> <span>마감일 : {moment(end).format('YYYY-MM-DD HH:mm:ss')}</span>
               </>
             )}
           </EventModalMediaContent>
         )}
-        {location && (
+        {/* {location && (
           <EventModalMediaContent icon="map-marker-alt" heading="Location">
             <div className="mb-1" dangerouslySetInnerHTML={{ __html: location }} />
           </EventModalMediaContent>
@@ -71,16 +74,19 @@ const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent }) 
               ))}
             </ul>
           </EventModalMediaContent>
-        )}
+        )} */}
       </ModalBody>
+
       <ModalFooter tag={Flex} justify="end" className="bg-light px-card border-top-0">
-        <Button tag="a" href="pages/event-create" color="falcon-default" size="sm">
+        {/* 수정버튼 */}
+        <Button  color="falcon-default" size="sm">
           <FontAwesomeIcon icon="pencil-alt" className="fs--2 mr-2" />
-          <span>Edit</span>
+          <span>{id}수정</span>
         </Button>
+ 
+        {/* 삭제버튼 (수정 해야함)*/}
         <Button tag="a" href="pages/event-detail" color="falcon-primary" size="sm">
-          <span>See more details</span>
-          <FontAwesomeIcon icon="angle-right" className="fs--2 ml-1" />
+          <span>삭제</span>
         </Button>
       </ModalFooter>
     </Modal>
