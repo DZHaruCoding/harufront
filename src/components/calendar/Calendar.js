@@ -23,6 +23,7 @@ const Calendar = () => {
   const [isOpenScheduleModal, setIsOpenScheduleModal] = useState(false);
   const [modalEventContent, setModalEventContent] = useState(false);
   const [addScheduleStartDate, setAddScheduleStartDate] = useState();
+  const [palra,setPalra] = useState(false);
 
   const buttonText = {
     today: 'Today',
@@ -249,6 +250,7 @@ const Calendar = () => {
         setInitialEvents={setInitialEvents}
         addScheduleStartDate={addScheduleStartDate}
         setAddScheduleStartDate={setAddScheduleStartDate}
+        palra={false}
       />
 
       <CalendarEventModal
