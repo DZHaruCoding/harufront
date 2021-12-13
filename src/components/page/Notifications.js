@@ -200,18 +200,48 @@ const Notifications = ({ items = rawNotifications.length, children }) => {
 
   }
 
-  const markAsRead = e => {
+  const markAsRead = async e => {
     e.preventDefault();
-    const updatedNotifications = notifications.map(notification => {
-      if (!notification.hasOwnProperty('unread')) return notification;
 
-      return {
-        ...notification,
-        unread: false
-      };
+    try {
+      //TODO 조진석 : 더미데이터 사용
+
+    const response = await fetch(`${localIp}/api/notice/noticeAllCheck`, {
+      method: 'post',
+      headers: {
+        "Content-Type": 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(1)
+    }, []);
+  
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+  
+    const jsonResult = await response.json();
+    console.log("확인",jsonResult);
+  
+    if (jsonResult.result != 'success') {
+      throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+    }
+
+    const updatedNotifications = notifications.map(notification => {
+      if (notification.hasOwnProperty('messageCk')) {
+        return {
+          ...notification,
+          messageCk: 'Y'
+        };
+      }
+      return notification;
     });
 
+    setIsAllRead(true);
     setNotifications(updatedNotifications);
+
+  } catch(err) {
+    console.log(err);
+  }
   };
 
   return (

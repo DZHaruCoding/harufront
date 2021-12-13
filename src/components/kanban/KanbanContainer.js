@@ -75,7 +75,7 @@ const KanbanContainer = () => {
 
     if (source.droppableId === destination.droppableId) {
       const items = reorder(getList(source.droppableId), source.index, destination.index);
-      const column = kanbanColumns.find(item => item.taskListNo === source.droppableId);
+      const column = kanbanColumns.find(item => item.taskListNo == source.droppableId);
       // update individual column
       UpdateColumnData(column, items);
     } else {
