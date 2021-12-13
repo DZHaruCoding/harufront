@@ -34,12 +34,15 @@ const EventDetailsForm = () => {
 
   return (
     <Card className="mb-3">
+      {/* 상세보기 페이지 (title 부분) */}
       <FalconCardHeader title="Event Details" light={false} />
       <CardBody tag={Form} className="bg-light" onSubmit={handleSubmit}>
         <FormGroup>
           <Label for="title">Event Title</Label>
           <Input id="title" placeholder="Event Title" value={title} onChange={({ target }) => setTitle(target.value)} />
         </FormGroup>
+        
+        {/* 시작일 날짜 상세보기 */}
         <Row form>
           <Col sm tag={FormGroup}>
             <Label for="startDate">Start Date</Label>
@@ -61,6 +64,8 @@ const EventDetailsForm = () => {
             />
           </Col>
         </Row>
+
+        {/* 마감일 날짜 상세보기 */}
         <Row form>
           <Col sm tag={FormGroup}>
             <Label for="endDate">End Date</Label>
@@ -82,80 +87,7 @@ const EventDetailsForm = () => {
             />
           </Col>
         </Row>
-        <Row form>
-          <Col sm tag={FormGroup}>
-            <Label for="deadline">Registration Deadline</Label>
-            <Datetime
-              timeFormat={false}
-              value={deadline}
-              onChange={setDeadline}
-              inputProps={{ placeholder: 'd/m/y', id: 'deadline' }}
-            />
-          </Col>
 
-          <Col sm>
-            <FormGroupSelect
-              id="timezone"
-              loading={loadingTimezones}
-              onChange={({ target }) => setTimezone(target.value)}
-              label="Timezone"
-              options={timezones}
-              value={timezone}
-            />
-          </Col>
-        </Row>
-        <Row form>
-          <Col sm tag={FormGroup}>
-            <Label for="venue">Venue</Label>
-            <Input id="venue" placeholder="Venue" value={venue} onChange={({ target }) => setVenue(target.value)} />
-          </Col>
-
-          <Col sm tag={FormGroup}>
-            <Label for="address">Address</Label>
-            <Input
-              id="address"
-              placeholder="Address"
-              value={address}
-              onChange={({ target }) => setAddress(target.value)}
-            />
-          </Col>
-        </Row>
-
-        <Row form>
-          <Col sm tag={FormGroup}>
-            <Label for="city">City</Label>
-            <Input id="city" placeholder="City" value={city} onChange={({ target }) => setCity(target.value)} />
-          </Col>
-
-          <Col sm tag={FormGroup}>
-            <Label for="state">State</Label>
-            <Input id="state" placeholder="State" value={state} onChange={({ target }) => setState(target.value)} />
-          </Col>
-
-          <Col sm tag={FormGroup}>
-            <Label for="country">Country</Label>
-            <Input
-              id="country"
-              placeholder="Country"
-              value={country}
-              onChange={({ target }) => setCountry(target.value)}
-            />
-          </Col>
-        </Row>
-
-        <Row form>
-          <Col sm>
-            <Label for="description">Description</Label>
-            <Input
-              id="description"
-              type="textarea"
-              rows={6}
-              placeholder="Description"
-              value={description}
-              onChange={({ target }) => setDescription(target.value)}
-            />
-          </Col>
-        </Row>
       </CardBody>
     </Card>
   );

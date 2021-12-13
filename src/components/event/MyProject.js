@@ -1,15 +1,16 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Member from './Member';
 
 const Project = ({project}) => {
   const members = project.members;
     return(
-        <div body className="position-relative  pb-5 w-100">
+        <div className="position-relative  pb-5 w-100">
           <div style={{flex:1}}>
           <h6 className="fs-0 mb-1 " style={{color:"red"}}>
             제목 : {' '}
             {/* <Button className="ml-5">수정</Button> */}
-            {project.projectTitle}
+            <Link to="/kanban/">{project.projectTitle}</Link>
           </h6>
           </div>
 
