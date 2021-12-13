@@ -124,30 +124,49 @@ const NotificationDropdown = () => {
     setIsOpen(!isOpen);    
   };
 
-  const markAsRead = e => {
+  const markAsRead = async e => {
     e.preventDefault();
-    const updatedNewNotifications = notifications.map(notification => {
-      if (notification.hasOwnProperty('unread')) {
-        return {
-          ...notification,
-          unread: false
-        };
-      }
-      return notification;
-    });
-    const updatedEarlierNotifications = earlierNotifications.map(notification => {
-      if (notification.hasOwnProperty('unread')) {
-        return {
-          ...notification,
-          unread: false
-        };
-      }
-      setIsAllRead(true);
-      return notification;
-    });
 
+    try {
+      //TODO 조진석 : 더미데이터 사용
+
+    const response = await fetch(`${localIp}/api/notice/noticeAllCheck`, {
+      method: 'post',
+      headers: {
+        "Content-Type": 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(1)
+    }, []);
+  
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+  
+    const jsonResult = await response.json();
+    console.log("확인",jsonResult);
+  
+    if (jsonResult.result != 'success') {
+      throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+    }
+
+    const updatedNewNotifications = notifications.map(notification => {
+      if (notification.hasOwnProperty('messageCk')) {
+        return {
+          ...notification,
+          messageCk: 'Y'
+        };
+      }
+      return notification;
+    });
+  
+    setIsAllRead(true);
     setNotifications(updatedNewNotifications);
-    setEarlierNotifications(updatedEarlierNotifications);
+
+  } catch(err) {
+    console.log(err);
+  }
+    // setEarlierNotifications(updatedEarlierNotifications);
   };
 
   return (
