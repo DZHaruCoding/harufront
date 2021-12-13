@@ -3,10 +3,10 @@ import orderBy from 'lodash/orderBy';
 import { toast } from 'react-toastify';
 import { localIp } from '../config';
 
-export const historyReducer = (state, action) => {
+export const fileReducer = (state, action) => {
   const { type, payload } = action;
   switch (type) {
-    case 'ALADD':
+    case 'FADD':
       return [...state, ...payload.data];
   }
 };

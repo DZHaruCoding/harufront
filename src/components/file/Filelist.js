@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useState } from 'react';
+import React, { Fragment, useContext, useEffect, useReducer, useState } from 'react';
 import PropTypes from 'prop-types';
 import AppContext, { ProductContext } from '../../context/Context';
 import { Card, CardBody, Col, Media, Row } from 'reactstrap';
@@ -6,17 +6,19 @@ import { Link } from 'react-router-dom';
 import { calculateSale, isIterableArray } from '../../helpers/utils';
 import FalconCardHeader from '../common/FalconCardHeader';
 import ButtonIcon from '../common/ButtonIcon';
-import KanbanHeader from './KanbanHeader';
+import KanbanHeader from '../kanban/KanbanHeader';
+import axios from 'axios';
+import { localIp } from '../../config';
+import { fileReducer } from '../../reducers/fileReducer';
 
 const FavouriteItem = ({ id }) => {
   const { currency } = useContext(AppContext);
-  const { products, handleCartAction, favouriteItemsDispatch } = useContext(ProductContext);
+  const { products, productsDispatch } = useContext(ProductContext);
   const [cartLoading, setCartLoading] = useState(false);
 
   const handleAddToCart = () => {
     setCartLoading(true);
     setTimeout(() => {
-      handleCartAction({ id });
       setCartLoading(false);
     }, 1000);
   };
@@ -43,7 +45,7 @@ const FavouriteItem = ({ id }) => {
             </h5>
             <div
               className="fs--2 fs-md--1 text-danger cursor-pointer"
-              onClick={() => favouriteItemsDispatch({ type: 'REMOVE', id })}
+              onClick={() => productsDispatch({ type: 'REMOVE', id })}
             >
               Remove
             </div>
@@ -89,40 +91,57 @@ const FavouriteItem = ({ id }) => {
 FavouriteItem.propTypes = { id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired };
 
 const FavouriteItems = () => {
+  const { products, productsDispatch } = useReducer(fileReducer, []);
+  useEffect(() => {
+    const pro = async projectNo => {
+      // const response = await axios.get(`${localIp}/haru/api/history/${projectNo}`);
+      const response = await axios.get(`${localIp}/haru/api/dashboard/1/file`);
+      console.log(response.data);
+      const item = response.data;
+      productsDispatch({
+        type: 'FADD',
+        payload: {
+          ...item
+        }
+      });
+    };
+    pro();
+  }, []);
+
   const { favouriteItems } = useContext(ProductContext);
 
   return (
     <Card>
       <KanbanHeader />
       <FalconCardHeader
-        title={`Favourites (${favouriteItems.length} Item${favouriteItems.length === 1 ? '' : 's'})`}
-        light={false}
-      >
-        <ButtonIcon
-          icon="chevron-left"
-          color="primary"
-          size="sm"
-          className="border-300"
-          tag={Link}
-          to="/e-commerce/products/list"
-        >
-          Continue Shopping
-        </ButtonIcon>
-      </FalconCardHeader>
+        title={`FILE LIST (${favouriteItems.length} Item ${favouriteItems.length === 1 ? '' : 's'})`}
+        light={true}
+      />
       <CardBody className="p-0">
         {isIterableArray(favouriteItems) ? (
           <Fragment>
             <Row noGutters className="bg-200 text-900 px-1 fs--1 font-weight-semi-bold">
-              <Col xs={9} md={8} className="p-2 px-md-3">
-                Name
+              <Col xs={9} md={2} className="p-2 px-md-3">
+                img
               </Col>
-              <Col xs={3} md={4} className="px-3">
+              <Col xs={9} md={2} className="p-2 px-md-3">
+                originName
+              </Col>
+              <Col xs={3} md={8} className="px-3">
                 <Row>
-                  <Col md={4} className="py-2 d-none d-md-block text-center">
-                    Price
+                  <Col md={2} className="p-2 px-md-3" />
+                  <Col md={2} className="p-2 px-md-3" />
+                  <Col md={2} className="p-2 px-md-3">
+                    tasklistName
                   </Col>
-                  <Col md={8} className="text-right p-2 px-md-3">
-                    Cart
+                  <Col md={2} className="p-2 px-md-3">
+                    taskName
+                  </Col>
+                  <Col md={2} className="p-2 px-md-3">
+                    fileRegdate
+                  </Col>
+                  <Col md={2} className="p-2 px-md-3">
+                    fileMaker
                   </Col>
                 </Row>
               </Col>
