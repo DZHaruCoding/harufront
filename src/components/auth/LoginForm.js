@@ -15,7 +15,38 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
   const [isDisabled, setIsDisabled] = useState(true);
 
   // Handler
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
+    e.preventDefault();
+    
+    console.log(email, password)
+
+    try{
+      const response = await fetch(`/api/login`, {
+          method: 'post',
+          headers: {
+              'Content-Type' : 'application/x-www-form-urlencoded',
+              'Accept' : 'application/json'
+          },
+          body:` ?userEmail=${email}&userPassword=${password}`
+
+      })
+
+      console.log("응답을 바람니다"+response);
+
+      if(!response.ok) {
+          throw new Error(`${response.status} ${response.statusText}`)
+      }
+
+      const json = await response.json();
+      
+      if(json.result !== 'success'){
+          throw json.message;
+      }
+  
+  } catch(err) {
+      console.error(err);
+  }
+
     e.preventDefault();
     toast.success(`Logged in as ${email}`);
     setRedirect(true);

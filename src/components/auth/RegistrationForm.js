@@ -7,6 +7,8 @@ import Divider from '../common/Divider';
 import SocialAuthButtons from './SocialAuthButtons';
 import withRedirect from '../../hoc/withRedirect';
 
+import ForgetPassword from './split/ForgetPassword';
+
 const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => {
   // State
   const [name, setName] = useState('');
@@ -19,11 +21,9 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
   // Handler
   const handleSubmit = e => {
     e.preventDefault();
-
-    console.log(`name: ${name}`);
   
     try {
-      
+
     } catch(err) {
       console.log(err);
     }
@@ -69,34 +69,13 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
             type="password"
           />
         </FormGroup>
-        {/* <FormGroup className="col-6">
-          {hasLabel && <Label>Confirm Password</Label>}
-          <Input
-            placeholder={!hasLabel ? 'Confirm Password' : ''}
-            value={confirmPassword}
-            onChange={({ target }) => setConfirmPassword(target.value)}
-            type="password"
-          />
-        </FormGroup> */}
       </div>
-
-      {/* <CustomInput
-        id="customCheckTerms"
-        label={
-          <Fragment>
-            I accept the <Link to="#!">terms</Link> and <Link to="#!">privacy policy</Link>
-          </Fragment>
-        }
-        checked={isAccepted}
-        onChange={({ target }) => setIsAccepted(target.checked)}
-        type="checkbox"
-      /> */}
       <FormGroup>
-        <Button color="primary" block className="mt-3">
-          Register
+        <Button tag={Link} to="/authentication/basic/forget-password" color="primary" block className="mt-3">
+           다음
         </Button>
       </FormGroup>
-      <Divider className="mt-4">or register with</Divider>
+      {/* //<Divider className="mt-4">or register with</Divider> */}
       {/* <SocialAuthButtons /> */}
     </Form>
   );
