@@ -30,7 +30,6 @@ const Calendar = () => {
   const [detailData, setDetailData] = useState();
   const {projectNo} = useContext(AppContext);
   const {projectTitle} = useContext(AppContext);
-console.log('!!!!!!!!!!!!+',projectNo);
 
   const buttonText = {
     today: 'Today',
@@ -62,60 +61,65 @@ console.log('!!!!!!!!!!!!+',projectNo);
   );
 
   const [initialEvents, setInitialEvents] = useState();
-
+  const [changeChk,setChangeChk] = useState(false);
   useEffect(() => {
     setCalendarApi(calendarRef.current.getApi());
   }, []);
 
+  //상태 값
+  const [calendarList,setCalendarList] = useState();
+  
+  
   useEffect( () => {
-   const fetchfun = async () => {
-    try {
-      const response = await fetch(`${localIp}/api/calendar/1`,{
-        method: 'get',
-        headers:{
-          'Content-Type':'application/json',
-          'Accept':'application/json'
-        },
-        body:null
-      });
+    const fetchfun = async () => {
+      try {
+        const response = await fetch(`${localIp}/api/calendar/1`,{
+          method: 'get',
+          headers:{
+            'Content-Type':'application/json',
+            'Accept':'application/json'
+          },
+          body:null
+        });
 
-      //fetch 성공하면
-      if(!response.ok){
-        throw new Error(`${response.status} ${response.statusText}`);
+        //fetch 성공하면
+        if(!response.ok){
+          throw new Error(`${response.status} ${response.statusText}`);
+        }
+        //결과를 json으로 변환하기
+        const jsonResult = await response.json();
+        console.log(jsonResult.data);
+
+        //통신 했지만 결과값이 success가 아니면
+        if(jsonResult.result !== 'success'){
+          throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+        } 
+
+        //setInitialEvents에 데이터 셋팅하기
+        setInitialEvents(jsonResult.data);
+        console.log('init',initialEvents);
+        let test = [];
+        jsonResult.data.scheduleList.map(schedule => test = [...test,{ 
+                                  id: schedule.scheduleNo,
+                                  title: schedule.scheduleContents,
+                                  start: schedule.scheduleStart,
+                                  end: schedule.scheduleEnd
+                                  }]);
+        jsonResult.data.taskList.map(task => test = [...test,{
+                                  id: task.taskNo,
+                                  title: task.taskContents,
+                                  start: task.taskStart,
+                                  end: task.taskEnd
+                                  }]);
+        console.log(test);
+        setCalendarList(test);
+        setChangeChk(false);
+      } catch (error) {
+        console.log(error);
       }
-      //결과를 json으로 변환하기
-      const jsonResult = await response.json();
-      console.log(jsonResult.data);
-
-      //통신 했지만 결과값이 success가 아니면
-      if(jsonResult.result !== 'success'){
-        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
-      } 
-
-      //setInitialEvents에 데이터 셋팅하기
-      setInitialEvents(jsonResult.data);
-      console.log('init',initialEvents);
-      let test = [];
-      jsonResult.data.scheduleList.map(schedule => test = [...test,{ 
-                                id: schedule.scheduleNo,
-                                title: schedule.scheduleContents,
-                                start: schedule.scheduleStart,
-                                end: schedule.scheduleEnd
-                                }]);
-      jsonResult.data.taskList.map(task => test = [...test,{
-                                id: task.taskNo,
-                                title: task.taskContents,
-                                start: task.taskStart,
-                                end: task.taskEnd
-                                }]);
-      console.log(test);
-      setInitialEvents(test);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  fetchfun();
-  }, []);
+    };
+    fetchfun();
+  }, [changeChk]);
 
   const handleFilter = filter => {
     setCurrentFilter(filter);
@@ -155,65 +159,66 @@ console.log('!!!!!!!!!!!!+',projectNo);
     }
   };
   const [updata,setUpdata] = useState();
+
   const updateData = (data) =>{
     console.log('캘린더 업데이트 데이터',data);
 
     if (data) {
-      const fetchfun = async () => {
-        try {
-          const response = await fetch(`${localIp}/api/calendar/1`,{
-            method: 'get',
-            headers:{
-              'Content-Type':'application/json',
-              'Accept':'application/json'
-            },
-            body:null
-          });
+      // const fetchfun = async () => {
+      //   try {
+      //     const response = await fetch(`${localIp}/api/calendar/1`,{
+      //       method: 'get',
+      //       headers:{
+      //         'Content-Type':'application/json',
+      //         'Accept':'application/json'
+      //       },
+      //       body:null
+      //     });
     
-          //fetch 성공하면
-          if(!response.ok){
-            throw new Error(`${response.status} ${response.statusText}`);
-          }
-          //결과를 json으로 변환하기
-          const jsonResult = await response.json();
-          console.log(jsonResult.data);
+      //     //fetch 성공하면
+      //     if(!response.ok){
+      //       throw new Error(`${response.status} ${response.statusText}`);
+      //     }
+      //     //결과를 json으로 변환하기
+      //     const jsonResult = await response.json();
+      //     console.log(jsonResult.data);
     
-          //통신 했지만 결과값이 success가 아니면
-          if(jsonResult.result !== 'success'){
-            throw new Error(`${jsonResult.result} ${jsonResult.message}`);
-          } 
+      //     //통신 했지만 결과값이 success가 아니면
+      //     if(jsonResult.result !== 'success'){
+      //       throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      //     } 
     
-          //setInitialEvents에 데이터 셋팅하기
-          setInitialEvents(jsonResult.data);
-          console.log('init',initialEvents);
-          let test = [];
-          jsonResult.data.scheduleList.map(schedule => test = [...test,{ 
-                                    id: schedule.scheduleNo,
-                                    title: schedule.scheduleContents,
-                                    start: schedule.scheduleStart,
-                                    end: schedule.scheduleEnd
-                                    }]);
-          jsonResult.data.taskList.map(task => test = [...test,{
-                                    id: task.taskNo,
-                                    title: task.taskContents,
-                                    start: task.taskStart,
-                                    end: task.taskEnd
-                                    }]);
-          console.log(test);
-          setInitialEvents([...initialEvents],test);
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      fetchfun();
-
-      // setInitialEvents([...initialEvents,json]);
+      //     //setInitialEvents에 데이터 셋팅하기
+      //     setInitialEvents(jsonResult.data);
+      //     console.log('init',initialEvents);
+      //     let test = [];
+      //     jsonResult.data.scheduleList.map(schedule => test = [...test,{ 
+      //                               id: schedule.scheduleNo,
+      //                               title: schedule.scheduleContents,
+      //                               start: schedule.scheduleStart,
+      //                               end: schedule.scheduleEnd
+      //                               }]);
+      //     jsonResult.data.taskList.map(task => test = [...test,{
+      //                               id: task.taskNo,
+      //                               title: task.taskContents,
+      //                               start: task.taskStart,
+      //                               end: task.taskEnd
+      //                               }]);
+      //     console.log(test);
+      //     setCalendarList([...calendarList],test);
+      //   } catch (error) {
+      //     console.log(error);
+      //   }
+      // };
+        // fetchfun();
+      setChangeChk(true);
+        // setCalendarList([...calendarList,data]);
+      // FullCalendar.refetchEvents();
+      // FullCalendar.render();
     }
-      
-    
-
-    
   }
+
+
   return (
     <>
     
@@ -308,7 +313,7 @@ console.log('!!!!!!!!!!!!+',projectNo);
             views={views}
             eventTimeFormat={eventTimeFormat}
             eventClick={handleEventClick}
-            events={initialEvents}
+            events={calendarList}
             buttonText={buttonText}
           />
         </CardBody>
@@ -318,8 +323,10 @@ console.log('!!!!!!!!!!!!+',projectNo);
   <AddScheduleModal
         isOpenScheduleModal={isOpenScheduleModal}
         setIsOpenScheduleModal={setIsOpenScheduleModal}
-        initialEvents={initialEvents}
-        setInitialEvents={setInitialEvents}
+        // initialEvents={initialEvents}
+        // setInitialEvents={setInitialEvents}
+        calendarList={calendarList}
+        setCalendarList={setCalendarList}
         addScheduleStartDate={addScheduleStartDate}
         setAddScheduleStartDate={setAddScheduleStartDate}
         palra={false}
@@ -335,9 +342,9 @@ console.log('!!!!!!!!!!!!+',projectNo);
       isOpenModal={isOpenModal}
       updateisOpenModal={updateisOpenModal}
       setIsOpenModal={setIsOpenModal}
-      setInitialEvents={setInitialEvents}
+      // setInitialEvents={setInitialEvents}
       modalEventContent={modalEventContent}
-      setModalEventContent = {setModalEventContent}
+      // setModalEventContent = {setModalEventContent}
       detailData = {detailData}
       updatecallback = {updateData}
       />

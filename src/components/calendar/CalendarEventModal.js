@@ -96,8 +96,7 @@ const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent,set
   scheduleDetail();
 }, []);
 
-
-if(isOpenModal){
+const call = () => {
   console.log("xzzzz",detailData)
   // let data = {
   //   no:detailData.scheduleNo,
@@ -107,7 +106,9 @@ if(isOpenModal){
   // }
 
   updatecallback(detailData);
+  setIsOpenModal(false);
 }
+
 
   const closeBtn = (
     <button className="close font-weight-normal" onClick={toggle}>
@@ -180,8 +181,8 @@ if(isOpenModal){
               isOpenScheduleModal={isOpenScheduleModal}
               isOpenModal={false}
               setIsOpenScheduleModal={setIsOpenScheduleModal}
-              initialEvents={initialEvents}
-              setInitialEvents={setInitialEvents}
+              // initialEvents={initialEvents}
+              // setInitialEvents={setInitialEvents}
               addScheduleStartDate={addScheduleStartDate}
               setAddScheduleStartDate={setAddScheduleStartDate}
               callback={modifyCallbackFun}
@@ -208,6 +209,9 @@ if(isOpenModal){
         {/* 삭제버튼 (수정 해야함)*/}
         <Button  color="falcon-primary" size="sm">
           <span>삭제</span>
+        </Button>
+        <Button  color="falcon-primary" size="sm" onClick={ () => {call()} }>
+          <span>확인</span>
         </Button>
       </ModalFooter>
     </Modal>
