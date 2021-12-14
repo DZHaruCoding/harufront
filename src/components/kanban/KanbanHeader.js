@@ -24,7 +24,7 @@ const KanbanHeader = () => {
           KANBAN CHART
         </ButtonIcon>
         <div className="vertical-line vertical-line-400 position-relative h-100 mx-3" />
-        <ButtonIcon icon="chevron-left" color="info" size="sm-2" className="border-300" tag={Link} to="/filelist">
+        <ButtonIcon icon="chevron-left" color="info" size="sm-2" className="border-300" tag={Link} to="/files">
           FILE LIST
         </ButtonIcon>
         <div className="vertical-line vertical-line-400 position-relative h-100 mx-3" />

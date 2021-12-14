@@ -7,9 +7,13 @@ import KanbanContainer from './KanbanContainer';
 import KanbanProvider from './KanbanProvider';
 import kanbanService from '../../service/kanbanService';
 
-const Kanban = () => {
+const Kanban = ({location}) => {
   const { setIsNavbarVerticalCollapsed } = useContext(AppContext);
-
+  const {setProjectNo, setProjectTitle} = useContext(AppContext);
+  setProjectNo(location.state.projectNo);
+  setProjectTitle(location.state.projectTitle);
+  console.log(location.state.projectNo);
+  console.log(location.state.projectTitle);
   useEffect(() => {
     document.getElementsByTagName('body')[0].classList.add('overflow-hidden');
     setIsNavbarVerticalCollapsed(true);
