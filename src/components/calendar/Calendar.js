@@ -160,6 +160,15 @@ const Calendar = () => {
   };
   const [updata,setUpdata] = useState();
 
+  const deletecallback = (deletesuccess) =>{
+    if(deletesuccess == true){
+      setChangeChk(true);  
+    }else{
+      setChangeChk(false);
+    }
+
+  }
+
   const updateData = (data) =>{
     console.log('캘린더 업데이트 데이터',data);
 
@@ -347,6 +356,7 @@ const Calendar = () => {
       // setModalEventContent = {setModalEventContent}
       detailData = {detailData}
       updatecallback = {updateData}
+      deletecallback = {deletecallback}
       />
       :
       null
