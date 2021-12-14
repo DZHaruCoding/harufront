@@ -91,17 +91,20 @@ const KanbanContainer = () => {
     }
   };
 
+  
+
   // isIterableArray
   return (
     <Fragment>
       {/* <SockJsClient
           url={`${API_URL}/socket`}
-          topics={[`/topic/test`]}
+          topics={[`/topic/kanban`]}
           onMessage={mes => {console.log("테스트")}}
           ref={(client) => {
             clientRef = client
           }}
       /> */}
+      {/* window.sessionStorage.getItem('authUserName') */}
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="kanban-container scrollbar" ref={containerRef}>
         {kanbanColumns &&

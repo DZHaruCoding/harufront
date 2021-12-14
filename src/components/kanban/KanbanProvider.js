@@ -76,7 +76,17 @@ const KanbanProvider = ({ children }) => {
     
   }, []);
 
-  
+  const kanbanAllAdd = (column) => {
+    const item = column;
+        kanbanColumnsDispatch({
+          type: 'ALLADD',
+          payload: {
+            ...column,
+            item
+          },
+          id: 1
+        });
+  }
 
   const UpdateColumnData = async (column, taskVoList) => {
 
@@ -132,6 +142,7 @@ const KanbanProvider = ({ children }) => {
     getItemStyle,
     UpdateColumnData,
     modalContent,
+    kanbanAllAdd,
     setModalContent,
     modal,
     setModal
