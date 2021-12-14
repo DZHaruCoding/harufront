@@ -4,7 +4,7 @@ import { Media } from 'reactstrap';
 
 const EventSummary = ({ projects }) => {
   return(
-    <Media >
+    <Media>
     {
       projects.map( project =>
       <MyProject project={project}/>)

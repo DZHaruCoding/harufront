@@ -27,7 +27,7 @@ const EventModalMediaContent = ({ icon, heading, content, children }) => (
 );
 
 
-const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent,setModalEventContent,updatecallback}) => {
+const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent,setModalEventContent,updatecallback,updateisOpenModal}) => {
   const toggle = () => setIsOpenModal(!isOpenModal);
   const { id,title, end, start } = isOpenModal && modalEventContent.event;
 
@@ -105,6 +105,7 @@ if(isOpenModal){
   //   start:detailData.scheduleStart,
   //   end:detailData.scheduleEnd
   // }
+
   updatecallback(detailData);
 }
 
@@ -177,6 +178,7 @@ if(isOpenModal){
 
       <UpdateScheduleModal
               isOpenScheduleModal={isOpenScheduleModal}
+              isOpenModal={false}
               setIsOpenScheduleModal={setIsOpenScheduleModal}
               initialEvents={initialEvents}
               setInitialEvents={setInitialEvents}

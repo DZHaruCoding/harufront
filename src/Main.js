@@ -21,6 +21,10 @@ const Main = props => {
   const [isOpenSidePanel, setIsOpenSidePanel] = useState(false);
   const [navbarCollapsed, setNavbarCollapsed] = useState(false);
 
+  //2개 title, no use만들고 value에 값,set
+  const [projectNo, setProjectNo] = useState(0);
+  const [projectTitle, setProjectTitle] = useState('');
+
   const [navbarStyle, setNavbarStyle] = useState(getItemFromStore('navbarStyle', settings.navbarStyle));
 
   const toggleModal = () => setIsOpenSidePanel(prevIsOpenSidePanel => !prevIsOpenSidePanel);
@@ -49,7 +53,11 @@ const Main = props => {
     setIsOpenSidePanel,
     setNavbarCollapsed,
     isNavbarVerticalCollapsed,
-    setIsNavbarVerticalCollapsed
+    setIsNavbarVerticalCollapsed,
+    projectNo,
+    setProjectNo,
+    projectTitle,
+    setProjectTitle
   };
 
   const setStylesheetMode = mode => {

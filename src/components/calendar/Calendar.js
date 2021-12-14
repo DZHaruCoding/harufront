@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState,useContext } from 'react';
 import { Button, Card, CardBody, CardHeader, Col, Row, UncontrolledTooltip } from 'reactstrap';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -15,18 +15,23 @@ import Flex from '../common/Flex';
 import events from '../../data/calendar/events';
 import { localIp } from '../../config';
 import { set } from 'lodash';
+import AppContext from '../../context/Context';
 const Calendar = () => {
   const calendarRef = useRef();
   const [calendarApi, setCalendarApi] = useState({});
   const [title, setTitle] = useState('');
   const [currentFilter, setCurrentFilter] = useState('Month View');
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [updateisOpenModal, setUpdateisOpenModal] = useState(false);
   const [isOpenScheduleModal, setIsOpenScheduleModal] = useState(false);
   const [modalEventContent, setModalEventContent] = useState(false);
   const [addScheduleStartDate, setAddScheduleStartDate] = useState();
   const [palra,setPalra] = useState(false);
   const [detailData, setDetailData] = useState();
-  
+  const {projectNo} = useContext(AppContext);
+  const {projectTitle} = useContext(AppContext);
+console.log('!!!!!!!!!!!!+',projectNo);
+
   const buttonText = {
     today: 'Today',
     month: 'Month view',
@@ -149,16 +154,58 @@ const Calendar = () => {
       setIsOpenModal(true);
     }
   };
-
+  const [updata,setUpdata] = useState();
   const updateData = (data) =>{
     console.log('캘린더 업데이트 데이터',data);
-    
-    
+
     if (data) {
-      
-      const json = {
-        scheduleContents: data.title
-      }
+      const fetchfun = async () => {
+        try {
+          const response = await fetch(`${localIp}/api/calendar/1`,{
+            method: 'get',
+            headers:{
+              'Content-Type':'application/json',
+              'Accept':'application/json'
+            },
+            body:null
+          });
+    
+          //fetch 성공하면
+          if(!response.ok){
+            throw new Error(`${response.status} ${response.statusText}`);
+          }
+          //결과를 json으로 변환하기
+          const jsonResult = await response.json();
+          console.log(jsonResult.data);
+    
+          //통신 했지만 결과값이 success가 아니면
+          if(jsonResult.result !== 'success'){
+            throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+          } 
+    
+          //setInitialEvents에 데이터 셋팅하기
+          setInitialEvents(jsonResult.data);
+          console.log('init',initialEvents);
+          let test = [];
+          jsonResult.data.scheduleList.map(schedule => test = [...test,{ 
+                                    id: schedule.scheduleNo,
+                                    title: schedule.scheduleContents,
+                                    start: schedule.scheduleStart,
+                                    end: schedule.scheduleEnd
+                                    }]);
+          jsonResult.data.taskList.map(task => test = [...test,{
+                                    id: task.taskNo,
+                                    title: task.taskContents,
+                                    start: task.taskStart,
+                                    end: task.taskEnd
+                                    }]);
+          console.log(test);
+          setInitialEvents([...initialEvents],test);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchfun();
 
       // setInitialEvents([...initialEvents,json]);
     }
@@ -266,8 +313,9 @@ const Calendar = () => {
           />
         </CardBody>
       </Card>
-
-      <AddScheduleModal
+{
+  isOpenScheduleModal === true ?
+  <AddScheduleModal
         isOpenScheduleModal={isOpenScheduleModal}
         setIsOpenScheduleModal={setIsOpenScheduleModal}
         initialEvents={initialEvents}
@@ -276,11 +324,16 @@ const Calendar = () => {
         setAddScheduleStartDate={setAddScheduleStartDate}
         palra={false}
       />
+      :
+      null
+}
+      
     { 
 
       isOpenModal === true ?
       <CalendarEventModal
       isOpenModal={isOpenModal}
+      updateisOpenModal={updateisOpenModal}
       setIsOpenModal={setIsOpenModal}
       setInitialEvents={setInitialEvents}
       modalEventContent={modalEventContent}
