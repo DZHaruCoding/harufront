@@ -36,7 +36,7 @@ import Chat from '../components/chat/Chat';
 import GettingStarted from '../components/documentation/GettingStarted';
 import Checkout from '../components/e-commerce/Checkout';
 import Customers from '../components/e-commerce/Customers';
-import FavouriteItems from '../components/file/Filelist';
+import Files from '../components/file/Files';
 import OrderDetails from '../components/e-commerce/OrderDetails';
 import Orders from '../components/e-commerce/Orders';
 import ProductDetails from '../components/e-commerce/ProductDetails';
@@ -50,7 +50,6 @@ import Starter from '../components/extra/Starter';
 import Feed from '../components/feed/Feed';
 import Kanban from '../components/kanban/Kanban';
 import Activity from '../components/history/Activity'; //JONGYOON
-import FileList from '../components/file/Filelist'; //JONGYOON
 import Associations from '../components/page/Associations';
 import Billing from '../components/page/Billing';
 import CustomerDetails from '../components/page/CustomerDetails';
@@ -132,7 +131,6 @@ const ProductRoutes = ({ match: { url } }) => (
     <Route path={`${url}/orders`} exact component={Orders} />
     <Route path={`${url}/order-details`} exact component={OrderDetails} />
     <Route path={`${url}/customers`} exact component={Customers} />
-    <Route path={`${url}/favourite-items`} exact component={FavouriteItems} />
 
     {/*Redirect*/}
     <Redirect to="/errors/404" />
@@ -178,8 +176,7 @@ const DashboardRoutes = () => (
     {/*activity*/}
     {/* 종윤 */}
     <Route path="/activity" exact component={Activity} />
-    <Route path="/filelist" exact component={FileList} />
-
+    <Route path="/files" exact component={Files} />
     {/*Email*/}
     {/* <Route path="/email" component={InboxRoutes} /> */}
 

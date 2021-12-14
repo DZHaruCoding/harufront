@@ -1,86 +1,73 @@
 import React, { Fragment, useContext, useEffect, useReducer, useState } from 'react';
-import PropTypes from 'prop-types';
 import AppContext, { ProductContext } from '../../context/Context';
 import { Card, CardBody, Col, Media, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { calculateSale, isIterableArray } from '../../helpers/utils';
-import FalconCardHeader from '../common/FalconCardHeader';
 import ButtonIcon from '../common/ButtonIcon';
-import KanbanHeader from '../kanban/KanbanHeader';
-import axios from 'axios';
-import { localIp } from '../../config';
-import { fileReducer } from '../../reducers/fileReducer';
 
-const FavouriteItem = ({ id }) => {
-  const { currency } = useContext(AppContext);
+const Filelist = ({ fileNo }) => {
   const { products, productsDispatch } = useContext(ProductContext);
-  const [cartLoading, setCartLoading] = useState(false);
 
-  const handleAddToCart = () => {
-    setCartLoading(true);
-    setTimeout(() => {
-      setCartLoading(false);
-    }, 1000);
-  };
-
-  const { title, files, price, sale } = products.find(product => product.id === id);
+  const { originName, tasklistName, taskNo, fileRegdate, fileMaker } = products.find(
+    product => product.fileNo === fileNo
+  );
+  function downloadFile() {
+    console.log('다운로드');
+  }
 
   return (
     <Row noGutters className="align-items-center px-1 border-bottom border-200">
-      <Col xs={8} className="py-3 px-2 px-md-3">
+      <Col xs={9} md={2} className="p-2 px-md-3">
         <Media className="align-items-center">
-          <Link to={`/e-commerce/product-details/${id}`}>
-            <img
-              className="rounded mr-3 d-none d-md-block"
-              src={files[0]['src'] || files[0]['base64']}
-              alt=""
-              width="60"
-            />
-          </Link>
-          <Media body>
-            <h5 className="fs-0">
-              <Link className="text-900" to={`/e-commerce/product-details/${id}`}>
-                {title}
-              </Link>
-            </h5>
-            <div
-              className="fs--2 fs-md--1 text-danger cursor-pointer"
-              onClick={() => productsDispatch({ type: 'REMOVE', id })}
-            >
-              Remove
-            </div>
-          </Media>
+          <Link to={`#`} />
+          <Row>
+            <Media body>
+              <h4 className="fs-0">
+                <Link className="text-800" to={`#`}>
+                  {originName}
+                </Link>
+              </h4>
+              <div
+                className="fs--2 fs-md--1 text-danger cursor-pointer"
+                onClick={() =>
+                  productsDispatch({
+                    type: 'REMOVE',
+                    payload: {
+                      fileNo
+                    }
+                  })
+                }
+              >
+                Remove
+              </div>
+            </Media>
+          </Row>
         </Media>
       </Col>
-      <Col xs={4} className="p-3">
-        <Row className="align-items-center">
-          <Col md={4} className="d-flex justify-content-end justify-content-md-center px-2 px-md-3 order-1 order-md-0">
-            {currency}
-            {calculateSale(price, sale)}
+      <Col xs={9} md={2} className="p-2 px-md-3">
+        {originName}
+      </Col>
+      <Col xs={3} md={8} className="px-3">
+        <Row>
+          <Col md={1} className="p-2 px-md-3" />
+          <Col md={3} className="p-2 px-md-3">
+            {tasklistName}
           </Col>
-          <Col md={8} className="text-right pl-0 pr-2 pr-md-3 order-0 order-md-1 mb-2 mb-md-0 text-600">
-            {cartLoading ? (
-              <ButtonIcon
-                color="outline-primary"
-                size="sm"
-                icon="circle-notch"
-                iconClassName="fa-spin ml-2 d-none d-md-inline-block"
-                style={{ cursor: 'progress' }}
-                disabled
-              >
-                Processing
-              </ButtonIcon>
-            ) : (
-              <ButtonIcon
-                color="outline-primary"
-                size="sm"
-                icon="cart-plus"
-                iconClassName="ml-2 d-none d-md-inline-block"
-                onClick={handleAddToCart}
-              >
-                Add to Cart
-              </ButtonIcon>
-            )}
+          <Col md={3} className="p-2 px-md-3">
+            {fileRegdate}
+          </Col>
+          <Col md={3} className="p-2 px-md-3">
+            {fileMaker}
+          </Col>
+          <Col md={2} className="text-right pl-0 pr-2 pr-md-3 order-0 order-md-1 mb-2 mb-md-0 text-600">
+            <ButtonIcon
+              color="outline-primary"
+              size="sm"
+              icon="cart-plus"
+              iconClassName="ml-2 d-none d-md-inline-block"
+              onClick={() => downloadFile()}
+            >
+              Download
+            </ButtonIcon>
           </Col>
         </Row>
       </Col>
@@ -88,74 +75,4 @@ const FavouriteItem = ({ id }) => {
   );
 };
 
-FavouriteItem.propTypes = { id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired };
-
-const FavouriteItems = () => {
-  const { products, productsDispatch } = useReducer(fileReducer, []);
-  useEffect(() => {
-    const pro = async projectNo => {
-      // const response = await axios.get(`${localIp}/haru/api/history/${projectNo}`);
-      const response = await axios.get(`${localIp}/haru/api/dashboard/1/file`);
-      console.log(response.data);
-      const item = response.data;
-      productsDispatch({
-        type: 'FADD',
-        payload: {
-          ...item
-        }
-      });
-    };
-    pro();
-  }, []);
-
-  const { favouriteItems } = useContext(ProductContext);
-
-  return (
-    <Card>
-      <KanbanHeader />
-      <FalconCardHeader
-        title={`FILE LIST (${favouriteItems.length} Item ${favouriteItems.length === 1 ? '' : 's'})`}
-        light={true}
-      />
-      <CardBody className="p-0">
-        {isIterableArray(favouriteItems) ? (
-          <Fragment>
-            <Row noGutters className="bg-200 text-900 px-1 fs--1 font-weight-semi-bold">
-              <Col xs={9} md={2} className="p-2 px-md-3">
-                img
-              </Col>
-              <Col xs={9} md={2} className="p-2 px-md-3">
-                originName
-              </Col>
-              <Col xs={3} md={8} className="px-3">
-                <Row>
-                  <Col md={2} className="p-2 px-md-3" />
-                  <Col md={2} className="p-2 px-md-3" />
-                  <Col md={2} className="p-2 px-md-3">
-                    tasklistName
-                  </Col>
-                  <Col md={2} className="p-2 px-md-3">
-                    taskName
-                  </Col>
-                  <Col md={2} className="p-2 px-md-3">
-                    fileRegdate
-                  </Col>
-                  <Col md={2} className="p-2 px-md-3">
-                    fileMaker
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-            {favouriteItems.map(favouriteItem => (
-              <FavouriteItem {...favouriteItem} key={favouriteItem.id} />
-            ))}
-          </Fragment>
-        ) : (
-          <p className="p-card mb-0 bg-light">0 items in your Favourite list. Go ahead and add something!</p>
-        )}
-      </CardBody>
-    </Card>
-  );
-};
-
-export default FavouriteItems;
+export default Filelist;

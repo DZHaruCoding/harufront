@@ -8,5 +8,8 @@ export const fileReducer = (state, action) => {
   switch (type) {
     case 'FADD':
       return [...state, ...payload.data];
+    case 'REMOVE':
+      console.log('Remove');
+      return state;
   }
 };
