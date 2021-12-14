@@ -10,6 +10,7 @@ const ForgetPasswordForm = ({ setRedirect, setRedirectUrl, layout }) => {
   const [email, setEmail] = useState('');
 
   // Handler
+  // 이메일 보내는곳
   const handleSubmit = e => {
     e.preventDefault();
     if (email) {

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import AppContext from './context/Context';
-import { settings } from './config';
+import { localIp, settings } from './config';
 import toggleStylesheet from './helpers/toggleStylesheet';
 import { getItemFromStore, setItemToStore, themeColors } from './helpers/utils';
+import useFakeFetchV2 from './hooks/useFakeFetchV2';
 //fluid는 가로 해상도에 상관없이 100%의 width를 갖는다. 말그대로 Layout 설정이다. 다른 예시로는 fixed 가 있고 이는 Media query에 의해 반응형을 동작하는 layout이다.
 const Main = props => {
   const [isFluid, setIsFluid] = useState(getItemFromStore('isFluid', settings.isFluid));
@@ -20,6 +21,8 @@ const Main = props => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isOpenSidePanel, setIsOpenSidePanel] = useState(false);
   const [navbarCollapsed, setNavbarCollapsed] = useState(false);
+  const [isAllRead, setIsAllRead] = useState(true);
+  const { loading, data: notifications, setData: setNotifications } = useFakeFetchV2([]);
 
   //2개 title, no use만들고 value에 값,set
   const [projectNo, setProjectNo] = useState(0);
@@ -28,6 +31,48 @@ const Main = props => {
   const [navbarStyle, setNavbarStyle] = useState(getItemFromStore('navbarStyle', settings.navbarStyle));
 
   const toggleModal = () => setIsOpenSidePanel(prevIsOpenSidePanel => !prevIsOpenSidePanel);
+
+
+  useEffect(() => {
+    const noticeFetch = async () => {
+
+      try {
+        const response = await fetch(`${localIp}/api/notice/getMyNotice`, {
+          method: 'post',
+          headers: {
+            "Content-Type": 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(1)
+        }, []);
+      
+        if (!response.ok) {
+          throw new Error(`${response.status} ${response.statusText}`);
+        }
+      
+        const jsonResult = await response.json();
+        console.log(jsonResult);
+      
+        if (jsonResult.result != 'success') {
+          throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+        }
+
+        for (let i = 0; i < jsonResult.data.length; i++) {
+          if (jsonResult.data[i].messageCk === 'N') {
+            setIsAllRead(false);
+            break;
+          }
+        }
+
+        setNotifications(jsonResult.data);
+      } catch(err) {
+        console.log(err);
+      }
+      
+    }
+    noticeFetch();
+  }, []);
+
   const value = {
     isRTL,
     isDark,
@@ -58,6 +103,11 @@ const Main = props => {
     setProjectNo,
     projectTitle,
     setProjectTitle
+    isAllRead, 
+    setIsAllRead,
+    loading, 
+    notifications, 
+    setNotifications
   };
 
   const setStylesheetMode = mode => {

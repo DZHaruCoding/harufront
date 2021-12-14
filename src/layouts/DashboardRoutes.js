@@ -36,7 +36,7 @@ import Chat from '../components/chat/Chat';
 import GettingStarted from '../components/documentation/GettingStarted';
 import Checkout from '../components/e-commerce/Checkout';
 import Customers from '../components/e-commerce/Customers';
-import FavouriteItems from '../components/e-commerce/FavouriteItems';
+import Files from '../components/file/Files';
 import OrderDetails from '../components/e-commerce/OrderDetails';
 import Orders from '../components/e-commerce/Orders';
 import ProductDetails from '../components/e-commerce/ProductDetails';
@@ -49,7 +49,7 @@ import InboxProvider from '../components/email/inbox/InboxProvider';
 import Starter from '../components/extra/Starter';
 import Feed from '../components/feed/Feed';
 import Kanban from '../components/kanban/Kanban';
-import Activity from '../components/page/Activity';
+import Activity from '../components/history/Activity'; //JONGYOON
 import Associations from '../components/page/Associations';
 import Billing from '../components/page/Billing';
 import CustomerDetails from '../components/page/CustomerDetails';
@@ -123,7 +123,7 @@ const InboxRoutes = ({ match: { url } }) => (
 
 const ProductRoutes = ({ match: { url } }) => (
   <Switch>
-    <Route path={`${url}/products/:productLayout`} exact component={Products} />
+    <Route path={`${url}/products/list`} exact component={Products} />
     <Route path={`${url}/checkout`} exact component={Checkout} />
     <Route path={`${url}/product-details/:id`} exact component={ProductDetails} />
     <Route path={`${url}/product-details/`} exact component={ProductDetails} />
@@ -131,7 +131,6 @@ const ProductRoutes = ({ match: { url } }) => (
     <Route path={`${url}/orders`} exact component={Orders} />
     <Route path={`${url}/order-details`} exact component={OrderDetails} />
     <Route path={`${url}/customers`} exact component={Customers} />
-    <Route path={`${url}/favourite-items`} exact component={FavouriteItems} />
 
     {/*Redirect*/}
     <Redirect to="/errors/404" />
@@ -152,13 +151,14 @@ const DashboardRoutes = () => (
     <Route path="/pages/faq" exact component={Faq} />
     <Route path="/pages/invoice" exact component={Invoice} />
     <Route path="/pages/invite-people" exact component={InvitePeople} />
-    <Route path="/pages/notifications" exact component={Notifications} />
+    
     <Route path="/pages/people" exact component={People} />
     <Route path="/pages/pricing" exact component={Pricing} />
     <Route path="/pages/pricing-alt" exact component={PricingAlt} />
     <Route path="/pages/profile" exact component={Profile} />
     <Route path="/pages/settings" exact component={Settings} />
     <Route path="/pages/starter" exact component={Starter} /> */}
+    <Route path="/pages/notifications" exact component={Notifications} />
     {/*chat*/}
     {/* <Route path="/chat" exact component={Chat} /> */}
 
@@ -176,7 +176,7 @@ const DashboardRoutes = () => (
     {/*activity*/}
     {/* 종윤 */}
     <Route path="/activity" exact component={Activity} />
-
+    <Route path="/files" exact component={Files} />
     {/*Email*/}
     {/* <Route path="/email" component={InboxRoutes} /> */}
 

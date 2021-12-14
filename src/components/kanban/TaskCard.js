@@ -17,6 +17,7 @@ import Avatar from '../common/Avatar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { KanbanContext } from '../../context/Context';
 import { localIp } from '../../config';
+import { backgroundColor } from 'echarts/lib/theme/dark';
 
 const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIndex }) => {
   const { kanbanColumns, kanbanColumnsDispatch, kanbanTaskCardsDispatch } = useContext(KanbanContext);
@@ -55,6 +56,14 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
     })
   }
 
+  const tempStyle={
+    display:"inline-block",
+    margin:"5px"
+  }
+
+  const label = {
+    borderLeft: `4px solid ${taskCard.taskLabel}`
+  }
 
   const { getItemStyle, setModalContent, setModal } = useContext(KanbanContext);
   return (
@@ -85,14 +94,19 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
               />
             )} */}
 
-            <CardBody>
+            <CardBody style={label}>
               {taskCard.taskLabel && (
                 <div className="mb-2">
-                    <Badge className={`badge-soft-${taskCard.taskLabel} d-inline-block py-1 mr-1 mb-1`} key={taskCard.taskNo}>
-                      {taskCard.taskLabel.text}
-                    </Badge>
+                  {taskCard.tagListVo &&
+                    taskCard.tagListVo.map((tagListVo, index) => (
+                      <Badge className={`d-inline-block py-1 mr-1 mb-1`} style={{color:"#FFFFFF", backgroundColor: tagListVo.tagColor}} key={taskCard.taskNo}>
+                        {tagListVo.tagName}
+                      </Badge>
+                    ))}
+                    
                 </div>
               )}
+              <h5>{taskCard.taskName}</h5>
               <p
                 className="mb-0 font-weight-medium text-sans-serif"
                 dangerouslySetInnerHTML={{ __html: taskCard.taskContents }}
