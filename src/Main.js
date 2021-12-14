@@ -24,6 +24,10 @@ const Main = props => {
   const [isAllRead, setIsAllRead] = useState(true);
   const { loading, data: notifications, setData: setNotifications } = useFakeFetchV2([]);
 
+  //2개 title, no use만들고 value에 값,set
+  const [projectNo, setProjectNo] = useState(0);
+  const [projectTitle, setProjectTitle] = useState('');
+
   const [navbarStyle, setNavbarStyle] = useState(getItemFromStore('navbarStyle', settings.navbarStyle));
 
   const toggleModal = () => setIsOpenSidePanel(prevIsOpenSidePanel => !prevIsOpenSidePanel);
@@ -95,6 +99,10 @@ const Main = props => {
     setNavbarCollapsed,
     isNavbarVerticalCollapsed,
     setIsNavbarVerticalCollapsed,
+    projectNo,
+    setProjectNo,
+    projectTitle,
+    setProjectTitle
     isAllRead, 
     setIsAllRead,
     loading, 

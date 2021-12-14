@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {createContext, useEffect, useState} from 'react';
 import { Alert, Button, Card, CardBody, Col, CustomInput, Form, Modal, Row,FormGroup,Label,Input, NavLink, } from 'reactstrap';
 import EventSummary from '../event/EventSummary';
 import Loader from '../common/Loader';
@@ -25,7 +25,8 @@ const Events = () => {
   const [formObj, setFormObj] = useState();
   const [endDate, setEndDate] = useState();
   const [startDate, setStartDate] = useState();
-  
+
+
   const handleChange = target => {
     let name = target.name;
     let value = name === 'allDay' ? target.checked : target.value;
@@ -101,7 +102,7 @@ const Events = () => {
             <Label className="fs-0" for="eventTitle">
               제목
             </Label>
-            <Input name="scheduleContents" id="eventTitle"><Link to='#'/></Input>
+            <Input name="scheduleContents" id="eventTitle"><Link to='{}'/></Input>
           </FormGroup>
 
           <FormGroup>
@@ -173,7 +174,7 @@ const Events = () => {
           <EventSummary  projects={projects}/>
         ) : (
           <Alert color="info" className="mb-0">
-            No events found!
+            No events found!Fpro
           </Alert>
         )}
       </CardBody>
