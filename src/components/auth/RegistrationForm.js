@@ -9,8 +9,6 @@ import withRedirect from '../../hoc/withRedirect';
 import ForgetPassword from './split/ForgetPassword';
 import {localIp} from '../../config';
 
-import { localIp } from '../../config';
-
 const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => {
   // State
   const [name, setName] = useState('');
