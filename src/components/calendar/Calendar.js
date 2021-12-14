@@ -160,7 +160,7 @@ const Calendar = () => {
         scheduleContents: data.title
       }
 
-      setInitialEvents([...initialEvents,json]);
+      // setInitialEvents([...initialEvents,json]);
     }
       
     
@@ -282,7 +282,7 @@ const Calendar = () => {
       <CalendarEventModal
       isOpenModal={isOpenModal}
       setIsOpenModal={setIsOpenModal}
-      // setInitialEvents={setInitialEvents}
+      setInitialEvents={setInitialEvents}
       modalEventContent={modalEventContent}
       setModalEventContent = {setModalEventContent}
       detailData = {detailData}
