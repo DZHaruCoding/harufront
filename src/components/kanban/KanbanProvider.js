@@ -7,7 +7,6 @@ import { localIp } from '../../config';
 import { json } from 'is_js';
 import { kanbanList } from '../../service/kanbanService';
 
-
 const KanbanProvider = ({ children }) => {
   const [kanbanColumns, kanbanColumnsDispatch] = useReducer(arrayReducer, []);
   const [kanbanTaskCards, kanbanTaskCardsDispatch] = useReducer(arrayReducer, []);
@@ -31,18 +30,18 @@ const KanbanProvider = ({ children }) => {
         const response = await fetch(`${localIp}/api/tasklist/data/2`, {
           method: 'get',
           headers: {
-            "Content-Type": 'application/json',
-            'Accept': 'application/json'
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
           },
           body: null
         });
-  
+
         if (!response.ok) {
           throw new Error(`${response.status} ${response.statusText}`);
         }
-  
+
         const jsonResult = await response.json();
-  
+
         if (jsonResult.result != 'success') {
           throw new Error(`${jsonResult.result} ${jsonResult.message}`);
         }
@@ -65,21 +64,17 @@ const KanbanProvider = ({ children }) => {
               id: item2.taskNo,
               isCard: true
             })
-          ));
-
-      } catch(err) {
+          )
+        );
+      } catch (err) {
         console.log(err);
       }
-    }
+    };
 
     fun();
-    
   }, []);
 
-  
-
   const UpdateColumnData = async (column, taskVoList) => {
-
     kanbanColumnsDispatch({
       type: 'EDIT',
       payload: {
@@ -90,19 +85,18 @@ const KanbanProvider = ({ children }) => {
     });
 
     try {
+      const requestData = taskVoList;
 
-    const requestData = taskVoList;
-
-    const json = {
-      taskListNo : column.taskListNo,
-      taskVoList : requestData
-    };
+      const json = {
+        taskListNo: column.taskListNo,
+        taskVoList: requestData
+      };
 
       const response = await fetch(`${localIp}/api/task/dropTask`, {
         method: 'post',
         headers: {
-          "Content-Type": 'application/json',
-          "Accept": 'application/json'
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
         },
         body: JSON.stringify(json)
       });
@@ -117,10 +111,10 @@ const KanbanProvider = ({ children }) => {
         throw new Error(`${jsonResult.result} ${jsonResult.message}`);
       }
 
-      return "true";
-    } catch(err) {
+      return 'true';
+    } catch (err) {
       console.error(err);
-      return "fail";
+      return 'fail';
     }
   };
 

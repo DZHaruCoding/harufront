@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const useFakeFetch = (resolvedData, waitingTime = 500) => {
+const useFakeFetch = (resolvedData, waitingTime = 300) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 

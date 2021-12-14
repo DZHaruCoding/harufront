@@ -1,31 +1,31 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Alert, Card, CardBody, Col, Row } from 'reactstrap';
-import Loader from '../common/Loader';
-import FalconCardHeader from '../common/FalconCardHeader';
-import Notification from '../notification/Notification';
+import { ActivityContext } from '../../context/Context';
 import { isIterableArray } from '../../helpers/utils';
 import useFakeFetch from '../../hooks/useFakeFetch';
-import rawActivities from '../../data/activity/activities';
-import KanbanHeader from './KanbanHeader';
+import FalconCardHeader from '../common/FalconCardHeader';
+import Loader from '../common/Loader';
+import ActivityContent from './ActivityContent';
 
-const Activity = () => {
-  const { loading, data: activities } = useFakeFetch(rawActivities);
+const ActivityContainer = () => {
+  const { activityLog, activityLogDispatch } = useContext(ActivityContext);
+  console.log(activityLog);
+  const { loading, data: activities } = useFakeFetch(activityLog);
   return (
     <Card>
-      <KanbanHeader />
       <FalconCardHeader title="Activity Log" />
       <CardBody className="fs--1 p-0">
         {loading ? (
           <Loader />
         ) : isIterableArray(activities) ? (
           activities.map((activity, index) => {
-            const roundedClass = activities.length === index + 1 ? 'rounded-top-0' : 'rounded-0';
-
+            const roundedClass = activity.length === index + 1 ? 'rounded-top-0' : 'rounded-0';
             return (
-              <Notification
+              <ActivityContent
                 key={index}
                 className={`border-x-0 border-bottom-0 border-300 ${roundedClass}`}
                 {...activity}
+                to={'#'}
               />
             );
           })
@@ -43,4 +43,4 @@ const Activity = () => {
   );
 };
 
-export default Activity;
+export default ActivityContainer;
