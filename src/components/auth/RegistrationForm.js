@@ -6,9 +6,10 @@ import { Button, CustomInput, Form, FormGroup, Input, Label } from 'reactstrap';
 import Divider from '../common/Divider';
 import SocialAuthButtons from './SocialAuthButtons';
 import withRedirect from '../../hoc/withRedirect';
-
 import ForgetPassword from './split/ForgetPassword';
 import {localIp} from '../../config';
+
+import { localIp } from '../../config';
 
 const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => {
   // State
@@ -22,12 +23,36 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
   // Handler
   const handleSubmit = async e => {
     e.preventDefault();
-  
+
+
     console.log(email, password)
-    const json = { 
+    const json = {
       userEmail: email,
-      userPassword : password,
-      userName : name
+      userPassword: password,
+      userName: name
+    }
+
+    try {
+      const response = await fetch(`${localIp}/api/user/join`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(json)
+      })
+
+      console.log("응답을 바람니다" + response);
+
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`)
+      }
+
+      if (response.result !== 'success') {
+        throw json.message;
+      }
+    } catch (err) {
+      console.log(err);
     }
 
     try{
@@ -86,6 +111,7 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
         {hasLabel && <Label>Name</Label>}
         <Input placeholder={!hasLabel ? 'Name' : ''} value={name} onChange={({ target }) => setName(target.value)} />
       </FormGroup>
+
       {/* 비밀번호 입력 */}
       <div>
         <FormGroup>
@@ -99,7 +125,10 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
         </FormGroup>
       </div>
       <FormGroup>
-        {/* <Button tag={Link} to="" color="primary" block className="mt-3" > */}
+
+        {/* <Button tag={Link} to="/authentication/basic/forget-password" color="primary" block className="mt-3">
+          다음
+        </Button> */}
         <Button color="primary" block className="mt-3">
            다음
         </Button>

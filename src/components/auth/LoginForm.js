@@ -24,6 +24,8 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
     console.log(localIp);
     var params = "userEmail=" + email + "&userPassword=" + password
 
+    var params = "userEmail=" + email + "&userPassword=" + password
+
     try{
       const response = await fetch(`${localIp}/api/login`, {
           method: 'post',
@@ -31,7 +33,7 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
               'Content-Type' : 'application/x-www-form-urlencoded',
               'Accept' : 'application/json'
           },
-          body : params
+          body: params
 
       })
 
@@ -59,7 +61,7 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
     console.log("유저이메일 : "+window.sessionStorage.getItem("authUserEmail"));
    
     toast.success(`Logged in as ${email}`);
-    setRedirect(true);
+    //setRedirect(true);
   };
 
   useEffect(() => {
