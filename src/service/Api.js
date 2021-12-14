@@ -6,23 +6,23 @@ import moment from 'moment';
 const API_URL = 'http://localhost:8080/haru';
 const API_HEADERS = { 'Content-Type': 'application/json' };
 
-// const { history, setHistory } = useState([]);
-// let clientRef = useRef(null);
+const { history, setHistory } = useState([]);
+let clientRef = useRef(null);
 
 // export function fetchInsertHistory(senderNo, senderName, receiver, historyType, actionName, projectNo, clientRef) {
 //   let userArray = []; //받는사람들
 //   receiver.map(user => userArray.push(user.userNo)); //receiver 에서 userArray에 하나씩 넣어준다.
 
-//   const historyData = {
-//     senderNo: senderNo, // 보내는사람 한명
-//     senderName: senderName,
-//     receiver: userArray, // 받는사람 여러명
-//     historyType: historyType,
-//     historyDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
-//     actionName: actionName, // 행위
-//     projectNo: projectNo,
-//     authUserNo: sessionStorage.getItem('authUserNo')
-//   };
+// const historyData = {
+//   senderNo: senderNo, // 보내는사람 한명
+//   senderName: senderName,
+//   receiver: userArray, // 받는사람 여러명
+//   historyType: historyType,
+//   historyDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+//   actionName: actionName, // 행위
+//   projectNo: projectNo,
+//   authUserNo: sessionStorage.getItem('authUserNo')
+// };
 
 //   clientRef.sendMessage('/app/history/all', JSON.stringify(historyData)); //서버로 메세지 전송
 
