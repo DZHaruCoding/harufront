@@ -7,6 +7,7 @@ import Divider from '../common/Divider';
 import SocialAuthButtons from './SocialAuthButtons';
 import withRedirect from '../../hoc/withRedirect';
 import ForgetPassword from './split/ForgetPassword';
+import {localIp} from '../../config';
 
 import { localIp } from '../../config';
 
@@ -15,13 +16,14 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [isAccepted, setIsAccepted] = useState(false);
+  // const [confirmPassword, setConfirmPassword] = useState('');
+  // const [isAccepted, setIsAccepted] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
 
   // Handler
   const handleSubmit = async e => {
     e.preventDefault();
+
 
     console.log(email, password)
     const json = {
@@ -53,9 +55,35 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
       console.log(err);
     }
 
+    try{
+
+      const response = await fetch(`${localIp}/api/user/join`, {
+          method: 'post',
+          headers: {
+              'Content-Type' : 'application/json',
+              'Accept' : 'application/json'
+          },
+          body: JSON.stringify(json)
+      })
+
+      console.log("응답을 바람니다"+response);
+
+      if(!response.ok) {
+          throw new Error(`${response.status} ${response.statusText}`)
+      }
+      
+      if(response.result !== 'success'){
+          throw json.message;
+      }
+  
+  } catch(err) {
+      console.error(err);
+  }
+
+
 
     toast.success(`Successfully registered as ${name}`);
-    //setRedirect(false);
+    setRedirect(true);
   };
 
   useEffect(() => {
@@ -78,13 +106,12 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
           type="email"
         />
       </FormGroup>
-      
       {/* 이름입력 */}
       <FormGroup>
         {hasLabel && <Label>Name</Label>}
         <Input placeholder={!hasLabel ? 'Name' : ''} value={name} onChange={({ target }) => setName(target.value)} />
       </FormGroup>
-      
+
       {/* 비밀번호 입력 */}
       <div>
         <FormGroup>
@@ -98,6 +125,7 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
         </FormGroup>
       </div>
       <FormGroup>
+
         {/* <Button tag={Link} to="/authentication/basic/forget-password" color="primary" block className="mt-3">
           다음
         </Button> */}

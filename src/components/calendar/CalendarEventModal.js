@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Media, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
+import { Button, Input, Media, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import Flex from '../common/Flex';
 import moment from 'moment';
+import UpdateScheduleModal from './UpdateScheduleModal';
+import { update } from 'lodash';
+
 
 const getCircleStackIcon = (icon, transform) => (
   <span className="fa-stack ml-n1 mr-3">
@@ -23,19 +26,28 @@ const EventModalMediaContent = ({ icon, heading, content, children }) => (
   </Media>
 );
 
-const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent }) => {
+
+const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent}) => {
   const toggle = () => setIsOpenModal(!isOpenModal);
-  console.log('오빠 바보',modalEventContent.event);
   const { id,title, end, start } = isOpenModal && modalEventContent.event;
   const { description, location, organizer, schedules } = isOpenModal && modalEventContent.event.extendedProps;
-
+  //false 모달 상태값 생성
+  const [isOpenScheduleModal, setIsOpenScheduleModal] = useState(false);
+  const [addScheduleStartDate, setAddScheduleStartDate] = useState();
+  const [initialEvents, setInitialEvents] = useState(null);
   const closeBtn = (
     <button className="close font-weight-normal" onClick={toggle}>
       &times;
     </button>
   );
 
+  const modifyCallbackFun = (date) => {
+    console.log("테이더 확인",date)
+    // setModalContent(date);
+  }
+
   return (
+
     <Modal isOpen={isOpenModal} toggle={toggle} modalClassName="theme-modal" contentClassName="border" centered>
       {/* title (제목) */}
       <ModalHeader toggle={toggle} tag="div" className="px-card bg-light border-0 flex-between-center" close={closeBtn}>
@@ -77,20 +89,40 @@ const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent }) 
         )} */}
       </ModalBody>
 
+      <UpdateScheduleModal
+              isOpenScheduleModal={isOpenScheduleModal}
+              setIsOpenScheduleModal={setIsOpenScheduleModal}
+              initialEvents={initialEvents}
+              setInitialEvents={setInitialEvents}
+              addScheduleStartDate={addScheduleStartDate}
+              setAddScheduleStartDate={setAddScheduleStartDate}
+              callback={modifyCallbackFun}
+              no ={id}
+              title = {title}
+              start = {start}
+              end = {end}/>
+
       <ModalFooter tag={Flex} justify="end" className="bg-light px-card border-top-0">
         {/* 수정버튼 */}
-        <Button  color="falcon-default" size="sm">
-          <FontAwesomeIcon icon="pencil-alt" className="fs--2 mr-2" />
+        <Button  color="falcon-default" size="sm"
+          //수정 버튼 클릭시 수정 상태 true로 변환
+          onClick={ () =>
+            setIsOpenScheduleModal(true)
+
+           }>
+
+          <FontAwesomeIcon icon="pencil-alt" className="fs--2 mr-2"/>
           <span>{id}수정</span>
         </Button>
  
         {/* 삭제버튼 (수정 해야함)*/}
-        <Button tag="a" href="pages/event-detail" color="falcon-primary" size="sm">
+        <Button  color="falcon-primary" size="sm">
           <span>삭제</span>
         </Button>
       </ModalFooter>
     </Modal>
   );
+  
 };
 
 export default CalendarEventModal;
