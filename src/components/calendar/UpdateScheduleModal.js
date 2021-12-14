@@ -27,7 +27,8 @@ const UpdateScheduleModal = ({
   no,
   title,
   start,
-  end
+  end,
+  eventData
 }) => {
 
   const toggle = () => setIsOpenScheduleModal(!isOpenScheduleModal);
@@ -115,12 +116,14 @@ const handleUpdate = (formObj) =>{
     const jsonResult = await response.json();
     console.log('update',jsonResult.data);
     let data ={
+      id:jsonResult.data.scheduleNo,
       title: jsonResult.data.scheduleContents,
       start: jsonResult.data.scheduleStart,
       end: jsonResult.data.scheduleEnd
     };
-    console.log('update fetch 확인 데이터 : ',data);
+    // console.log('update fetch 확인 데이터 : ',data);
     // setInitialEvents([initialEvents, data]);
+
     callback(data)
 
 
