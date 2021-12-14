@@ -20,6 +20,8 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
     
     console.log(email, password)
 
+    var params = "userEmail=" + email + "&userPassword=" + password
+
     try{
       const response = await fetch(`/api/login`, {
           method: 'post',
@@ -27,8 +29,7 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
               'Content-Type' : 'application/x-www-form-urlencoded',
               'Accept' : 'application/json'
           },
-          body:` ?userEmail=${email}&userPassword=${password}`
-
+          body: params
       })
 
       console.log("응답을 바람니다"+response);
@@ -40,7 +41,10 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
       const json = await response.json();
       
       if(json.result !== 'success'){
-          throw json.message;
+        throw json.message;
+      } else {
+          sessionStorage.setItem("authUserEmail", json.data.userEmail)
+          sessionStorage.setItem("authUserName", json.data.userName)
       }
   
   } catch(err) {
@@ -49,7 +53,7 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
 
     e.preventDefault();
     toast.success(`Logged in as ${email}`);
-    setRedirect(true);
+    //setRedirect(true);
   };
 
   useEffect(() => {
