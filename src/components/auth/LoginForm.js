@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Button, Form, Row, Col, FormGroup, Input, CustomInput, Label } from 'reactstrap';
-// import Divider from '../common/Divider';
-// import SocialAuthButtons from './SocialAuthButtons';
+
+import Divider from '../common/Divider';
+import SocialAuthButtons from './SocialAuthButtons';
 import withRedirect from '../../hoc/withRedirect';
+import { localIp } from '../../config';
 
 const LoginForm = ({ setRedirect, hasLabel, layout }) => {
   // State
@@ -19,15 +21,17 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
     e.preventDefault();
     
     console.log(email, password)
+    console.log(localIp);
+    var params = "userEmail=" + email + "&userPassword=" + password
 
     try{
-      const response = await fetch(`/api/login`, {
+      const response = await fetch(`${localIp}/api/login`, {
           method: 'post',
           headers: {
               'Content-Type' : 'application/x-www-form-urlencoded',
               'Accept' : 'application/json'
           },
-          body:` ?userEmail=${email}&userPassword=${password}`
+          body : params
 
       })
 
@@ -38,21 +42,30 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
       }
 
       const json = await response.json();
+      console.log(json);
       
+
+
       if(json.result !== 'success'){
           throw json.message;
+      } else {
+            sessionStorage.setItem("authUserEmail", json.data.userEmail)
+            sessionStorage.setItem("authUserName", json.data.userName)
       }
   
   } catch(err) {
       console.error(err);
   }
-
-    e.preventDefault();
+    console.log("유저이메일 : "+window.sessionStorage.getItem("authUserEmail"));
+   
     toast.success(`Logged in as ${email}`);
     setRedirect(true);
   };
 
   useEffect(() => {
+    
+    console.log("유저이메일 : "+window.sessionStorage.getItem("authUserEmail"));
+
     setIsDisabled(!email || !password);
   }, [email, password]);
 

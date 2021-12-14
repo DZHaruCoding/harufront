@@ -28,7 +28,11 @@ const TopNavRightSideNavItem = () => {
         </NavItem>
       )} */}
       {/* <CartNotification /> */}
-      <Button tag={Link} color="primary" size="sm" className="mt-3" to={`/authentication/basic/login`}>Login</Button>
+        {/* 수정자 : 이승현 */}
+        {window.sessionStorage.getItem("authUserEmail") ? 
+              <Button tag={Link} color="primary" size="sm" className="mt-3" to={`/authentication/basic/logout`}>Logout</Button>
+            : <Button tag={Link} color="primary" size="sm" className="mt-3" to={`/authentication/basic/login`}>Login</Button>
+        }
       <NotificationDropdown />
       <ProfileDropdown />
     </Nav>

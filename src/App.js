@@ -7,7 +7,7 @@ import 'react-datetime/css/react-datetime.css';
 import 'react-image-lightbox/style.css';
 
 const App = () => {
-
+  
   // useEffect(() => {
   //     fetch("/haru", {
   //       method:'get'

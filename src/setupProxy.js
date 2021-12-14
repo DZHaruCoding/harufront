@@ -16,12 +16,5 @@ module.exports = function(app) {
       changeOrigin: true
     })
   );
-  // app.use(
-  //   '/user',
-  //   createProxyMiddleware({
-  //     target: 'http://localhost:8080/haru',
-  //     changeOrigin: true
-  //   })
-  // );
   app.use(cors());
 };

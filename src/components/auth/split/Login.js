@@ -2,7 +2,7 @@ import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Flex from '../../common/Flex';
-import LoginForm from '../LoginForm';
+import LoginForm from '../LoginForm'
 import withAuthSplit from '../../../hoc/withAuthSplit';
 
 import bgImg from '../../../assets/img/generic/14.jpg';
