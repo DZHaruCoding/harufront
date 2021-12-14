@@ -14,6 +14,7 @@ import Flex from '../common/Flex';
 
 import events from '../../data/calendar/events';
 import { localIp } from '../../config';
+import { set } from 'lodash';
 const Calendar = () => {
   const calendarRef = useRef();
   const [calendarApi, setCalendarApi] = useState({});
@@ -24,7 +25,8 @@ const Calendar = () => {
   const [modalEventContent, setModalEventContent] = useState(false);
   const [addScheduleStartDate, setAddScheduleStartDate] = useState();
   const [palra,setPalra] = useState(false);
-
+  const [detailData, setDetailData] = useState();
+  
   const buttonText = {
     today: 'Today',
     month: 'Month view',
@@ -54,7 +56,7 @@ const Calendar = () => {
     []
   );
 
-  const [initialEvents, setInitialEvents] = useState(null);
+  const [initialEvents, setInitialEvents] = useState();
 
   useEffect(() => {
     setCalendarApi(calendarRef.current.getApi());
@@ -141,12 +143,33 @@ const Calendar = () => {
       info.jsEvent.preventDefault();
     } else {
       setModalEventContent(info);
+      console.log('info가 뭐야',info.event._def);
+      console.log('initialEvents',initialEvents);
+      setDetailData(info.event._def);
       setIsOpenModal(true);
     }
   };
 
+  const updateData = (data) =>{
+    console.log('캘린더 업데이트 데이터',data);
+    
+    
+    if (data) {
+      
+      const json = {
+        scheduleContents: data.title
+      }
+
+      setInitialEvents([...initialEvents,json]);
+    }
+      
+    
+
+    
+  }
   return (
     <>
+    
       <Card className="mb-3">
         <CardHeader>
           <Row noGutters className="align-items-center">
@@ -218,6 +241,7 @@ const Calendar = () => {
           </Row>
         </CardHeader>
         <CardBody className="p-0">
+          
           <FullCalendar
             ref={calendarRef}
             headerToolbar={false}
@@ -252,15 +276,26 @@ const Calendar = () => {
         setAddScheduleStartDate={setAddScheduleStartDate}
         palra={false}
       />
+    { 
 
+      isOpenModal === true ?
       <CalendarEventModal
-        isOpenModal={isOpenModal}
-        setIsOpenModal={setIsOpenModal}
-        setInitialEvents={setInitialEvents}
-        modalEventContent={modalEventContent}
+      isOpenModal={isOpenModal}
+      setIsOpenModal={setIsOpenModal}
+      // setInitialEvents={setInitialEvents}
+      modalEventContent={modalEventContent}
+      setModalEventContent = {setModalEventContent}
+      detailData = {detailData}
+      updatecallback = {updateData}
       />
+      :
+      null
+    }
+
     </>
+    
   );
+
 };
 
 export default Calendar;
