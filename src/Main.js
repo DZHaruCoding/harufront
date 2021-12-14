@@ -102,7 +102,7 @@ const Main = props => {
     projectNo,
     setProjectNo,
     projectTitle,
-    setProjectTitle
+    setProjectTitle,
     isAllRead, 
     setIsAllRead,
     loading, 
