@@ -3,19 +3,24 @@ import { KanbanContext } from '../../context/Context';
 import { Button, Form, Input, Row, Col } from 'reactstrap';
 import ButtonIcon from '../common/ButtonIcon';
 import {localIp} from '../../config';
+import SockJsClient from 'react-stomp';
 
 const AddAnotherList = () => {
   const { kanbanColumns, kanbanColumnsDispatch } = useContext(KanbanContext);
 
   const [showForm, setShowForm] = useState(false);
   const [columnHeaderTitle, setColumnHeaderTitle] = useState('');
+  const API_URL = "http://localhost:8080/haru";
+  let clientRef = null;
 
   const handleAddColumn = async value => {
 
     const json = {
       projectNo : 2,
       taskListName: value,
-      taskListOrder: kanbanColumns.length + 1
+      taskListOrder: kanbanColumns.length + 1,
+      userEmail: window.sessionStorage.getItem('authUserEmail'),
+      projectName: "oooo"
     }
 
     const response = await fetch(`${localIp}/api/tasklist/add`, {
@@ -44,7 +49,12 @@ const AddAnotherList = () => {
       payload: {taskListNo: nextKanbanColumnNum.data, taskListOrder: kanbanColumns.length + 1, taskListName: value, taskVoList: [] },
       id: kanbanColumns.length + 1
     });
+
+
+
   };
+
+
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -57,6 +67,14 @@ const AddAnotherList = () => {
 
   return (
     <div className="kanban-column mr-3">
+      <SockJsClient
+          url={`${API_URL}/socket`}
+          topics={[`/topic/kanban/tasklist/add`]}
+          onMessage={socketData => {console.log("테스트")}}
+          ref={(client) => {
+            clientRef = client
+          }}
+      />
       {showForm ? (
         <div className="bg-100 p-card rounded-soft transition-none">
           <Form onSubmit={e => handleSubmit(e)}>
