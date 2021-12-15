@@ -10,10 +10,6 @@ import kanbanService from '../../service/kanbanService';
 const Kanban = ({location}) => {
   const { setIsNavbarVerticalCollapsed } = useContext(AppContext);
   const {setProjectNo, setProjectTitle} = useContext(AppContext);
-  setProjectNo(location.state.projectNo);
-  setProjectTitle(location.state.projectTitle);
-  console.log(location.state.projectNo);
-  console.log(location.state.projectTitle);
   useEffect(() => {
     document.getElementsByTagName('body')[0].classList.add('overflow-hidden');
     setIsNavbarVerticalCollapsed(true);
@@ -22,10 +18,19 @@ const Kanban = ({location}) => {
     };
   }, [setIsNavbarVerticalCollapsed]);
 
+  useEffect(() => {
+      if (location.state) {
+         setProjectNo(location.state.projectNo);
+         setProjectTitle(location.state.projectTitle);
+        console.log(location.state.projectNo);
+        console.log(location.state.projectTitle);
+      }
+  }, [])
+
   return (
     <>
       <KanbanHeader />
-      <KanbanProvider>
+      <KanbanProvider curprojectNo={location.state ? location.state.projectNo: ''} curprojectTitle={location.state ? location.state.projectTitle: ''}>
         <KanbanContainer />
       </KanbanProvider>
     </>

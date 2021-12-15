@@ -37,7 +37,7 @@ const Events = () => {
   useEffect( () => {
     const data = async ()=>{ 
     try {
-      const response = await fetch(`${localIp}/api/project/1`,{
+      const response = await fetch(`/haru/api/project/1`,{
         method: 'get',
         headers:{
           'Content-Type': 'application/json',

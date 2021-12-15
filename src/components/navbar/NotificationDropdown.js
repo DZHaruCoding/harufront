@@ -15,6 +15,7 @@ import FalconCardHeader from '../common/FalconCardHeader';
 import ProductProvider from '../e-commerce/ProductProvider';
 import Notification from '../notification/Notification';
 import NotificationBell from '../notification/NotificationBell';
+import SockJsClient from 'react-stomp'
 
 const NotificationDropdown = () => {
   // State
@@ -23,6 +24,8 @@ const NotificationDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const {isAllRead, setIsAllRead} = useContext(AppContext);
   const { loading, notifications, setNotifications } = useContext(AppContext);
+  const API_URL = "http://localhost:8080/haru";
+  let clientRef = null;
 
   // useEffect(() => {
   //   const noticeFetch = async () => {
@@ -64,6 +67,16 @@ const NotificationDropdown = () => {
   //   noticeFetch();
   // }, []);
 
+  const socketCallback = (socketData) => {
+    console.log("테스트테스트");
+    const json = {
+      noticeNo: socketData.bellNo,
+      noticeMessage: socketData.bell,
+      messageCk: 'N'
+    }
+    setNotifications([...notifications, json])
+  }
+
   // Handler
   const handleToggle = async (e, k) => {
     e.preventDefault();
@@ -72,10 +85,10 @@ const NotificationDropdown = () => {
       //TODO 조진석 : 더미데이터 사용
     const json = {
       noticeNo : k,
-      userNo : '1'
+      userNo : window.sessionStorage.getItem("authUserNo")
     }
 
-    const response = await fetch(`${localIp}/api/notice/noticeCheck`, {
+    const response = await fetch(`/haru/api/notice/noticeCheck`, {
       method: 'post',
       headers: {
         "Content-Type": 'application/json',
@@ -130,13 +143,13 @@ const NotificationDropdown = () => {
     try {
       //TODO 조진석 : 더미데이터 사용
 
-    const response = await fetch(`${localIp}/api/notice/noticeAllCheck`, {
+    const response = await fetch(`/haru/api/notice/noticeAllCheck`, {
       method: 'post',
       headers: {
         "Content-Type": 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify(1)
+      body: JSON.stringify(window.sessionStorage.getItem("authUserNo"))
     }, []);
   
     if (!response.ok) {
@@ -184,6 +197,14 @@ const NotificationDropdown = () => {
         windowWidth > 992 && setIsOpen(false);
       }}
     >
+      <SockJsClient
+          url={`${API_URL}/socket`}
+          topics={[`/topic/kanban/tasklist/add/notice/${window.sessionStorage.getItem("authUserNo")}`]}
+          onMessage={socketData => {socketCallback(socketData)}}
+          ref={(client) => {
+            clientRef = client
+          }}
+      />
       <DropdownToggle
         nav
         className={classNames('px-0', {
@@ -195,7 +216,7 @@ const NotificationDropdown = () => {
       <DropdownMenu right className="dropdown-menu-card">
         <Card className="card-notification shadow-none" style={{ maxWidth: '20rem' }}>
           <FalconCardHeader className="card-header" title="Notifications" titleTag="h6" light={false}>
-            <Link className="card-link font-weight-normal" to="#!" onClick={markAsRead}>
+            <Link className="card-link font-weight-normal" to="" onClick={markAsRead}>
               Mark all as read
             </Link>
           </FalconCardHeader>
@@ -203,11 +224,13 @@ const NotificationDropdown = () => {
             {/* <div className="list-group-title">NEW</div> */}
             {isIterableArray(notifications) &&
               notifications.map((notification, index) => (
+                index < 5 ?
                 <ListGroupItem key={notification.noticeNo} onClick={(e) => handleToggle(e, notification.noticeNo)}>
                   <NotificationBell {...notification} flush 
                       className={"rounded-0 border-x-0 border-300 border-bottom-0"} 
                       messageCk={notification.messageCk == 'N' ? true : false} />
                 </ListGroupItem>
+                : ''
               ))}
             {/* <div className="list-group-title">EARLIER</div>
             {isIterableArray(earlierNotifications) &&
