@@ -15,58 +15,54 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
+  const [isfailCheck, setIsfailCheck] = useState(false);
 
   // Handler
   const handleSubmit = async e => {
     e.preventDefault();
-    
+
     console.log(email, password)
     console.log(localIp);
     var params = "userEmail=" + email + "&userPassword=" + password
 
-    var params = "userEmail=" + email + "&userPassword=" + password
 
-    try{
-      const response = await fetch(`${localIp}/api/login`, {
-          method: 'post',
-          headers: {
-              'Content-Type' : 'application/x-www-form-urlencoded',
-              'Accept' : 'application/json'
-          },
-          body: params
+    try {
+      const response = await fetch(`/haru/api/login`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/json'
+        },
+        body: params
 
       })
 
-      console.log("응답을 바람니다"+response);
-
-      if(!response.ok) {
-          throw new Error(`${response.status} ${response.statusText}`)
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`)
       }
 
       const json = await response.json();
       console.log(json);
-      
 
 
-      if(json.result !== 'success'){
-          throw json.message;
+      if (json.result !== 'success') {
+        setIsfailCheck(true);
+        throw json.message;
       } else {
-            sessionStorage.setItem("authUserEmail", json.data.userEmail)
-            sessionStorage.setItem("authUserName", json.data.userName)
+        sessionStorage.setItem("authUserEmail", json.data.userEmail)
+        sessionStorage.setItem("authUserName", json.data.userName)
+        toast.success(`Logged in as ${email}`);
+        setRedirect(true);
       }
-  
-  } catch(err) {
+
+    } catch (err) {
       console.error(err);
-  }
-    console.log("유저이메일 : "+window.sessionStorage.getItem("authUserEmail"));
-   
-    toast.success(`Logged in as ${email}`);
-    //setRedirect(true);
+    }
   };
 
   useEffect(() => {
-    
-    console.log("유저이메일 : "+window.sessionStorage.getItem("authUserEmail"));
+
+    console.log("유저이메일 : " + window.sessionStorage.getItem("authUserEmail"));
 
     setIsDisabled(!email || !password);
   }, [email, password]);
@@ -91,6 +87,9 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
           type="password"
         />
       </FormGroup>
+      <div>
+        {isfailCheck ? '로그인에 실패 하였습니다' : ''}
+      </div>
       <Row className="justify-content-between align-items-center">
         <Col xs="auto">
           <CustomInput
