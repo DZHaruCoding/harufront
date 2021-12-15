@@ -37,13 +37,13 @@ const Main = props => {
     const noticeFetch = async () => {
 
       try {
-        const response = await fetch(`${localIp}/api/notice/getMyNotice`, {
+        const response = await fetch(`/haru/api/notice/getMyNotice`, {
           method: 'post',
           headers: {
             "Content-Type": 'application/json',
             'Accept': 'application/json'
           },
-          body: JSON.stringify(1)
+          body: JSON.stringify(window.sessionStorage.getItem("authUserNo"))
         }, []);
       
         if (!response.ok) {

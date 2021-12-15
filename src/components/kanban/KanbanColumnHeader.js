@@ -11,29 +11,33 @@ const KanbanColumnHeder = ({ kanbanColumnItem }) => {
 
   const removeClick = async (item) => {
 
-    const response = await fetch(`${localIp}/api/tasklist/delete`, {
-      method: 'post',
-      headers: {
-        "Content-Type": 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(item.taskListNo)
-    });
-  
-    if (!response.ok) {
-      throw new Error(`${response.status} ${response.statusText}`);
+    try {
+      const response = await fetch(`/haru/api/tasklist/delete`, {
+        method: 'post',
+        headers: {
+          "Content-Type": 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(item.taskListNo)
+      });
+    
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+    
+      const jsonResult = await response.json();
+    
+      if (jsonResult.result != 'success') {
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      }
+    
+      kanbanColumnsDispatch({
+        type: 'REMOVE',
+        id: item.taskListNo
+      });
+    } catch (err) {
+      console.error(err);
     }
-  
-    const jsonResult = await response.json();
-  
-    if (jsonResult.result != 'success') {
-      throw new Error(`${jsonResult.result} ${jsonResult.message}`);
-    }
-  
-    kanbanColumnsDispatch({
-      type: 'REMOVE',
-      id: item.taskListNo
-    });
   }
 
   return (

@@ -1,5 +1,5 @@
-import React, { useEffect, useReducer, useState } from 'react';
-import { KanbanContext } from '../../context/Context';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
+import AppContext, { KanbanContext } from '../../context/Context';
 import { arrayReducer } from '../../reducers/arrayReducer';
 
 import rawKanbanItems, { rawItems } from '../../data/kanban/kanbanItems';
@@ -7,13 +7,15 @@ import { localIp } from '../../config';
 import { json } from 'is_js';
 import { kanbanList } from '../../service/kanbanService';
 
-const KanbanProvider = ({ children }) => {
+const KanbanProvider = ({ children, curprojectNo, curprojectTitle }) => {
   const [kanbanColumns, kanbanColumnsDispatch] = useReducer(arrayReducer, []);
   const [kanbanTaskCards, kanbanTaskCardsDispatch] = useReducer(arrayReducer, []);
 
   const [modal, setModal] = useState(false);
 
   const [modalContent, setModalContent] = useState({});
+
+  const {projectNo, projectTitle} = useContext(AppContext);
 
   const getItemStyle = isDragging => ({
     // change background colour if dragging
@@ -27,7 +29,9 @@ const KanbanProvider = ({ children }) => {
   useEffect(() => {
     const fun = async () => {
       try {
-        const response = await fetch(`${localIp}/api/tasklist/data/2`, {
+        console.log("aaaaaa",projectNo);
+        // ${curprojectNo !== '' ? curprojectNo : projectNo}
+        const response = await fetch(`/haru/api/tasklist/data/${curprojectNo !== '' ? curprojectNo : projectNo}`, {
           method: 'get',
           headers: {
             'Content-Type': 'application/json',

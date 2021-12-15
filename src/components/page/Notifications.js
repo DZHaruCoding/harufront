@@ -206,13 +206,13 @@ const Notifications = ({ items = rawNotifications.length, children }) => {
     try {
       //TODO 조진석 : 더미데이터 사용
 
-    const response = await fetch(`${localIp}/api/notice/noticeAllCheck`, {
+    const response = await fetch(`/haru/api/notice/noticeAllCheck`, {
       method: 'post',
       headers: {
         "Content-Type": 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify(1)
+      body: JSON.stringify(window.sessionStorage.getItem("authUserNo"))
     }, []);
   
     if (!response.ok) {
