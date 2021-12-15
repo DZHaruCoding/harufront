@@ -1,50 +1,79 @@
 import React, { useContext, useState } from 'react';
-import { KanbanContext } from '../../context/Context';
+import AppContext, { KanbanContext } from '../../context/Context';
 import { Button, Form, Input, Row, Col } from 'reactstrap';
 import ButtonIcon from '../common/ButtonIcon';
 import {localIp} from '../../config';
+import SockJsClient from 'react-stomp';
 
 const AddAnotherList = () => {
   const { kanbanColumns, kanbanColumnsDispatch } = useContext(KanbanContext);
 
   const [showForm, setShowForm] = useState(false);
   const [columnHeaderTitle, setColumnHeaderTitle] = useState('');
+  const {projectNo, projectTitle} = useContext(AppContext);
+  const { loading, notifications, setNotifications } = useContext(AppContext);
+  const API_URL = "http://localhost:8080/haru";
+  let clientRef = null;
 
   const handleAddColumn = async value => {
 
-    const json = {
-      projectNo : 2,
-      taskListName: value,
-      taskListOrder: kanbanColumns.length + 1
+    console.log("asdadasdsa",window.sessionStorage.getItem("authUserNo"));
+    try {
+      const json = {
+        projectNo : projectNo,
+        taskListName: value,
+        taskListOrder: kanbanColumns.length + 1,
+        projectName: projectTitle
+      }
+  
+      const response = await fetch(`/haru/api/tasklist/add`, {
+        method: 'post',
+        headers: {
+          "Content-Type": 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(json)
+      });
+  
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+  
+      const jsonResult = await response.json();
+  
+      if (jsonResult.result != 'success') {
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      }
+  
+      const nextKanbanColumnNum = jsonResult;
+  
+      kanbanColumnsDispatch({
+        type: 'ADD',
+        payload: {taskListNo: nextKanbanColumnNum.data, taskListOrder: kanbanColumns.length + 1, taskListName: value, taskVoList: [] },
+        id: kanbanColumns.length + 1
+      });
+    } catch(err) {
+      console.error(err);
     }
 
-    const response = await fetch(`${localIp}/api/tasklist/add`, {
-      method: 'post',
-      headers: {
-        "Content-Type": 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(json)
-    });
+  };
 
-    if (!response.ok) {
-      throw new Error(`${response.status} ${response.statusText}`);
-    }
-
-    const jsonResult = await response.json();
-
-    if (jsonResult.result != 'success') {
-      throw new Error(`${jsonResult.result} ${jsonResult.message}`);
-    }
-
-    const nextKanbanColumnNum = jsonResult;
-
+  const socketCallback = (socketData) => {
+    console.log("zzzz",socketData);
     kanbanColumnsDispatch({
       type: 'ADD',
-      payload: {taskListNo: nextKanbanColumnNum.data, taskListOrder: kanbanColumns.length + 1, taskListName: value, taskVoList: [] },
+      payload: {taskListNo: socketData.taskListNo, taskListOrder: kanbanColumns.length + 1, taskListName: socketData.data.taskListName, taskVoList: [] },
       id: kanbanColumns.length + 1
     });
-  };
+
+    // const json = {
+    //   noticeNo: socketData.bellNo,
+    //   noticeMessage: socketData.bell
+    // }
+    // setNotifications([...notifications, json])
+  }
+
+
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -57,6 +86,14 @@ const AddAnotherList = () => {
 
   return (
     <div className="kanban-column mr-3">
+      <SockJsClient
+          url={`${API_URL}/socket`}
+          topics={[`/topic/kanban/tasklist/add/${window.sessionStorage.getItem("authUserNo")}`]}
+          onMessage={socketData => {socketCallback(socketData)}}
+          ref={(client) => {
+            clientRef = client
+          }}
+      />
       {showForm ? (
         <div className="bg-100 p-card rounded-soft transition-none">
           <Form onSubmit={e => handleSubmit(e)}>

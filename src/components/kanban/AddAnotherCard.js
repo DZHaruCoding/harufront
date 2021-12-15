@@ -18,7 +18,7 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm }) => {
       taskWriter: '조진석'
     }
 
-    const response = await fetch(`${localIp}/api/task/add`, {
+    const response = await fetch(`/haru/api/task/add`, {
       method: 'post',
       headers: {
         "Content-Type": 'application/json',

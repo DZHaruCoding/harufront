@@ -18,6 +18,8 @@ const DashboardRoutes = loadable(() => import('./DashboardRoutes'));
 
 const DashboardLayout = ({ location }) => {
   const { isFluid, isVertical, navbarStyle } = useContext(AppContext);
+  const { loading, notifications, setNotifications } = useContext(AppContext);
+  const {isAllRead, setIsAllRead} = useContext(AppContext);
 
   const isKanban = getPageName('kanban');
 
@@ -28,6 +30,46 @@ const DashboardLayout = ({ location }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
+
+  useEffect(() => {
+    const noticeFetch = async () => {
+
+      try {
+        const response = await fetch(`/haru/api/notice/getMyNotice`, {
+          method: 'post',
+          headers: {
+            "Content-Type": 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(window.sessionStorage.getItem("authUserNo"))
+        }, []);
+      
+        if (!response.ok) {
+          throw new Error(`${response.status} ${response.statusText}`);
+        }
+      
+        const jsonResult = await response.json();
+        console.log(jsonResult);
+      
+        if (jsonResult.result != 'success') {
+          throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+        }
+
+        for (let i = 0; i < jsonResult.data.length; i++) {
+          if (jsonResult.data[i].messageCk === 'N') {
+            setIsAllRead(false);
+            break;
+          }
+        }
+
+        setNotifications(jsonResult.data);
+      } catch(err) {
+        console.log(err);
+      }
+      
+    }
+    noticeFetch();
+  }, []);
 
   return (
     <div className={isFluid || isKanban ? 'container-fluid' : 'container'}>

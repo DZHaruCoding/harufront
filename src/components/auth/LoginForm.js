@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Button, Form, Row, Col, FormGroup, Input, CustomInput, Label } from 'reactstrap';
-// import Divider from '../common/Divider';
-// import SocialAuthButtons from './SocialAuthButtons';
+
+import Divider from '../common/Divider';
+import SocialAuthButtons from './SocialAuthButtons';
 import withRedirect from '../../hoc/withRedirect';
+import { localIp } from '../../config';
 
 const LoginForm = ({ setRedirect, hasLabel, layout }) => {
   // State
@@ -13,15 +15,56 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
+  const [isfailCheck, setIsfailCheck] = useState(false);
 
   // Handler
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    toast.success(`Logged in as ${email}`);
-    setRedirect(true);
+
+    console.log(email, password)
+    console.log(localIp);
+    var params = "userEmail=" + email + "&userPassword=" + password
+
+
+    try {
+      const response = await fetch(`/haru/api/login`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/json'
+        },
+        body: params
+
+      })
+
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`)
+      }
+
+      const json = await response.json();
+      console.log(json);
+
+
+      if (json.result !== 'success') {
+        setIsfailCheck(true);
+        throw json.message;
+      } else {
+        sessionStorage.setItem("authUserEmail", json.data.userEmail)
+        sessionStorage.setItem("authUserName", json.data.userName)
+        sessionStorage.setItem("authUserNo", json.data.userNo)
+        toast.success(`Logged in as ${email}`);
+        setRedirect(true);
+      }
+
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
+
+    console.log("유저이메일 : " + window.sessionStorage.getItem("authUserEmail"));
+
     setIsDisabled(!email || !password);
   }, [email, password]);
 
@@ -45,6 +88,9 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
           type="password"
         />
       </FormGroup>
+      <div>
+        {isfailCheck ? '로그인에 실패 하였습니다' : ''}
+      </div>
       <Row className="justify-content-between align-items-center">
         <Col xs="auto">
           <CustomInput

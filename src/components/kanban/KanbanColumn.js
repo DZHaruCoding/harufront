@@ -12,7 +12,7 @@ import ButtonIcon from '../common/ButtonIcon';
 import TaskCard from './TaskCard';
 
 const KanbanColumn = ({ kanbanColumnItem, index }) => {
-  const { kanbanTaskCards } = useContext(KanbanContext);
+  const { kanbanTaskCards, kanbanTaskCardsDispatch } = useContext(KanbanContext);
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
@@ -32,30 +32,31 @@ const KanbanColumn = ({ kanbanColumnItem, index }) => {
               ref={provided.innerRef}
               {...provided.droppableProps}
             >
-              {kanbanColumnItem.taskVoList && kanbanColumnItem.taskVoList.map((taskCardItemId, taskCardIndex) => {
-                // const taskCard = kanbanTaskCards.find(({ id }) => id === taskCardItemId);
-                const taskCard = taskCardItemId;
-                // const taskCardImage = taskCard.attachments && taskCard.attachments.find(({ type }) => type === 'image');
+              {kanbanColumnItem.taskVoList &&
+                kanbanColumnItem.taskVoList.map((taskCardItemId, taskCardIndex) => {
+                  // const taskCard = kanbanTaskCards.find(({ id }) => id === taskCardItemId);
+                  const taskCard = taskCardItemId;
+                  // const taskCardImage = taskCard.attachments && taskCard.attachments.find(({ type }) => type === 'image');
 
-                const members =
-                  taskCard.members &&
-                  taskCard.members.map(member => {
-                    return users.find(user => member === user.id);
-                  });
+                  const members =
+                    taskCard.members &&
+                    taskCard.members.map(member => {
+                      return users.find(user => member === user.id);
+                    });
 
-                // const members = '';
+                  // const members = '';
 
-                return (
-                  <TaskCard
-                    // members={members}
-                    // taskCardImage={taskCardImage}
-                    taskCard={taskCard}
-                    key={taskCardItemId.taskNo}
-                    taskCardIndex={taskCardIndex}
-                    taskCardItemId={taskCardItemId.taskNo}
-                  />
-                );
-              })}
+                  return (
+                    <TaskCard
+                      // members={members}
+                      // taskCardImage={taskCardImage}
+                      taskCard={taskCard}
+                      key={taskCardItemId.taskNo}
+                      taskCardIndex={taskCardIndex}
+                      taskCardItemId={taskCardItemId.taskNo}
+                    />
+                  );
+                })}
               {showForm && <AddAnotherCard kanbanColumnItem={kanbanColumnItem} setShowForm={setShowForm} />}
               {provided.placeholder}
             </div>

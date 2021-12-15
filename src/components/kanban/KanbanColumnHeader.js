@@ -2,42 +2,72 @@ import React, { useContext } from 'react';
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { localIp } from '../../config';
-import { KanbanContext } from '../../context/Context';
+import AppContext, { KanbanContext } from '../../context/Context';
+import SockJsClient from 'react-stomp';
 
 
 const KanbanColumnHeder = ({ kanbanColumnItem }) => {
   const { kanbanColumnsDispatch } = useContext(KanbanContext);
-
+  const API_URL = "http://localhost:8080/haru";
+  let clientRef = null;
+  const {projectNo, projectTitle} = useContext(AppContext);
 
   const removeClick = async (item) => {
 
-    const response = await fetch(`${localIp}/api/tasklist/delete`, {
-      method: 'post',
-      headers: {
-        "Content-Type": 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(item.taskListNo)
-    });
-  
-    if (!response.ok) {
-      throw new Error(`${response.status} ${response.statusText}`);
+    const json = {
+      projectNo : projectNo,
+      projectTitle : projectTitle,
+      taskListNo: item.taskListNo
     }
-  
-    const jsonResult = await response.json();
-  
-    if (jsonResult.result != 'success') {
-      throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+
+    try {
+      const response = await fetch(`/haru/api/tasklist/delete`, {
+        method: 'post',
+        headers: {
+          "Content-Type": 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(json)
+      });
+    
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+    
+      const jsonResult = await response.json();
+    
+      if (jsonResult.result != 'success') {
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      }
+    
+      kanbanColumnsDispatch({
+        type: 'REMOVE',
+        id: item.taskListNo
+      });
+    } catch (err) {
+      console.error(err);
     }
-  
+  }
+
+  const socketCallback = (socketData) => {
+    console.log(socketData.data);
+
     kanbanColumnsDispatch({
       type: 'REMOVE',
-      id: item.taskListNo
+      id: socketData.data
     });
   }
 
   return (
     <div className="kanban-column-header">
+      <SockJsClient
+          url={`${API_URL}/socket`}
+          topics={[`/topic/kanban/tasklist/remove/${window.sessionStorage.getItem("authUserNo")}`]}
+          onMessage={socketData => {socketCallback(socketData)}}
+          ref={(client) => {
+            clientRef = client
+          }}
+      />
       <h5 className="text-serif fs-0 mb-0">
         {kanbanColumnItem.taskListName} <span className="text-500">({kanbanColumnItem.taskVoList ? kanbanColumnItem.taskVoList.length : 0})</span>
       </h5>

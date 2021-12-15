@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import {
   Card,
@@ -17,28 +17,28 @@ import Avatar from '../common/Avatar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { KanbanContext } from '../../context/Context';
 import { localIp } from '../../config';
+import { backgroundColor } from 'echarts/lib/theme/dark';
+import axios from 'axios';
 
 const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIndex }) => {
   const { kanbanColumns, kanbanColumnsDispatch, kanbanTaskCardsDispatch } = useContext(KanbanContext);
 
   const taskCardDelete = async () => {
-    
-    
-    const response = await fetch(`${localIp}/api/task/delete`, {
+    const response = await fetch(`haru/api/task/delete`, {
       method: 'post',
       headers: {
-        "Content-Type": 'application/json',
-        'Accept': 'application/json'
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
       },
       body: JSON.stringify(taskCardItemId)
     });
-  
+
     if (!response.ok) {
       throw new Error(`${response.status} ${response.statusText}`);
     }
-  
+
     const jsonResult = await response.json();
-  
+
     if (jsonResult.result != 'success') {
       throw new Error(`${jsonResult.result} ${jsonResult.message}`);
     }
@@ -47,16 +47,25 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
       type: 'REMOVE',
       id: taskCardItemId,
       isCard: true
-    })
+    });
 
     kanbanColumnsDispatch({
       type: 'TASKREMOVE',
-      id: taskCardItemId,
-    })
-  }
+      id: taskCardItemId
+    });
+  };
 
+  const tempStyle = {
+    display: 'inline-block',
+    margin: '5px'
+  };
+
+  const label = {
+    borderLeft: `4px solid ${taskCard.taskLabel}`
+  };
 
   const { getItemStyle, setModalContent, setModal } = useContext(KanbanContext);
+
   return (
     <Draggable draggableId={`draggableId${taskCardItemId}`} index={taskCardIndex}>
       {(provided, snapshot) => (
@@ -85,25 +94,29 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
               />
             )} */}
 
-            <CardBody>
+            <CardBody style={label}>
               {taskCard.taskLabel && (
                 <div className="mb-2">
-                    <Badge className={`badge-soft-${taskCard.taskLabel} d-inline-block py-1 mr-1 mb-1`} key={taskCard.taskNo}>
-                      {taskCard.taskLabel.text}
-                    </Badge>
+                  {taskCard.tagListVo &&
+                    taskCard.tagListVo.map((tagListVo, index) => (
+                      <Badge
+                        className={`d-inline-block py-1 mr-1 mb-1`}
+                        style={{ color: '#FFFFFF', backgroundColor: tagListVo.tagColor }}
+                        key={taskCard.taskNo}
+                      >
+                        {tagListVo.tagName}
+                      </Badge>
+                    ))}
                 </div>
               )}
+              <h5>{taskCard.taskName}</h5>
               <p
                 className="mb-0 font-weight-medium text-sans-serif"
                 dangerouslySetInnerHTML={{ __html: taskCard.taskContents }}
               />
               <div className="kanban-item-footer">
-                  <div className="text-500" style={{}}>
-                      
-                  </div>
-                  <div>
-                    {taskCard.taskWriter}
-                  </div>
+                <div className="text-500" style={{}} />
+                <div>{taskCard.taskWriter}</div>
               </div>
               {/* {(taskCard.members || taskCard.attachments || taskCard.checklist) && (
                 <div className="kanban-item-footer">
@@ -151,7 +164,7 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
                   </div>
                 </div>
               )} */}
-              
+
               <UncontrolledDropdown
                 className="position-absolute text-sans-serif t-0 r-0 mt-card mr-card hover-actions"
                 onClick={e => {

@@ -3,9 +3,9 @@ const cors = require('cors');
 
 module.exports = function(app) {
   app.use(
-    '/api',
+    '/haru/api',
     createProxyMiddleware({
-      target: 'http://localhost:8080/haru',
+      target: 'http://localhost:8080',
       changeOrigin: true
     })
   );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Layout from './layouts/Layout';
 
@@ -7,6 +7,13 @@ import 'react-datetime/css/react-datetime.css';
 import 'react-image-lightbox/style.css';
 
 const App = () => {
+  
+  // useEffect(() => {
+  //     fetch("/haru", {
+  //       method:'get'
+  //     })
+  // });
+
   return (
     <Router basename={process.env.PUBLIC_URL}>
       <Layout />
