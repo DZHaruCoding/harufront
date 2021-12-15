@@ -58,7 +58,7 @@ const NotificationDropdown = () => {
   //         }
   //       }
 
-  //       setNewNotifications(jsonResult.data);
+  //       setNotifications(jsonResult.data);
   //     } catch(err) {
   //       console.log(err);
   //     }
@@ -68,13 +68,21 @@ const NotificationDropdown = () => {
   // }, []);
 
   const socketCallback = (socketData) => {
-    console.log("테스트테스트");
+    const now = new Date;
+    const todayYear = now.getFullYear();
+    const todayMonth = (now.getMonth() + 1) > 9 ? (now.getMonth() + 1) : '0' + (now.getMonth() + 1);
+    const todayDate = now.getDate() > 9 ? now.getDate() : '0' + now.getDate();
+    const day = todayYear + '-' + todayMonth + '-' + todayDate;
+
     const json = {
       noticeNo: socketData.bellNo,
       noticeMessage: socketData.bell,
-      messageCk: 'N'
+      messageCk: 'N',
+      noticeDate: day,
+      noticLink: ''
     }
-    setNotifications([...notifications, json])
+    setNotifications([json, ...notifications])
+    setIsAllRead(false);
   }
 
   // Handler
@@ -102,7 +110,6 @@ const NotificationDropdown = () => {
     }
   
     const jsonResult = await response.json();
-    console.log("확인",jsonResult);
   
     if (jsonResult.result != 'success') {
       throw new Error(`${jsonResult.result} ${jsonResult.message}`);
