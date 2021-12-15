@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { Button, CustomInput, Form, FormGroup, Input, Label } from 'reactstrap';
 import withRedirect from '../../hoc/withRedirect';
 import '../../assets/scss/FormBox.scss';
-
+import AuthEmailModal from '../auth/modal/AuthEmailModal'
 
 const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => {
 
@@ -14,6 +14,7 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isDisabled, setIsDisabled] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
 
   // 오류 메세지 출력을 위한 상태값
   const [nameMessage, setNameMessage] = useState('')
@@ -68,37 +69,37 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
   // Handler
   const handleSubmit = async e => {
     // 새로고침 방지를 위함
-    e.preventDefault();
+    // e.preventDefault();
 
-    const json = {
-      userEmail: email,
-      userPassword: password,
-      userName: name
-    }
+    // const json = {
+    //   userEmail: email,
+    //   userPassword: password,
+    //   userName: name
+    // }
 
-    try {
-      const response = await fetch(`/haru/api/user/join`, {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(json)
-      })
+    // try {
+    //   const response = await fetch(`/haru/api/user/join`, {
+    //     method: 'post',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'Accept': 'application/json'
+    //     },
+    //     body: JSON.stringify(json)
+    //   })
 
-      if (!response.ok) {
-        throw new Error(`${response.status} ${response.statusText}`)
-      }
+    //   if (!response.ok) {
+    //     throw new Error(`${response.status} ${response.statusText}`)
+    //   }
 
-      if (response.result !== 'success') {
-        throw json.message;
-      }
-    } catch (err) {
-      console.log(err);
-    }
+    //   if (response.result !== 'success') {
+    //     throw json.message;
+    //   }
+    // } catch (err) {
+    //   console.log(err);
+    // }
 
-    //toast.success(`해당 이메일로 인증 메일이 발송되었습니다 ${email}`);
-    setRedirect(true);
+    // //toast.success(`해당 이메일로 인증 메일이 발송되었습니다 ${email}`);
+    // setRedirect(true);
   };
 
   const findEmail = async ()=>{
@@ -192,10 +193,12 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
         {/* <Button tag={Link} to="/authentication/basic/forget-password" color="primary" block className="mt-3">
           다음
         </Button> */}
-        <Button color="primary" block className="mt-3" disabled={isDisabled} >
+        <Button color="primary" block className="mt-3" disabled={isDisabled} onClick={()=>setOpenModal(true)} >
           다음
         </Button>
       </FormGroup>
+      <AuthEmailModal isOpen={true}/>
+      
       {/* //<Divider className="mt-4">or register with</Divider> */}
       {/* <SocialAuthButtons /> */}
     </Form>
