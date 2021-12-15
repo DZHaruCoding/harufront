@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { Col, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import RegistrationForm from '../RegistrationForm';
+import RegistrationForm from '../RegistrationForm'
 
 const Registration = () => (
   <Fragment>
