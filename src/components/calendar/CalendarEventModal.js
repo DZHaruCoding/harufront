@@ -27,7 +27,7 @@ const EventModalMediaContent = ({ icon, heading, content, children }) => (
 );
 
 
-const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent,setModalEventContent,updatecallback,updateisOpenModal}) => {
+const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent,setModalEventContent,updatecallback,deletecallback}) => {
   const toggle = () => setIsOpenModal(!isOpenModal);
   const { id,title, end, start } = isOpenModal && modalEventContent.event;
 
@@ -68,7 +68,7 @@ const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent,set
          });
 
          console.log('상세보기 response 데이터',response);
-         //fetch 성공하면
+         //response ok 가 아니면(실패)
          if(!response.ok){
              throw new Error(`${response.status} ${response.statusText}`);
          }
@@ -96,17 +96,10 @@ const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent,set
   scheduleDetail();
 }, []);
 
-
-if(isOpenModal){
-  console.log("xzzzz",detailData)
-  // let data = {
-  //   no:detailData.scheduleNo,
-  //   title:detailData.scheduleContents,
-  //   start:detailData.scheduleStart,
-  //   end:detailData.scheduleEnd
-  // }
-
+const call = () => {
+  console.log("call back",detailData)
   updatecallback(detailData);
+  setIsOpenModal(false);
 }
 
   const closeBtn = (
@@ -114,24 +107,39 @@ if(isOpenModal){
       &times;
     </button>
   );
-
-  // const [tdata, setTdata] = useState({
-  //   id : id,
-  //   title : title,
-  //   end : end,
-  //   start : start
-  // });
+  // 개인 일정
   const modifyCallbackFun = (date) => {
     console.log("테이더 확인", date)
     setDetailData(date);
-    // setTdata(date);
-    // setModalContent(date);
-
-    // id = date.id;
-    // title = date.title;
-    // end = date.end;
-    // start = date.start;
   }
+  
+  // 개인 일정 삭제
+    
+    const scheduleDelete = async () => {
+      console.log('hhh');
+      try {
+        console.log(id);
+       
+        const response = await fetch(`${localIp}/api/calendar/delete/${id}`, {
+          method:"post",
+          headers:{
+            'Content-Type':'application/json',
+            'Accept':'application/json'
+            },
+            body: null
+        })
+        
+        console.log('삭제 성공 여부 : ',response);
+         //response ok 가 아니면(실패)
+         if(!response.ok){
+          throw new Error(`${response.status} ${response.statusText}`);
+          }
+          deletecallback(true);
+          setIsOpenModal(false);        
+     } catch (error) {
+       console.log(error);
+     } 
+    }
 
   return (
 
@@ -180,8 +188,8 @@ if(isOpenModal){
               isOpenScheduleModal={isOpenScheduleModal}
               isOpenModal={false}
               setIsOpenScheduleModal={setIsOpenScheduleModal}
-              initialEvents={initialEvents}
-              setInitialEvents={setInitialEvents}
+              // initialEvents={initialEvents}
+              // setInitialEvents={setInitialEvents}
               addScheduleStartDate={addScheduleStartDate}
               setAddScheduleStartDate={setAddScheduleStartDate}
               callback={modifyCallbackFun}
@@ -206,8 +214,11 @@ if(isOpenModal){
         </Button>
  
         {/* 삭제버튼 (수정 해야함)*/}
-        <Button  color="falcon-primary" size="sm">
+        <Button  color="falcon-primary" size="sm" onClick={ () =>  { scheduleDelete()}}>
           <span>삭제</span>
+        </Button>
+        <Button  color="falcon-primary" size="sm" onClick={ () => {call()} }>
+          <span>확인</span>
         </Button>
       </ModalFooter>
     </Modal>

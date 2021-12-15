@@ -23,7 +23,9 @@ const AddScheduleModal = ({
   setInitialEvents,
   initialEvents,
   addScheduleStartDate,
-  setAddScheduleStartDate
+  setAddScheduleStartDate,
+  calendarList,
+  setCalendarList
 }) => {
   const toggle = () => setIsOpenScheduleModal(!isOpenScheduleModal);
 
@@ -68,7 +70,7 @@ const handleAdd = async (formObj) =>{
       end: jsonResult.data.scheduleEnd
     };
     console.log(data);
-    setInitialEvents([...initialEvents, data]);
+    setCalendarList([...calendarList, data]);
 
 
   } catch (error) {
@@ -91,7 +93,7 @@ const handleAdd = async (formObj) =>{
           e.preventDefault();
           handleAdd(formObj);
           setIsOpenScheduleModal(false);
-          setInitialEvents([...initialEvents, formObj]);
+          setCalendarList([...calendarList, formObj]);
         }}
       >
         <ModalHeader toggle={toggle} className="bg-light d-flex flex-between-center border-bottom-0" close={closeBtn}>
