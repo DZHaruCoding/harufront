@@ -19,8 +19,8 @@ const ForgetPassword = () => {
         </p>
       }
     >
-      <h4 className="mb-0"> Forgot your password?</h4>
-      <p className="mb-0">Enter your email and we'll send you a reset link.</p>
+      <h4 className="mb-0"> 비밀번호가 기억나지 않나요?</h4>
+      <p className="mb-0">회원가입시 입력했던 이메일 주소를 입력해주세요 임시 비밀번호가 전송됩니다.</p>
       <ForgetPasswordForm layout="card" />
     </AuthCardLayout>
   );

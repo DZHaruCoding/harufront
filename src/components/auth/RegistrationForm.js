@@ -22,8 +22,6 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
   const handleSubmit = async e => {
     e.preventDefault();
 
-
-    console.log(email, password)
     const json = {
       userEmail: email,
       userPassword: password,
@@ -40,8 +38,6 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
         body: JSON.stringify(json)
       })
 
-      console.log("응답을 바람니다" + response);
-
       if (!response.ok) {
         throw new Error(`${response.status} ${response.statusText}`)
       }
@@ -53,34 +49,7 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
       console.log(err);
     }
 
-    try{
-
-      const response = await fetch(`${localIp}/api/user/join`, {
-          method: 'post',
-          headers: {
-              'Content-Type' : 'application/json',
-              'Accept' : 'application/json'
-          },
-          body: JSON.stringify(json)
-      })
-
-      console.log("응답을 바람니다"+response);
-
-      if(!response.ok) {
-          throw new Error(`${response.status} ${response.statusText}`)
-      }
-      
-      if(response.result !== 'success'){
-          throw json.message;
-      }
-  
-  } catch(err) {
-      console.error(err);
-  }
-
-
-
-    toast.success(`Successfully registered as ${name}`);
+    toast.success(`해당 이메일로 인증 메일이 발송되었습니다 ${email}`);
     setRedirect(true);
   };
 
