@@ -6,7 +6,8 @@ import Avatar from '../common/Avatar';
 import createMarkup from '../../helpers/createMarkup';
 
 const Notification = ({className, flush, noticeNo, noticeMessage, noticeDate, noticeLink, messageCk  }) => (
-  <Link className={classNames('notification', { 'bg-200': messageCk , 'notification-flush': flush }, className)} to="#!">
+  <div className={classNames('notification', { 'bg-200': messageCk , 'notification-flush': flush }, className)}
+  style={{'cursor':'pointer'}}>
     {/* {avatar && (
       <div className="notification-avatar">
         <Avatar {...avatar} className="mr-3" />
@@ -23,7 +24,7 @@ const Notification = ({className, flush, noticeNo, noticeMessage, noticeDate, no
         {noticeDate}
       </span>
     </div>
-  </Link>
+  </div>
 );
 
 Notification.propTypes = {

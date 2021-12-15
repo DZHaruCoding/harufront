@@ -2,14 +2,23 @@ import React, { useContext } from 'react';
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { localIp } from '../../config';
-import { KanbanContext } from '../../context/Context';
+import AppContext, { KanbanContext } from '../../context/Context';
+import SockJsClient from 'react-stomp';
 
 
 const KanbanColumnHeder = ({ kanbanColumnItem }) => {
   const { kanbanColumnsDispatch } = useContext(KanbanContext);
-
+  const API_URL = "http://localhost:8080/haru";
+  let clientRef = null;
+  const {projectNo, projectTitle} = useContext(AppContext);
 
   const removeClick = async (item) => {
+
+    const json = {
+      projectNo : projectNo,
+      projectTitle : projectTitle,
+      taskListNo: item.taskListNo
+    }
 
     try {
       const response = await fetch(`/haru/api/tasklist/delete`, {
@@ -18,7 +27,7 @@ const KanbanColumnHeder = ({ kanbanColumnItem }) => {
           "Content-Type": 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify(item.taskListNo)
+        body: JSON.stringify(json)
       });
     
       if (!response.ok) {
@@ -40,8 +49,25 @@ const KanbanColumnHeder = ({ kanbanColumnItem }) => {
     }
   }
 
+  const socketCallback = (socketData) => {
+    console.log(socketData.data);
+
+    kanbanColumnsDispatch({
+      type: 'REMOVE',
+      id: socketData.data
+    });
+  }
+
   return (
     <div className="kanban-column-header">
+      <SockJsClient
+          url={`${API_URL}/socket`}
+          topics={[`/topic/kanban/tasklist/remove/${window.sessionStorage.getItem("authUserNo")}`]}
+          onMessage={socketData => {socketCallback(socketData)}}
+          ref={(client) => {
+            clientRef = client
+          }}
+      />
       <h5 className="text-serif fs-0 mb-0">
         {kanbanColumnItem.taskListName} <span className="text-500">({kanbanColumnItem.taskVoList ? kanbanColumnItem.taskVoList.length : 0})</span>
       </h5>

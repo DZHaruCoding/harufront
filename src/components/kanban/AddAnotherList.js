@@ -59,9 +59,10 @@ const AddAnotherList = () => {
   };
 
   const socketCallback = (socketData) => {
+    console.log("zzzz",socketData);
     kanbanColumnsDispatch({
       type: 'ADD',
-      payload: {taskListNo: socketData.data, taskListOrder: kanbanColumns.length + 1, taskListName: socketData.data.taskListName, taskVoList: [] },
+      payload: {taskListNo: socketData.taskListNo, taskListOrder: kanbanColumns.length + 1, taskListName: socketData.data.taskListName, taskVoList: [] },
       id: kanbanColumns.length + 1
     });
 
