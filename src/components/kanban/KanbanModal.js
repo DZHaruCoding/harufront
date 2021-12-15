@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Modal,
@@ -21,12 +21,20 @@ import ModalAttachmentsContent from './ModalAttachmentsContent';
 import ModalCommentContent from './ModalCommentContetn';
 import ModalActivityContent from './ModalActivityContent';
 import ModalSideContent from './modalSideContent';
+import axios from 'axios';
 
 const KanbanModal = ({ modal, setModal, className, modalContent }) => {
-  const { taskCardImage } = modalContent;
-
+  const { taskCard, taskCardImage } = modalContent;
+  const [taskInfo, setTaskInfo] = useState([]);
   const toggle = () => setModal(!modal);
 
+  useEffect(() => {
+    if (modal) {
+      axios.get(`haru/api/tasksetting/${taskCard.taskNo}`).then(response => {
+        setTaskInfo(response.data.data);
+      });
+    }
+  }, [modal]);
   return (
     <Modal
       isOpen={modal}
@@ -43,7 +51,7 @@ const KanbanModal = ({ modal, setModal, className, modalContent }) => {
           </div>
         )}
         <div className="bg-light rounded-soft-top px-4 py-3">
-          <h4 className="mb-1">Add a new illustration to the landing page</h4>
+          <h4 className="mb-1"> </h4>
           <p className="fs--2 mb-0">
             Added by{' '}
             <a href="#!" className="text-600 font-weight-semi-bold">
@@ -62,7 +70,7 @@ const KanbanModal = ({ modal, setModal, className, modalContent }) => {
         </div>
         <div className="p-4">
           <Row>
-            <Col lg="9">
+            <Col lg="12">
               {/* //Group member */}
               <ModalMediaContent title="Reviewers" icon="user">
                 <GroupMember users={users} addMember avatarSize="xl" />
@@ -97,9 +105,6 @@ const KanbanModal = ({ modal, setModal, className, modalContent }) => {
                     </DropdownToggle>
                     <DropdownMenu>
                       <DropdownItem>Computer</DropdownItem>
-                      <DropdownItem>Google Drive</DropdownItem>
-                      <DropdownItem divider />
-                      <DropdownItem>Attach Link</DropdownItem>
                     </DropdownMenu>
                   </UncontrolledButtonDropdown>
                 }
@@ -114,10 +119,6 @@ const KanbanModal = ({ modal, setModal, className, modalContent }) => {
               <ModalMediaContent title="Activity" icon="list-ul" headingClass="mb-3" isHr={false}>
                 <ModalActivityContent />
               </ModalMediaContent>
-            </Col>
-            {/* //sideContent */}
-            <Col lg="3">
-              <ModalSideContent />
             </Col>
           </Row>
         </div>

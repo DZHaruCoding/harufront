@@ -6,30 +6,27 @@ import rawKanbanItems, { rawItems } from '../../data/kanban/kanbanItems';
 import { localIp } from '../../config';
 import { json } from 'is_js';
 import { kanbanList } from '../../service/kanbanService';
+import axios from 'axios';
 
 const KanbanProvider = ({ children, curprojectNo, curprojectTitle }) => {
   const [kanbanColumns, kanbanColumnsDispatch] = useReducer(arrayReducer, []);
   const [kanbanTaskCards, kanbanTaskCardsDispatch] = useReducer(arrayReducer, []);
-
   const [modal, setModal] = useState(false);
-
   const [modalContent, setModalContent] = useState({});
-
-  const {projectNo, projectTitle} = useContext(AppContext);
+  const { projectNo, projectTitle } = useContext(AppContext);
 
   const getItemStyle = isDragging => ({
     // change background colour if dragging
     cursor: isDragging ? 'grabbing' : 'pointer',
     transform: isDragging ? 'rotate(-3deg)' : '',
     transition: 'all 0.3s ease-out'
-
     // styles we need to apply on draggables
   });
 
   useEffect(() => {
     const fun = async () => {
       try {
-        console.log("aaaaaa",projectNo);
+        console.log('aaaaaa', projectNo);
         // ${curprojectNo !== '' ? curprojectNo : projectNo}
         const response = await fetch(`/haru/api/tasklist/data/${curprojectNo !== '' ? curprojectNo : projectNo}`, {
           method: 'get',
@@ -78,18 +75,17 @@ const KanbanProvider = ({ children, curprojectNo, curprojectTitle }) => {
     fun();
   }, []);
 
-
-  const kanbanAllAdd = (column) => {
+  const kanbanAllAdd = column => {
     const item = column;
-        kanbanColumnsDispatch({
-          type: 'ALLADD',
-          payload: {
-            ...column,
-            item
-          },
-          id: 1
-        });
-  }
+    kanbanColumnsDispatch({
+      type: 'ALLADD',
+      payload: {
+        ...column,
+        item
+      },
+      id: 1
+    });
+  };
   const UpdateColumnData = async (column, taskVoList) => {
     kanbanColumnsDispatch({
       type: 'EDIT',

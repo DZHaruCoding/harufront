@@ -7,6 +7,7 @@ import excelimg from '../../assets/img/excel.png';
 import txtimg from '../../assets/img/txt.png';
 import attachimg from '../../assets/img/attach.png';
 import { localIp } from '../../config';
+import axios from 'axios';
 export const API_URL = 'http://localhost:8080';
 const Filelist = ({ fileNo }) => {
   const { products, productsDispatch } = useContext(ProductContext);
@@ -107,15 +108,22 @@ const Filelist = ({ fileNo }) => {
       downloadData(fileNo);
     }
   }
-
+  // .filter(item => {
+  //   item.fileNo !== `${payload.fileNo}`;
+  // });
   //파일 삭제하기
   function onClickDeleteFile(fileNo) {
     if (window.confirm('파일을 삭제하시겠습니까?')) {
+      axios
+        .post(`/haru/api/file/${fileNo}`)
+        .then()
+        .catch(console.error());
       productsDispatch({
         type: 'FREMOVE',
         payload: {
           fileNo
-        }
+        },
+        id: fileNo
       });
     }
   }

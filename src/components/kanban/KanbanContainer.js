@@ -22,7 +22,6 @@ const reorder = (list, startIndex, endIndex) => {
 };
 
 const move = (source, destination, droppableSource, droppableDestination) => {
-
   const sourceClone = Array.from(source);
   const destClone = Array.from(destination);
   const [removed] = sourceClone.splice(droppableSource.index, 1);
@@ -38,11 +37,10 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 
 const KanbanContainer = () => {
   const { kanbanColumns, UpdateColumnData, modalContent, modal, setModal } = useContext(KanbanContext);
-  const { kanban2, UpdateColumnData2, kanbanDispatch2} = useContext(KanbanContext);
   const containerRef = useRef(null);
   let clientRef = useRef(null);
   const [kanban, setKanban] = useState();
-  const API_URL = "http://localhost:8080/haru";
+  const API_URL = 'http://localhost:8080/haru';
 
   // Detect device
   useEffect(() => {
@@ -91,8 +89,6 @@ const KanbanContainer = () => {
     }
   };
 
-  
-
   // isIterableArray
   return (
     <Fragment>
@@ -105,16 +101,22 @@ const KanbanContainer = () => {
           }}
       /> */}
       {/* window.sessionStorage.getItem('authUserName') */}
-    <DragDropContext onDragEnd={onDragEnd}>
-      <div className="kanban-container scrollbar" ref={containerRef}>
-        {kanbanColumns &&
-          kanbanColumns.map((kanbanColumnItem, index) => {
-            return <KanbanColumn kanbanColumnItem={kanbanColumnItem} key={kanbanColumnItem.taskListNo} index={kanbanColumnItem.taskListNo} />;
-          })}
-        <AddAnotherList />
-        <KanbanModal modal={modal} setModal={setModal} modalContent={modalContent} />
-      </div>
-    </DragDropContext>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className="kanban-container scrollbar" ref={containerRef}>
+          {kanbanColumns &&
+            kanbanColumns.map((kanbanColumnItem, index) => {
+              return (
+                <KanbanColumn
+                  kanbanColumnItem={kanbanColumnItem}
+                  key={kanbanColumnItem.taskListNo}
+                  index={kanbanColumnItem.taskListNo}
+                />
+              );
+            })}
+          <AddAnotherList />
+          <KanbanModal modal={modal} setModal={setModal} modalContent={modalContent} />
+        </div>
+      </DragDropContext>
     </Fragment>
   );
 };

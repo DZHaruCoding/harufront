@@ -6,7 +6,7 @@ import { localIp } from '../config';
 export const arrayReducer = (state, action) => {
   const { type, id, payload, sortBy, order, isAddToStart, isUpdatedStart, isCard } = action;
   switch (type) {
-    case "ALLADD": {
+    case 'ALLADD': {
       return payload.data;
     }
     case 'ADD':
@@ -26,12 +26,12 @@ export const arrayReducer = (state, action) => {
           return state;
         }
       }
-      
+
       if (isAddToStart) {
         return [payload, ...state];
       }
       return [...state, payload];
-    case 'REMOVE': 
+    case 'REMOVE':
       if (id !== 0 && !id) {
         console.error('id is required!');
         return state;
@@ -48,11 +48,10 @@ export const arrayReducer = (state, action) => {
       }
       let item = [...state];
 
-
-      state.map((item1, i) => item[i].taskVoList = item1.taskVoList.filter(item2 => item2.taskNo !== id));
+      state.map((item1, i) => (item[i].taskVoList = item1.taskVoList.filter(item2 => item2.taskNo !== id)));
 
       return item;
-      
+
     case 'EDIT':
       if (id !== 0 && !id) {
         console.error('id is required!');
