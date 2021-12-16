@@ -1,15 +1,19 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { Button, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Input, Tooltip } from 'reactstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { copyToClipBoard } from '../../helpers/utils';
 import Flex from '../common/Flex';
+import AppContext from '../../context/Context';
+import { toast } from 'react-toastify';
 
 const InviteToBoard = () => {
   const [tooltipText, setTooltipText] = useState('Copy link to invite');
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const tooltipRef = useRef(null);
   const copyTextRef = useRef(null);
+  const {projectNo, projectTitle} = useContext(AppContext);
+  const [userEmail, setUserEmail] = useState();
 
   const toggle = () => setTooltipOpen(!tooltipOpen);
 
@@ -17,6 +21,49 @@ const InviteToBoard = () => {
     copyToClipBoard(copyTextRef);
     setTooltipText('Copied to clipboard');
     setTooltipOpen(true);
+  };
+
+  const emailOnChange = (e) => {
+    setUserEmail(e.target.value);
+  }
+
+  const memberInvite = async () => {
+
+    console.log(userEmail);
+
+    const json = {
+      userEmail: userEmail
+    }
+    try {
+      const response = await fetch(`/haru/api/tasklist/member/invite/${projectNo}`, {
+        method: 'post',
+        headers: {
+          "Content-Type": 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(json)
+      });
+  
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+  
+      const jsonResult = await response.json();
+  
+      if (jsonResult.result != 'success') {
+        toast.success(jsonResult.message);
+        return;
+        
+      }
+
+      toast.success("맴버 추가 완료했습니다.");
+
+    } catch(err) {
+      console.log(err.message);
+    }
+    
+
+
   };
 
   return (
@@ -33,6 +80,7 @@ const InviteToBoard = () => {
           <form
             onSubmit={e => {
               e.preventDefault();
+              memberInvite();
             }}
           >
             <div className="border rounded fs--2 mb-3">
@@ -65,12 +113,12 @@ const InviteToBoard = () => {
                 id="copyText"
                 innerRef={copyTextRef}
                 readOnly
-                value="https://prium.github.io/falcon/kanban/QhNCShh8TdxKx0kYN1oWzzKJDjOYUXhm9IJ035laUVdWMYsUN5"
+                value={`http://localhost:3000/haru/api/member/invite/${projectNo}`}
               />
             </div>
-            <Input bsSize="sm" placeholder="Enter name or email" />
+            <Input bsSize="sm" placeholder="Enter name or email"  onChange={emailOnChange}/>
 
-            <Button color="primary" size="sm" block type="button" className="mt-2">
+            <Button color="primary" size="sm" block type="submit" className="mt-2">
               Send Invitation
             </Button>
           </form>

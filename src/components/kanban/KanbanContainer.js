@@ -36,7 +36,7 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 };
 
 const KanbanContainer = () => {
-  const { kanbanColumns, UpdateColumnData, modalContent, modal, setModal } = useContext(KanbanContext);
+  const { kanbanColumns, UpdateColumnData, UpdateColumnData2, modalContent, modal, setModal } = useContext(KanbanContext);
   const containerRef = useRef(null);
   let clientRef = useRef(null);
   const [kanban, setKanban] = useState();
@@ -89,17 +89,22 @@ const KanbanContainer = () => {
     }
   };
 
+  const socketCallback = (socketData) => {
+    console.log(socketData);
+    UpdateColumnData2(socketData.updateTaskList, socketData.taskVoList);
+  }
+
   // isIterableArray
   return (
     <Fragment>
-      {/* <SockJsClient
+      <SockJsClient
           url={`${API_URL}/socket`}
-          topics={[`/topic/kanban`]}
-          onMessage={mes => {console.log("테스트")}}
+          topics={[`/topic/kanban/task/move/${window.sessionStorage.getItem("authUserNo")}`]}
+          onMessage={socketData => {socketCallback(socketData)}}
           ref={(client) => {
             clientRef = client
           }}
-      /> */}
+      />
       {/* window.sessionStorage.getItem('authUserName') */}
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="kanban-container scrollbar" ref={containerRef}>
