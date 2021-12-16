@@ -53,14 +53,15 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
   };
   const onChangePaswword = e => {
     setPassword(e.target.value);
-    const passwords = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/
-    if (!passwords.test(password)) {
-      setPasswordMessage('특수문자, 문자, 숫자를 포함한 8~15 자리 이상이여야 합니다');
-      setIsPassword(false);
-    } else {
-      setPasswordMessage("안정한 비밀번호 입니다");
-      setIsPassword(true)
-    }
+    setIsPassword(true);
+    // const passwords = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/
+    // if (!passwords.test(password)) {
+    //   setPasswordMessage('특수문자, 문자, 숫자를 포함한 8~15 자리 이상이여야 합니다');
+    //   setIsPassword(false);
+    // } else {
+    //   setPasswordMessage("안정한 비밀번호 입니다");
+    //   setIsPassword(true)
+    // }
 
   };
 
@@ -77,7 +78,7 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
     }
 
     try {
-      const response = await fetch(`/haru/api/user/join`, {
+      const response = await fetch(`/haru/user/join`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
@@ -106,7 +107,7 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
       const emails = {userEmail : email}
   
       try {
-          const response = await fetch(`/haru/api/user/checkemail`, {
+          const response = await fetch(`/haru/user/checkemail`, {
             method: 'post',
             headers: {
               'Content-Type': 'application/json',
@@ -184,7 +185,7 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
             onChange={onChangePaswword}
             type="password"
           />
-          {password.length > 0 && (<span className={`message ${isPassword ? 'success' : 'error'}`}>{passwordMessage}</span>)}
+          {/* {password.length > 0 && (<span className={`message ${isPassword ? 'success' : 'error'}`}>{passwordMessage}</span>)} */}
         </FormGroup>
       </div>
       <FormGroup>
