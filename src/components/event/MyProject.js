@@ -7,7 +7,6 @@ const Project = ({project}) => {
   const {setProjectNo, setProjectTitle, projectNo, projectTitle} = useContext(AppContext);
 
   const members = project.members;
-  console.log('전역변수 projectNo : ',projectNo)
 
     return(
         <div className="position-relative  pb-5 w-100">

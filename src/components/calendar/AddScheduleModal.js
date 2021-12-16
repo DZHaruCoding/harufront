@@ -43,8 +43,7 @@ const AddScheduleModal = ({
   const handleChange = target => {
     let name = target.name;
     let value = name === 'allDay' ? target.checked : target.value;
-    setFormObj({ ...formObj, [name]: value });
-    console.log(formObj);  
+    setFormObj({ ...formObj, [name]: value });  
   };
 
 const handleAdd = async (formObj) =>{

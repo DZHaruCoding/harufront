@@ -121,7 +121,7 @@ const call = () => {
         console.log(id);
        
         const response = await fetch(`${localIp}/api/calendar/delete/${id}`, {
-          method:"post",
+          method:"delete",
           headers:{
             'Content-Type':'application/json',
             'Accept':'application/json'
