@@ -17,14 +17,15 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
   const [isDisabled, setIsDisabled] = useState(true);
   const [isfailCheck, setIsfailCheck] = useState(false);
 
-  // Handler
+
+  // 로그인
   const handleSubmit = async e => {
     e.preventDefault();
 
     console.log(email, password)
     console.log(localIp);
-    var params = "userEmail=" + email + "&userPassword=" + password
 
+    var params = "userEmail=" + email + "&userPassword=" + password
 
     try {
       const response = await fetch(`/haru/api/login`, {
@@ -62,9 +63,6 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
   };
 
   useEffect(() => {
-
-    console.log("유저이메일 : " + window.sessionStorage.getItem("authUserEmail"));
-
     setIsDisabled(!email || !password);
   }, [email, password]);
 
