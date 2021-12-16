@@ -69,7 +69,6 @@ const TopNavRightSideNavItem = () => {
         <Button tag={Link} color="primary" size="sm" className="mt-3" onClick={Logout} to={`/authentication/basic/logout`}>Logout</Button>
         : <Button tag={Link} color="primary" size="sm" className="mt-3" to={`/authentication/basic/login`}>Login</Button>
       }
-      <Button  color="primary" size="sm" className="mt-3"  onClick={test}>test</Button>
       <NotificationDropdown />
       <ProfileDropdown />
     </Nav>
