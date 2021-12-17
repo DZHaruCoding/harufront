@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Modal, ModalBody } from 'reactstrap';
 
 import { attachments } from '../../data/kanban/kanbanItems';
@@ -7,12 +7,41 @@ import { Link } from 'react-router-dom';
 import Background from '../common/Background';
 import { Media } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { KanbanContext } from '../../context/Context';
 
 const ModalAttachmentsContent = () => {
   const [nestedModal, setNestedModal] = useState(false);
+  const { modalContent, setModalContent } = useContext(KanbanContext);
+  useEffect(() => {
+    console.log('Modal첨부파일', modalContent.filesInfo);
+    // changeName: "202111179152736.jpg"
+    // fileMaker: "이종윤"
+    // fileNo: 19
+    // filePath: "/assets/upimages/202111179152736.jpg"
+    // fileRegdate: "2021년 12월 17일"
+    // fileState: null
+    // originName: "개발자종윤.jpg"
+    // projectNo: null
+    // projectTitle: null
+    // taskContents: null
+    // taskNo: 1
+    // taskState: null
+    // tasklistName: null
+    // tasklistNo: null
+    // userName: null
+    // userNo: null
+    // {
+    //   modalContent.filesInfo.originName.split('.')[1] === 'png' ||
+    //     modalContent.filesInfo.originName.split('.')[1] === 'jpg';
+    //   ? 'image' :
+    // }
+    // const {} = modalContent.filesInfo;
+  });
+
   const toggleNested = () => {
     setNestedModal(!nestedModal);
   };
+
   const externalCloseBtn = (
     <button
       className="close text-secondary p-3"
@@ -25,26 +54,16 @@ const ModalAttachmentsContent = () => {
 
   return (
     <>
+      {/*  Modal수정중....................... */}
       {attachments.map((item, index) => {
         return (
           <Media key={index} className={index !== item.length - 1 && 'mb-3'}>
             <div className="bg-attachment mr-3">
               {item.image ? (
                 <>
-                  {item.type !== 'video' ? (
-                    <FalconLightBox imgSrc={item.image}>
-                      <Background image={item.image} className="rounded" />
-                    </FalconLightBox>
-                  ) : (
-                    <>
-                      <Link to="#!" onClick={() => setNestedModal(true)}>
-                        <Background image={item.image} className="rounded" />
-                      </Link>
-                      <div className="icon-play">
-                        <FontAwesomeIcon icon="play" />
-                      </div>
-                    </>
-                  )}
+                  <FalconLightBox imgSrc={item.image}>
+                    <Background image={item.image} className="rounded" />
+                  </FalconLightBox>
                 </>
               ) : (
                 <span className="text-uppercase font-weight-bold">{item.type}</span>
@@ -62,11 +81,6 @@ const ModalAttachmentsContent = () => {
                         </Link>
                       </FalconLightBox>
                     )}
-                    {item.type === 'video' && (
-                      <Link to="#!" onClick={() => setNestedModal(true)}>
-                        {item.title}
-                      </Link>
-                    )}
                   </>
                 ) : (
                   <a href="#!" className="text-decoration-none">
@@ -74,9 +88,6 @@ const ModalAttachmentsContent = () => {
                   </a>
                 )}
               </h6>
-              <Link className="text-600 font-weight-semi-bold" to="#!">
-                Edit
-              </Link>
               <span className="mx-1">|</span>
               <Link className="text-600 font-weight-semi-bold" to="#!">
                 Remove
@@ -90,17 +101,7 @@ const ModalAttachmentsContent = () => {
               size="xl"
               centered
               contentClassName="bg-transparent border-0"
-            >
-              <ModalBody className="p-0 rounded overflow-hidden">
-                <div class="embed-responsive embed-responsive-16by9">
-                  <video poster={item.image} controls autoPlay>
-                    <source src={item.src} type="video/mp4" />
-                    {/* <source src="movie.ogg" type="video/ogg" /> */}
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-              </ModalBody>
-            </Modal>
+            />
           </Media>
         );
       })}

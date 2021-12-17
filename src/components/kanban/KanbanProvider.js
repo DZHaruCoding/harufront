@@ -152,8 +152,8 @@ const KanbanProvider = ({ children, curprojectNo, curprojectTitle }) => {
     getItemStyle,
     UpdateColumnData,
     UpdateColumnData2,
-    modalContent,
     kanbanAllAdd,
+    modalContent,
     setModalContent,
     modal,
     setModal

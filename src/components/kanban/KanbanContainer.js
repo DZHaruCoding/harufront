@@ -36,7 +36,11 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 };
 
 const KanbanContainer = () => {
-  const { kanbanColumns, UpdateColumnData, UpdateColumnData2, modalContent, modal, setModal } = useContext(KanbanContext);
+
+  const { kanbanColumns, UpdateColumnData, modalContent, modal, setModal, setModalContent } = useContext(KanbanContext);
+
+  //const { kanbanColumns, UpdateColumnData, UpdateColumnData2, modalContent, modal, setModal } = useContext(KanbanContext);
+
   const containerRef = useRef(null);
   let clientRef = useRef(null);
   const [kanban, setKanban] = useState();
@@ -119,7 +123,12 @@ const KanbanContainer = () => {
               );
             })}
           <AddAnotherList />
-          <KanbanModal modal={modal} setModal={setModal} modalContent={modalContent} />
+          <KanbanModal
+            modal={modal}
+            setModal={setModal}
+            modalContent={modalContent}
+            setModalContent={setModalContent}
+          />
         </div>
       </DragDropContext>
     </Fragment>

@@ -7,7 +7,6 @@ import withRedirect from '../../hoc/withRedirect';
 import '../../assets/scss/FormBox.scss';
 
 const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => {
-
   // State
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -16,39 +15,39 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
   const [openModal, setOpenModal] = useState(false);
 
   // 오류 메세지 출력을 위한 상태값
-  const [nameMessage, setNameMessage] = useState('')
-  const [emailMessage, setEmailMessage] = useState('')
-  const [passwordMessage, setPasswordMessage] = useState('')
+  const [nameMessage, setNameMessage] = useState('');
+  const [emailMessage, setEmailMessage] = useState('');
+  const [passwordMessage, setPasswordMessage] = useState('');
 
   // 유효성 검사를 위한 상태저장
-  const [isName, setIsName] = useState(false)
-  const [isEmail, setIsEmail] = useState(false)
-  const [isPassword, setIsPassword] = useState(false)
+  const [isName, setIsName] = useState(false);
+  const [isEmail, setIsEmail] = useState(false);
+  const [isPassword, setIsPassword] = useState(false);
   // const [isAccepted, setIsAccepted] = useState(false);
   // const [confirmPassword, setConfirmPassword] = useState('');
 
   const onChangeEmail = e => {
     setEmail(e.target.value);
     const emails = /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-    console.log("이메일 : " +email);
+    console.log('이메일 : ' + email);
     if (emails.test(email)) {
-      setEmailMessage('올바른 이메일 형식입니다')
-      setIsEmail(true)
+      setEmailMessage('올바른 이메일 형식입니다');
+      setIsEmail(true);
     } else {
-      setEmailMessage('이메일 형식이 올바르지 않습니다')
-      setIsEmail(false)
+      setEmailMessage('이메일 형식이 올바르지 않습니다');
+      setIsEmail(false);
     }
   };
 
   const onChangeName = e => {
     setName(e.target.value);
-    console.log("이름 : " + name)
+    console.log('이름 : ' + name);
     if (name.length < 2) {
-      setNameMessage('2글자 이상 입력해주세요')
-      setIsName(false)
+      setNameMessage('2글자 이상 입력해주세요');
+      setIsName(false);
     } else {
-      setNameMessage('올바른 이름 형식입니다')
-      setIsName(true)
+      setNameMessage('올바른 이름 형식입니다');
+      setIsName(true);
     }
   };
   const onChangePaswword = e => {
@@ -62,9 +61,7 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
     //   setPasswordMessage("안정한 비밀번호 입니다");
     //   setIsPassword(true)
     // }
-
   };
-
 
   // Handler
   const handleSubmit = async e => {
@@ -75,20 +72,20 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
       userEmail: email,
       userPassword: password,
       userName: name
-    }
+    };
 
     try {
       const response = await fetch(`/haru/user/join`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          Accept: 'application/json'
         },
         body: JSON.stringify(json)
-      })
+      });
 
       if (!response.ok) {
-        throw new Error(`${response.status} ${response.statusText}`)
+        throw new Error(`${response.status} ${response.statusText}`);
       }
 
       if (response.result !== 'success') {
@@ -102,59 +99,55 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
     setRedirect(true);
   };
 
-  const findEmail = async ()=>{
-      console.log("확인할 email : "+email)
-      const emails = {userEmail : email}
-  
-      try {
-          const response = await fetch(`/haru/user/checkemail`, {
-            method: 'post',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify(emails)
-          })
-          
-          if (!response.ok) {
-            throw new Error(`${response.status} ${response.statusText}`)
-          }
-          
-          const json = await response.json();
-          console.log(json);
+  const findEmail = async () => {
+    console.log('확인할 email : ' + email);
+    const emails = { userEmail: email };
 
-          console.log(json.data);
-          if (json.result !== 'success') {
-            throw json.message;
-          }
+    try {
+      const response = await fetch(`/haru/user/checkemail`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(emails)
+      });
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
 
-          if(json.data) {
-            setEmailMessage("이미 가입된 이메일 입니다.") 
-            setIsEmail(false)
-          } else {
-            setEmailMessage("가입이 가능한 이메일 입니다") 
-          }
-            
-           
+      const json = await response.json();
+      console.log(json);
 
-        } catch (err) {
-          console.log(err);
-        }
-  }
+      console.log(json.data);
+      if (json.result !== 'success') {
+        throw json.message;
+      }
 
-  useEffect(()=>{
-    if(isEmail){
-      findEmail();    
+      if (json.data) {
+        setEmailMessage('이미 가입된 이메일 입니다.');
+        setIsEmail(false);
+      } else {
+        setEmailMessage('가입이 가능한 이메일 입니다');
+      }
+    } catch (err) {
+      console.log(err);
     }
-  },[isEmail])
+  };
+
+  useEffect(() => {
+    if (isEmail) {
+      findEmail();
+    }
+  }, [isEmail]);
 
   useEffect(() => {
     setRedirectUrl(`/authentication/${layout}/login`);
   }, [setRedirectUrl, layout]);
 
   useEffect(() => {
-    setIsDisabled(!isName || !isEmail ||!isPassword);
-  }, [isName, isEmail ,isPassword]);
+    setIsDisabled(!isName || !isEmail || !isPassword);
+  }, [isName, isEmail, isPassword]);
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -165,7 +158,7 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
           placeholder={!hasLabel ? 'Email address' : ''}
           value={email}
           onChange={onChangeEmail}
-        // type="email"
+          // type="email"
         />
         {email.length > 0 && <span className={`message ${isEmail ? 'success' : 'error'}`}>{emailMessage}</span>}
       </FormGroup>
@@ -173,7 +166,7 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
       <FormGroup>
         {hasLabel && <Label>Name</Label>}
         <Input placeholder={!hasLabel ? 'Name' : ''} value={name} onChange={onChangeName} />
-        {name.length > 0 && (<span className={`message ${isName ? 'success' : 'error'}`}>{nameMessage}</span>)}
+        {name.length > 0 && <span className={`message ${isName ? 'success' : 'error'}`}>{nameMessage}</span>}
       </FormGroup>
       {/* 비밀번호 입력 */}
       <div>
@@ -189,15 +182,14 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
         </FormGroup>
       </div>
       <FormGroup>
-
         {/* <Button tag={Link} to="/authentication/basic/forget-password" color="primary" block className="mt-3">
           다음
         </Button> */}
-        <Button color="primary" block className="mt-3" disabled={isDisabled} >
+        <Button color="primary" block className="mt-3" disabled={isDisabled}>
           다음
         </Button>
       </FormGroup>
-      
+
       {/* //<Divider className="mt-4">or register with</Divider> */}
       {/* <SocialAuthButtons /> */}
     </Form>
