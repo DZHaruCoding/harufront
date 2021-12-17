@@ -17,46 +17,42 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
   const [isDisabled, setIsDisabled] = useState(true);
   const [isfailCheck, setIsfailCheck] = useState(false);
 
-
   // 로그인
   const handleSubmit = async e => {
     e.preventDefault();
 
-    console.log(email, password)
+    console.log(email, password);
     console.log(localIp);
 
-    var params = "userEmail=" + email + "&userPassword=" + password
+    var params = 'userEmail=' + email + '&userPassword=' + password;
 
     try {
       const response = await fetch(`/haru/api/login`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          'Accept': 'application/json'
+          Accept: 'application/json'
         },
         body: params
-
-      })
+      });
 
       if (!response.ok) {
-        throw new Error(`${response.status} ${response.statusText}`)
+        throw new Error(`${response.status} ${response.statusText}`);
       }
 
       const json = await response.json();
       console.log(json);
 
-
       if (json.result !== 'success') {
         setIsfailCheck(true);
         throw json.message;
       } else {
-        sessionStorage.setItem("authUserEmail", json.data.userEmail)
-        sessionStorage.setItem("authUserName", json.data.userName)
-        sessionStorage.setItem("authUserNo", json.data.userNo)
+        sessionStorage.setItem('authUserEmail', json.data.userEmail);
+        sessionStorage.setItem('authUserName', json.data.userName);
+        sessionStorage.setItem('authUserNo', json.data.userNo);
         toast.success(`Logged in as ${email}`);
         setRedirect(true);
       }
-
     } catch (err) {
       console.error(err);
     }
@@ -86,9 +82,7 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
           type="password"
         />
       </FormGroup>
-      <div>
-        {isfailCheck ? '로그인에 실패 하였습니다' : ''}
-      </div>
+      <div>{isfailCheck ? '로그인에 실패 하였습니다' : ''}</div>
       <Row className="justify-content-between align-items-center">
         <Col xs="auto">
           <CustomInput
@@ -106,7 +100,7 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
         </Col>
       </Row>
       <FormGroup>
-        <Button color="primary" block className="mt-3" disabled={isDisabled}>
+        <Button color="primary" block className="mt-3">
           Log in
         </Button>
       </FormGroup>

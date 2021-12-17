@@ -81,6 +81,7 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
             style={getItemStyle(snapshot.isDragging)}
             onClick={() => {
               setModalContent({ taskCard, taskCardImage });
+              console.log(taskCard);
               setModal(true);
             }}
           >
