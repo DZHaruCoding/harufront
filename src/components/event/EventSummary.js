@@ -7,12 +7,17 @@ const EventSummary = ({ projects, rendcallback }) => {
     rendcallback(true);
   }
 
+  const deletecallback = () => {
+    rendcallback(true);
+  }
+
   return(
     <Media>
     {
       projects.map( project =>
       <MyProject project={project}
                  callback={updatecallback}
+                 deletecallback={deletecallback}
        />)
     }
     </Media>

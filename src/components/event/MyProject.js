@@ -9,7 +9,7 @@ import Datetime from 'react-datetime';
 import { localIp } from '../../config';
 import '../../assets/scss/cardTest.scss';
 
-const Project = ({project, callback}) => {
+const Project = ({project, callback, deletecallback}) => {
   const {setProjectNo, setProjectTitle, projectNo, projectTitle} = useContext(AppContext);
 
   const members = project.members;
@@ -195,6 +195,37 @@ const Project = ({project, callback}) => {
     } 
     fetchfun();
   }
+
+  //프로젝트 삭제
+  const projectDelete = () =>{
+    let data = {
+      projectNo : project.projectNo
+    }
+    console.log('프로젝트 삭제',data)
+    const fetchfun = async () =>{
+      try {
+        const response = await fetch(`${localIp}/api/project/delete`,{
+          method:"put",
+          headers:{
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body:JSON.stringify(data)
+        });
+        if(!response.ok){
+          throw new Error(`${response.status} ${response.statusText}`);
+        }
+        const jsonResult = await response.json();
+        console.log('delete',jsonResult);
+        
+        deletecallback(true);
+        setProjectUpdateModal(false);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchfun()
+  }
     return(
       
       <Media 
@@ -314,6 +345,7 @@ const Project = ({project, callback}) => {
           
           <FormGroup style={{alignItems:'flex-center'}}>
               <Button  onClick={ () => {projectUpdate() }}>수정</Button>
+              <Button  onClick={ () => {projectDelete() }}>삭제</Button>
               <Button style={{alignItems:'flex-center', marginLeft:"10px",marginRight:"10px"}} onClick={ () => { modalFalse() }}>확인</Button>
           </FormGroup>
             </body>
