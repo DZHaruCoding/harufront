@@ -176,7 +176,7 @@ const Project = ({project, callback}) => {
 
     console.log('!!!!!!!!!',data);
     const fetchfun = async() =>{
-      const response = await fetch(`${localIp}/api/project/update/${project.projectNo}`,{
+      const response = await fetch(`${localIp}/api/project/update`,{
         method:"put",
         headers:{
           'Content-Type':'application/json',
