@@ -219,7 +219,8 @@ const Project = ({project, callback, deletecallback}) => {
         console.log('delete',jsonResult);
         
         deletecallback(true);
-        setProjectUpdateModal(false);
+        setProjectDetailModal(false);
+
       } catch (error) {
         console.log(error);
       }
