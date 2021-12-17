@@ -18,7 +18,7 @@ import { offline } from 'is_js';
 
 
 const Events = () => {
-  const { loading, data: events } = useFakeFetch(rawEvents);
+  // const { loading, data: events } = useFakeFetch(rawEvents);
   const [projects,setProjects] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -36,6 +36,7 @@ const Events = () => {
   };
   //useEffect에 async 바로 주지말고 함수 만들어서 함수에 async
   useEffect( () => {
+    console.log('들어옴?');
     const data = async ()=>{ 
     try {
       const response = await fetch(`/haru/api/project/1`,{
@@ -346,15 +347,15 @@ const Events = () => {
 
       </FalconCardHeader>
       <CardBody className="fs--1">
-        {loading ? (
+        {/* {loading ? (
           <Loader />
-        ) : isIterableArray(events) ? (
+        ) : isIterableArray(events) ? ( */}
           <EventSummary  projects={projects}/>
-        ) : (
+        {/* ) : (
           <Alert color="info" className="mb-0">
             No events found!Fpro
           </Alert>
-        )}
+        )} */}
       </CardBody>
     </Card>
   );
