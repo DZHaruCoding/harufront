@@ -66,7 +66,7 @@ const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent,set
              },
              body: null
          });
-
+         console.log('+');
          console.log('상세보기 response 데이터',response);
          //response ok 가 아니면(실패)
          if(!response.ok){
