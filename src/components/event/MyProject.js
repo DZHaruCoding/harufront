@@ -1,4 +1,4 @@
-  import React, { useContext, useState } from 'react';
+  import React, { useCallback, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AppContext from '../../context/Context';
 import Member from './Member';
@@ -9,7 +9,7 @@ import Datetime from 'react-datetime';
 import { localIp } from '../../config';
 import '../../assets/scss/cardTest.scss';
 
-const Project = ({project}) => {
+const Project = ({project, callback}) => {
   const {setProjectNo, setProjectTitle, projectNo, projectTitle} = useContext(AppContext);
 
   const members = project.members;
@@ -175,10 +175,24 @@ const Project = ({project}) => {
     data.members = m;
 
     console.log('!!!!!!!!!',data);
-    const fetchfun = () =>{
-      
-      console.log('최종 업데이트 :',formObj);
-    }
+    const fetchfun = async() =>{
+      const response = await fetch(`${localIp}/api/project/update/${project.projectNo}`,{
+        method:"put",
+        headers:{
+          'Content-Type':'application/json',
+          'Accept':'application/json'
+        },
+        body:JSON.stringify(data)
+      });
+      if(!response.ok){
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+  
+      const jsonResult = await response.json();
+      console.log('update',jsonResult.data);
+      callback(true);
+      setProjectUpdateModal(false);
+    } 
     fetchfun();
   }
     return(
@@ -430,9 +444,10 @@ const Project = ({project}) => {
                 null 
                 :
                 <div style={{marginLeft:"20px"}}>
-                {
-                    members.map( member => <Member member={member}/>)
-                }
+                  {
+                    m
+                      .map(mlist => <div> <div>{mlist.userName}{mlist.userEmail}</div> </div>)
+                  }
                 </div>
               }
               

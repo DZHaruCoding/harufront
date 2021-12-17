@@ -194,6 +194,14 @@ const Events = () => {
     }
     fetchfun();
     }
+
+    const rending = (render) =>{
+      if(render == true){
+        setRend(true);
+      }else{
+        setRend(false);
+      }
+    }
   return (
     <Card>
       <FalconCardHeader title="내 프로젝트">
@@ -326,11 +334,11 @@ const Events = () => {
                 null 
                 :
                 <div>
-                  {
-                    mSelects
-                      .map(mSelect => <div> <div>{mSelect.userName}{mSelect.userEmail}</div> </div>)
-                  }
-                </div>
+                    {
+                      mSelects
+                        .map(mSelect => <div> <div>{mSelect.userName}{mSelect.userEmail}</div> </div>)
+                    }
+                  </div>
               }
               
               
@@ -350,7 +358,7 @@ const Events = () => {
         {/* {loading ? (
           <Loader />
         ) : isIterableArray(events) ? ( */}
-          <EventSummary  projects={projects}/>
+          <EventSummary  projects={projects} rendcallback={rending}/>
         {/* ) : (
           <Alert color="info" className="mb-0">
             No events found!Fpro
