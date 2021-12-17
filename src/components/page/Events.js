@@ -18,7 +18,7 @@ import { offline } from 'is_js';
 
 
 const Events = () => {
-  const { loading, data: events } = useFakeFetch(rawEvents);
+  // const { loading, data: events } = useFakeFetch(rawEvents);
   const [projects,setProjects] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -36,9 +36,10 @@ const Events = () => {
   };
   //useEffect에 async 바로 주지말고 함수 만들어서 함수에 async
   useEffect( () => {
+    console.log('들어옴?');
     const data = async ()=>{ 
     try {
-      const response = await fetch(`/haru/api/project/1`,{
+      const response = await fetch('/haru/api/project/1',{
         method: 'get',
         headers:{
           'Content-Type': 'application/json',
@@ -76,7 +77,7 @@ const Events = () => {
   const memberSearchandInput = () => {    
     const fetchfun = async () => {
       try {
-        const response = await fetch(`${localIp}/api/project/member`,{
+        const response = await fetch('/haru/api/project/member',{
           method: 'get',
           headers:{
             'Content-Type': 'application/json',
@@ -171,7 +172,7 @@ const Events = () => {
     // setModalFormObj({...modalformObj, members});
     console.log(modalformObj);
     const fetchfun = async() => {
-        const response = await fetch(`${localIp}/api/project/add/1`,{
+        const response = await fetch('/haru/api/project/add/1',{
           method:"post",
           headers:{
             'Content-Type':'application/json',
@@ -192,6 +193,14 @@ const Events = () => {
         modalFalse();
     }
     fetchfun();
+    }
+
+    const rending = (render) =>{
+      if(render == true){
+        setRend(true);
+      }else{
+        setRend(false);
+      }
     }
   return (
     <Card>
@@ -325,11 +334,11 @@ const Events = () => {
                 null 
                 :
                 <div>
-                  {
-                    mSelects
-                      .map(mSelect => <div> <div>{mSelect.userName}{mSelect.userEmail}</div> </div>)
-                  }
-                </div>
+                    {
+                      mSelects
+                        .map(mSelect => <div> <div>{mSelect.userName}{mSelect.userEmail}</div> </div>)
+                    }
+                  </div>
               }
               
               
@@ -346,15 +355,15 @@ const Events = () => {
 
       </FalconCardHeader>
       <CardBody className="fs--1">
-        {loading ? (
+        {/* {loading ? (
           <Loader />
-        ) : isIterableArray(events) ? (
-          <EventSummary  projects={projects}/>
-        ) : (
+        ) : isIterableArray(events) ? ( */}
+          <EventSummary  projects={projects} rendcallback={rending} deletecallback={rending}/>
+        {/* ) : (
           <Alert color="info" className="mb-0">
             No events found!Fpro
           </Alert>
-        )}
+        )} */}
       </CardBody>
     </Card>
   );

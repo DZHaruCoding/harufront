@@ -58,7 +58,7 @@ const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent,set
   useEffect(() => {
     const scheduleDetail = async() => {  
       try {
-         const response = await fetch(`${localIp}/api/calendar/detail/`+id,{
+         const response = await fetch('/haru/api/calendar/detail/'+id,{
              method: "get",
              headers:{
                  'Content-Type':'application/json',
@@ -66,7 +66,7 @@ const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent,set
              },
              body: null
          });
-
+         console.log('+');
          console.log('상세보기 response 데이터',response);
          //response ok 가 아니면(실패)
          if(!response.ok){
@@ -120,7 +120,7 @@ const call = () => {
       try {
         console.log(id);
        
-        const response = await fetch(`${localIp}/api/calendar/delete/${id}`, {
+        const response = await fetch('/haru/api/calendar/delete/'+id, {
           method:"delete",
           headers:{
             'Content-Type':'application/json',

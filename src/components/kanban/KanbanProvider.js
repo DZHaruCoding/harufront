@@ -86,6 +86,18 @@ const KanbanProvider = ({ children, curprojectNo, curprojectTitle }) => {
       id: 1
     });
   };
+
+  const UpdateColumnData2 = (column, taskVoList) => {
+    kanbanColumnsDispatch({
+      type: 'EDIT',
+      payload: {
+        ...column,
+        taskVoList
+      },
+      id: column.taskListNo
+    });
+  }
+
   const UpdateColumnData = async (column, taskVoList) => {
     kanbanColumnsDispatch({
       type: 'EDIT',
@@ -98,17 +110,19 @@ const KanbanProvider = ({ children, curprojectNo, curprojectTitle }) => {
 
     try {
       const requestData = taskVoList;
-
       const json = {
         taskListNo: column.taskListNo,
-        taskVoList: requestData
+        taskVoList: requestData,
+        projectNo: projectNo,
+        projectTitle: projectTitle,
+        updateTaskList: column
       };
 
-      const response = await fetch(`${localIp}/api/task/dropTask`, {
+      const response = await fetch(`/haru/api/task/dropTask`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
-          Accept: 'application/json'
+          'Accept': 'application/json'
         },
         body: JSON.stringify(json)
       });
@@ -137,6 +151,7 @@ const KanbanProvider = ({ children, curprojectNo, curprojectTitle }) => {
     kanbanColumnsDispatch,
     getItemStyle,
     UpdateColumnData,
+    UpdateColumnData2,
     kanbanAllAdd,
     modalContent,
     setModalContent,

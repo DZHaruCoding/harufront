@@ -73,7 +73,7 @@ const Calendar = () => {
   useEffect( () => {
     const fetchfun = async () => {
       try {
-        const response = await fetch(`${localIp}/api/calendar/1`,{
+        const response = await fetch('/haru/api/calendar/1',{
           method: 'get',
           headers:{
             'Content-Type':'application/json',
