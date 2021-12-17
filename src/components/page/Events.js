@@ -358,7 +358,7 @@ const Events = () => {
         {/* {loading ? (
           <Loader />
         ) : isIterableArray(events) ? ( */}
-          <EventSummary  projects={projects} rendcallback={rending}/>
+          <EventSummary  projects={projects} rendcallback={rending} deletecallback={rending}/>
         {/* ) : (
           <Alert color="info" className="mb-0">
             No events found!Fpro
