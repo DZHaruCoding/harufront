@@ -100,7 +100,7 @@ const UpdateScheduleModal = ({
 const handleUpdate = (formObj) =>{
   const update = async() => {
   try {
-    const response = await fetch(`${localIp}/api/calendar/update/`+no,{
+    const response = await fetch('/haru/api/calendar/update/'+no,{
       method : "put",
       headers:{
         'Content-Type':'application/json',

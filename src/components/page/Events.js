@@ -39,7 +39,7 @@ const Events = () => {
     console.log('들어옴?');
     const data = async ()=>{ 
     try {
-      const response = await fetch(`/haru/api/project/1`,{
+      const response = await fetch('/haru/api/project/1',{
         method: 'get',
         headers:{
           'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ const Events = () => {
   const memberSearchandInput = () => {    
     const fetchfun = async () => {
       try {
-        const response = await fetch(`${localIp}/api/project/member`,{
+        const response = await fetch('/haru/api/project/member',{
           method: 'get',
           headers:{
             'Content-Type': 'application/json',

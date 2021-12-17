@@ -126,7 +126,7 @@ const Project = ({project, callback, deletecallback}) => {
     const memberSearchandInput = () => {    
       const fetchfun = async () => {
         try {
-          const response = await fetch(`${localIp}/api/project/member`,{
+          const response = await fetch('/haru/api/project/member',{
             method: 'get',
             headers:{
               'Content-Type': 'application/json',
@@ -176,7 +176,7 @@ const Project = ({project, callback, deletecallback}) => {
 
     console.log('!!!!!!!!!',data);
     const fetchfun = async() =>{
-      const response = await fetch(`${localIp}/api/project/update`,{
+      const response = await fetch('/haru/api/project/update',{
         method:"put",
         headers:{
           'Content-Type':'application/json',
@@ -204,7 +204,7 @@ const Project = ({project, callback, deletecallback}) => {
     console.log('프로젝트 삭제',data)
     const fetchfun = async () =>{
       try {
-        const response = await fetch(`${localIp}/api/project/delete`,{
+        const response = await fetch('/haru/api/project/delete',{
           method:"put",
           headers:{
             'Content-Type': 'application/json',

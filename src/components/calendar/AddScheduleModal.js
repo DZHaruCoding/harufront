@@ -48,7 +48,7 @@ const AddScheduleModal = ({
 
 const handleAdd = async (formObj) =>{
   try {
-    const response = await fetch(`${localIp}/api/calendar/add`,{
+    const response = await fetch('/haru/api/calendar/add',{
       method : "post",
       headers:{
         'Content-Type':'application/json',

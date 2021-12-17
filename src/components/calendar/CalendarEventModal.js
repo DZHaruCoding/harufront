@@ -58,7 +58,7 @@ const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent,set
   useEffect(() => {
     const scheduleDetail = async() => {  
       try {
-         const response = await fetch(`${localIp}/api/calendar/detail/`+id,{
+         const response = await fetch('/haru/api/calendar/detail/'+id,{
              method: "get",
              headers:{
                  'Content-Type':'application/json',
@@ -120,7 +120,7 @@ const call = () => {
       try {
         console.log(id);
        
-        const response = await fetch(`${localIp}/api/calendar/delete/${id}`, {
+        const response = await fetch('/haru/api/calendar/delete/'+id, {
           method:"delete",
           headers:{
             'Content-Type':'application/json',
