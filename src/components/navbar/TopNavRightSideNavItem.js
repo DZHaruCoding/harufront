@@ -14,24 +14,25 @@ import { localIp, navbarBreakPoint } from '../../config';
 const TopNavRightSideNavItem = () => {
   const { isTopNav, isCombo } = useContext(AppContext);
 
-  const test = async e => {
-    try {
-      const response = await fetch('/haru/api/user/test', {
-        method: 'get'
-      })
+  // const test = async e => {
+  //   try {
+  //     const response = await fetch('/haru/api/user/test', {
+  //       method: 'get'
+  //     })
 
-      if (!response.ok) {
-        throw new Error(`${response.status} ${response.statusText}`)
-      }
+  //     if (!response.ok) {
+  //       throw new Error(`${response.status} ${response.statusText}`)
+  //     }
 
-      console.log(response.data);
+  //     console.log(response.data);
 
-    } catch (err) {
-      console.error(err);
-    }
-  }
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }
 
   const Logout = async e => {
+    sessionStorage.clear();
     try {
       const response = await fetch(`/haru/api/logout`, {
         method: 'get'
@@ -41,7 +42,7 @@ const TopNavRightSideNavItem = () => {
         throw new Error(`${response.status} ${response.statusText}`)
       }
 
-      sessionStorage.clear();
+      console.log("로그아웃!!")
 
     } catch (err) {
       console.error(err);

@@ -1,0 +1,38 @@
+import React, { useState } from "react";
+import styles from '../../assets/scss/Cards.scss'
+import ProfileDetail from "./ProfileDetail";
+const Profiles = () => {
+    const [showDetails, setShowDetails] = useState(false);
+    
+    const styleSideColor ={
+        position: 'absolute',
+        zindex: -1,
+        top: 0,
+        left: 0,
+        width: 3,
+        height: '100%', 
+        backgroundColor: '#bb8D31' 
+    };
+
+    return (
+        <div className={styles.Card}> 
+            <div style={ styleSideColor }/>
+            <div 
+                className={
+                    showDetails ?
+                        [styles.Card__Title, styles.Card__Title__open].join(' ') : styles.Card__Title
+                }
+                onClick={(e)=> setShowDetails(!showDetails)}>프로필
+            </div>
+            {
+                showDetails ?
+                <div className={styles.Card__Details}>
+                    <ProfileDetail />
+                </div> :
+                null
+            }
+        </div>
+    );
+};
+
+export default Profiles;

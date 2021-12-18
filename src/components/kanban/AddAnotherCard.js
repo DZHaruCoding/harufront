@@ -44,7 +44,8 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm }) => {
       taskListNo: kanbanColumnItem.taskListNo,
       taskOrder: kanbanColumnItem.taskVoList.length,
       taskWriter: '조진석',
-      taskLabel:'red'
+      taskLabel:'red',
+      taskVoList
     };
 
     kanbanTaskCardsDispatch({
