@@ -1,12 +1,18 @@
-import React, { useContext, useState } from 'react';
-import { KanbanContext } from '../../context/Context';
+import React, { useContext, useRef, useState } from 'react';
+import AppContext, { KanbanContext } from '../../context/Context';
 import { Button, Form, Input, Row, Col } from 'reactstrap';
 import { localIp } from '../../config';
+import SockJsClient from 'react-stomp';
+
 
 const AddAnotherCard = ({ kanbanColumnItem, setShowForm }) => {
   const { kanbanColumnsDispatch, kanbanTaskCards, kanbanTaskCardsDispatch } = useContext(KanbanContext);
 
   const [cardHeaderTitle, setCardHeaderTitle] = useState('');
+
+  const API_URL = 'http://localhost:8080/haru';
+  let clientRef = useRef(null);
+  const { projectNo, projectTitle } = useContext(AppContext);
 
   const handleAddCard = async value => {
 //TODO 조진석 => 더미 데이터
@@ -60,16 +66,41 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm }) => {
       payload: { ...kanbanColumnItem, taskVoList: [...kanbanColumnItem.taskVoList, taskVoList] },
       id: kanbanColumnItem.taskListNo
     });
+
+    const kanbanboardSocketData = {
+      taskVoList : taskVoList,
+      kanbanColumnItem : kanbanColumnItem,
+      projectNo : projectNo,
+      projectTitle : projectTitle
+    }
+
+    clientRef.current.sendMessage("/app/task/add", JSON.stringify(kanbanboardSocketData));
   };
+
+  const socketCallback = e => {
+      console.log(e);
+  }
 
   const handleSubmit = e => {
     e.preventDefault();
     handleAddCard(cardHeaderTitle);
-    setShowForm(false);
+    // setShowForm(true);
     setCardHeaderTitle('');
   };
   return (
     <div className="p-3 border bg-white rounded-soft transition-none mt-3">
+    <SockJsClient
+          url={`${API_URL}/socket`}
+          topics={[`/topic/kanban/task/add/${window.sessionStorage.getItem("authUserNo")}`]}
+          onMessage={socketData => {socketCallback(socketData)}}
+          ref={(client) => {
+            if (clientRef == null) {
+              clientRef = client
+            }
+            console.log(client);
+            
+          }}
+      />
       <Form onSubmit={e => handleSubmit(e)}>
         <Input
           type="textarea"
