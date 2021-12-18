@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Media } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import PropTypes from 'prop-types';
 const ModalMediaContent = ({ children, icon, transform, title, headingClass, headingContent, isHr }) => {
   return (

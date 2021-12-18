@@ -30,8 +30,7 @@ const AddScheduleModal = ({
   const [formObj, setFormObj] = useState();
   const [endDate, setEndDate] = useState();
   const [startDate, setStartDate] = useState();
-  
-  
+
   const closeBtn = (
     <button className="close font-weight-normal" onClick={toggle}>
       &times;
@@ -42,39 +41,37 @@ const AddScheduleModal = ({
     let name = target.name;
     let value = name === 'allDay' ? target.checked : target.value;
     setFormObj({ ...formObj, [name]: value });
-    console.log(formObj);  
+    console.log(formObj);
   };
 
-const handleAdd = async (formObj) =>{
-  try {
-    const response = await fetch(`${localIp}/api/calendar/add`,{
-      method : "post",
-      headers:{
-        'Content-Type':'application/json',
-        'Accept':'application/json'
-      },
-      body:JSON.stringify(formObj)
-    });
+  const handleAdd = async formObj => {
+    try {
+      const response = await fetch(`${localIp}/api/calendar/add`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(formObj)
+      });
 
-    if(!response.ok){
-      throw new Error(`${response.status} ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+
+      const jsonResult = await response.json();
+      console.log('add', jsonResult.data);
+      let data = {
+        title: jsonResult.data.scheduleContents,
+        start: jsonResult.data.scheduleStart,
+        end: jsonResult.data.scheduleEnd
+      };
+      console.log(data);
+      setInitialEvents([...initialEvents, data]);
+    } catch (error) {
+      console.log(error);
     }
-
-    const jsonResult = await response.json();
-    console.log('add',jsonResult.data);
-    let data ={
-      title: jsonResult.data.scheduleContents,
-      start: jsonResult.data.scheduleStart,
-      end: jsonResult.data.scheduleEnd
-    };
-    console.log(data);
-    setInitialEvents([...initialEvents, data]);
-
-
-  } catch (error) {
-    console.log(error);
-  }
-};
+  };
 
   useEffect(() => {
     !isOpenScheduleModal && setAddScheduleStartDate(null);
@@ -126,7 +123,7 @@ const handleAdd = async (formObj) =>{
               inputProps={{ placeholder: 'YYYY-MM-DD HH:mm:ss', id: 'eventStart' }}
             />
           </FormGroup>
-          
+
           <FormGroup>
             <Label className="fs-0" for="eventEnd">
               마감일
@@ -148,10 +145,8 @@ const handleAdd = async (formObj) =>{
               inputProps={{ placeholder: 'YYYY-DD-MM HH:mm:ss', id: 'eventEnd' }}
             />
           </FormGroup>
-          
         </ModalBody>
         <ModalFooter tag={Flex} justify="end" align="center" className="bg-light border-top-0">
-
           <Button color="primary" type="submit" className="px-4">
             Save
           </Button>

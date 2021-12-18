@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Button,
   Modal,
@@ -22,20 +22,49 @@ import ModalCommentContent from './ModalCommentContetn';
 import ModalActivityContent from './ModalActivityContent';
 import ModalSideContent from './modalSideContent';
 import axios from 'axios';
-
-const KanbanModal = ({ modal, setModal, className, modalContent }) => {
-  const { taskCard, taskCardImage } = modalContent;
-  const [taskInfo, setTaskInfo] = useState([]);
+import { KanbanContext } from '../../context/Context';
+import UpdateModalDesc from './UpdateModalDesc';
+const KanbanModal = ({ modal, setModal, className }) => {
+  const { modalContent, setModalContent } = useContext(KanbanContext);
+  const [showForm, setShowForm] = useState(false);
   const toggle = () => setModal(!modal);
 
   useEffect(() => {
     if (modal) {
-      axios.get(`haru/api/tasksetting/${taskCard.taskNo}`).then(response => {
-        setTaskInfo(response.data.data);
-      });
+      const fun = async () => {
+        try {
+          const response = await fetch(`haru/api/tasksetting/${modalContent.taskCard.taskNo}`, { method: 'get' });
+
+          if (!response.ok) {
+            throw new Error(`${response.status} ${response.statusText}`);
+          }
+          const jsonResult = await response.json();
+          if (jsonResult.result != 'success') {
+            throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+          }
+
+          const { checkListInfo, commentsInfo, filesInfo, tagsInfo } = jsonResult.data;
+
+          // console.log('따끈따끈fetch데이터들', jsonResult);
+
+          let data = modalContent;
+          data.checkListInfo = checkListInfo;
+          data.commentsInfo = commentsInfo;
+          data.filesInfo = filesInfo;
+          data.tagsInfo = tagsInfo;
+
+          // console.log('새로운 데이터 setting 잘됬나', data);
+          setModalContent(data);
+          // console.log('Modal 들어와서 modalContent', modalContent);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      fun();
     }
   }, [modal]);
-  return (
+  return modal ? (
     <Modal
       isOpen={modal}
       toggle={toggle}
@@ -45,13 +74,13 @@ const KanbanModal = ({ modal, setModal, className, modalContent }) => {
       size="lg"
     >
       <ModalBody className="p-0">
-        {taskCardImage && (
+        {modalContent.taskCardImage && (
           <div className="position-relative overflow-hidden py-8">
-            <Background image={taskCardImage.url} className="rounded-soft-top" />
+            <Background image={modalContent.taskCardImage.url} className="rounded-soft-top" />
           </div>
         )}
         <div className="bg-light rounded-soft-top px-4 py-3">
-          <h4 className="mb-1"> </h4>
+          <h4 className="mb-1">{modalContent.taskCard && modalContent.taskCard.taskName} </h4>
           <p className="fs--2 mb-0">
             Added by{' '}
             <a href="#!" className="text-600 font-weight-semi-bold">
@@ -72,30 +101,18 @@ const KanbanModal = ({ modal, setModal, className, modalContent }) => {
           <Row>
             <Col lg="12">
               {/* //Group member */}
-              <ModalMediaContent title="Reviewers" icon="user">
-                <GroupMember users={users} addMember avatarSize="xl" />
-              </ModalMediaContent>
               {/* //labels */}
-              <ModalMediaContent title="Labels" icon="tag">
-                <ModalLabelContent />
+              <ModalMediaContent title="태그" icon="tag">
+                <ModalLabelContent key={modalContent.taskCard && modalContent.taskCard.taskNo} />
               </ModalMediaContent>
               {/* //description */}
-              <ModalMediaContent title="Description" icon="paperclip">
-                <p className="text-word-break fs--1">
-                  The illustration must match to the contrast of the theme. The illustraion must described the concept
-                  of the design. To know more about the theme visit the page.{' '}
-                  <a
-                    href="https://prium.github.io/falcon/undefined/default/home/dashboard-alt.html"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    https://prium.github.io/falcon//default/home/dashboard-alt.html
-                  </a>
-                </p>
+              <ModalMediaContent title="테스크 설명" icon="paperclip">
+                <p className="text-word-break fs--1">{modalContent.taskCard.taskContents}</p>
+                <UpdateModalDesc />
               </ModalMediaContent>
               {/* //Attachment */}
               <ModalMediaContent
-                title="Attachments"
+                title="첨부파일"
                 icon="paperclip"
                 headingClass="d-flex justify-content-between"
                 headingContent={
@@ -104,7 +121,7 @@ const KanbanModal = ({ modal, setModal, className, modalContent }) => {
                       <FontAwesomeIcon icon="plus" />
                     </DropdownToggle>
                     <DropdownMenu>
-                      <DropdownItem>Computer</DropdownItem>
+                      <DropdownItem>내 드라이브</DropdownItem>
                     </DropdownMenu>
                   </UncontrolledButtonDropdown>
                 }
@@ -124,6 +141,8 @@ const KanbanModal = ({ modal, setModal, className, modalContent }) => {
         </div>
       </ModalBody>
     </Modal>
+  ) : (
+    <> </>
   );
 };
 

@@ -1,0 +1,11 @@
+@charset 'utf-8';
+
+.media {
+    flex-wrap: wrap;
+    flex-direction: row;
+
+    .media-body {
+        flex-grow: 1;
+        flex-basis: 25%;
+    }
+}
