@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Modal, ModalBody } from 'reactstrap';
+import { Button, Modal, ModalBody } from 'reactstrap';
 
 import { attachments } from '../../data/kanban/kanbanItems';
 import FalconLightBox from '../common/FalconLightBox';
@@ -7,11 +7,14 @@ import { Link } from 'react-router-dom';
 import Background from '../common/Background';
 import { Media } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { KanbanContext } from '../../context/Context';
-
+import { KanbanContext, ProductContext } from '../../context/Context';
+import { Image } from 'react-bootstrap';
+import axios from 'axios';
+const API_URL = 'http://localhost:8080';
 const ModalAttachmentsContent = () => {
   const [nestedModal, setNestedModal] = useState(false);
   const { modalContent, setModalContent } = useContext(KanbanContext);
+  const { filesInfo } = modalContent;
   useEffect(() => {
     console.log('Modal첨부파일', modalContent.filesInfo);
     // changeName: "202111179152736.jpg"
@@ -31,8 +34,8 @@ const ModalAttachmentsContent = () => {
     // userName: null
     // userNo: null
     // {
-    //   modalContent.filesInfo.originName.split('.')[1] === 'png' ||
-    //     modalContent.filesInfo.originName.split('.')[1] === 'jpg';
+    // modalContent.filesInfo.originName.split('.')[1] === 'png' ||
+    //   modalContent.filesInfo.originName.split('.')[1] === 'jpg';
     //   ? 'image' :
     // }
     // const {} = modalContent.filesInfo;
@@ -52,59 +55,92 @@ const ModalAttachmentsContent = () => {
     </button>
   );
 
+  function onClickDeleteFile(id) {
+    if (window.confirm('파일을 삭제하시겠습니까?')) {
+      axios
+        .delete(`/haru/api/file/del/${id}`)
+        .then(setModalContent(filesInfo.filter(item => item.fileNo != id)))
+        .catch(console.error());
+    }
+  }
+  function downloadFile(fileNo) {
+    if (window.confirm('파일을 다운로드 하시겠습니까?')) {
+      downloadData(fileNo);
+    }
+  }
+  function downloadData(fileNo) {
+    //blob : 이미지, 사운드, 비디오와 같은 멀티미디어 데이터를 다룰 때 사용, MIME 타입을 알아내거나, 데이터를 송수신
+    fetch(`${API_URL}/haru/api/download/${fileNo}`).then(response => {
+      console.log(`${fileNo}`);
+      const filename = response.headers.get('Content-Disposition').split('filename=')[1];
+      console.log(filename);
+      response.blob().then(blob => {
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+      });
+    });
+  }
+
   return (
     <>
-      {/*  Modal수정중....................... */}
-      {attachments.map((item, index) => {
-        return (
-          <Media key={index} className={index !== item.length - 1 && 'mb-3'}>
-            <div className="bg-attachment mr-3">
-              {item.image ? (
-                <>
-                  <FalconLightBox imgSrc={item.image}>
-                    <Background image={item.image} className="rounded" />
-                  </FalconLightBox>
-                </>
-              ) : (
-                <span className="text-uppercase font-weight-bold">{item.type}</span>
-              )}
-            </div>
-
-            <Media body className="fs--2">
-              <h6 className="mb-1 text-primary">
-                {item.image ? (
+      {filesInfo &&
+        filesInfo.map((item, index) => {
+          return (
+            <Media key={index} className={index !== item.length - 1 && 'mb-3'}>
+              <div className="bg-attachment mr-3">
+                {item.originName.split('.')[1] === 'png' || item.originName.split('.')[1] === 'jpg' ? (
                   <>
-                    {item.type !== 'video' && (
-                      <FalconLightBox imgSrc={item.image}>
-                        <Link to="#!" className="text-decoration-none">
-                          {item.title}
-                        </Link>
-                      </FalconLightBox>
-                    )}
+                    <FalconLightBox imgSrc={`${API_URL}/haru${item.filePath}`}>
+                      <Image src={`${API_URL}/haru${item.filePath}`} className="rounded" />
+                    </FalconLightBox>
                   </>
                 ) : (
-                  <a href="#!" className="text-decoration-none">
-                    {item.title}
-                  </a>
+                  <span className="text-uppercase font-weight-bold">
+                    <Image src={`${API_URL}/haru${item.filePath}`} className="rounded" />
+                  </span>
                 )}
-              </h6>
-              <span className="mx-1">|</span>
-              <Link className="text-600 font-weight-semi-bold" to="#!">
-                Remove
-              </Link>
-              <p className="mb-0">Uploaded at{item.date} </p>
+              </div>
+
+              <Media body className="fs--2">
+                <h6 className="mb-1 text-primary">
+                  {item.originName.split('.')[1] === 'png' || item.originName.split('.')[1] === 'jpg' ? (
+                    <>
+                      <FalconLightBox imgSrc={`${API_URL}/haru${item.filePath}`}>
+                        <Link to={'#'} className="text-decoration-none" onClick={() => downloadFile(item.fileNo)}>
+                          {item.originName}
+                        </Link>
+                      </FalconLightBox>
+                    </>
+                  ) : (
+                    <a href="#!" className="text-decoration-none">
+                      {item.originName}
+                    </a>
+                  )}
+                </h6>
+                <span className="mx-1">|</span>
+                <Link
+                  to={'#'}
+                  className="text-600 font-weight-semi-bold"
+                  onClick={() => onClickDeleteFile(item.fileNo)}
+                >
+                  Remove
+                </Link>
+                <p className="mb-0">Uploaded at{item.fileRegdate} </p>
+              </Media>
+              <Modal
+                isOpen={nestedModal}
+                toggle={toggleNested}
+                external={externalCloseBtn}
+                size="xl"
+                centered
+                contentClassName="bg-transparent border-0"
+              />
             </Media>
-            <Modal
-              isOpen={nestedModal}
-              toggle={toggleNested}
-              external={externalCloseBtn}
-              size="xl"
-              centered
-              contentClassName="bg-transparent border-0"
-            />
-          </Media>
-        );
-      })}
+          );
+        })}
     </>
   );
 };
