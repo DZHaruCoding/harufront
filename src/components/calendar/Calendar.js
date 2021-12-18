@@ -118,6 +118,8 @@ const Calendar = () => {
         console.log(error);
       }
     };
+
+    
     fetchfun();
   }, [changeChk]);
 
@@ -227,7 +229,57 @@ const Calendar = () => {
     }
   }
 
+    const draganddrop = (e) =>{
+    //날짜 format
+    var today = new Date(e.event.start);
+    var year = today.getFullYear();
+    var month = ('0' + (today.getMonth() + 1)).slice(-2);
+    var day = ('0' + today.getDate()).slice(-2);
+    var dateString = year + '-' + month  + '-' + day;
+    
+    if(e.event.end == null){
+      var dateStringend = dateString;
+    } else {
+      var today = new Date(e.event.end);
+      var year = today.getFullYear();
+      var month = ('0' + (today.getMonth() + 1)).slice(-2);
+      var day = ('0' + today.getDate()).slice(-2);
+      var dateStringend = year + '-' + month  + '-' + day;
+    }  
+    const scheduleNo = e.event.id;
+    const scheduleTitle = e.event.title;
+  
+    let data = {
+      scheduleNo:scheduleNo,
+      scheduleContents:scheduleTitle,
+      scheduleStart:dateString,
+      scheduleEnd:dateStringend
+    }
+  
+    const fetchfun = async () =>{
+      console.log('data',data);
+      const response = await fetch('/haru/api/calendar/schedule/update',{
+        method:"put",
+        headers:{
+          'Content-Type':'application/json',
+          'Accept':'application/json'
+        },
+        body:JSON.stringify(data)
+      });
 
+      if(!response.ok){
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+  
+      const jsonResult = await response.json();
+      console.log('update',jsonResult);
+
+      setChangeChk(true);
+    }
+    fetchfun()
+    }
+  
+  
   return (
     <>
     
@@ -324,6 +376,7 @@ const Calendar = () => {
             eventClick={handleEventClick}
             events={calendarList}
             buttonText={buttonText}
+            eventDrop={draganddrop}
           />
         </CardBody>
       </Card>
