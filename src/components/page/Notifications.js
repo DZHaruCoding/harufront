@@ -244,12 +244,48 @@ const Notifications = ({ items = rawNotifications.length, children }) => {
   }
   };
 
+  const allRemove = async (e) => {
+    e.preventDefault();
+
+    try {
+
+    const response = await fetch(`/haru/api/notice/allRemove`, {
+      method: 'post',
+      headers: {
+        "Content-Type": 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(window.sessionStorage.getItem("authUserNo"))
+    }, []);
+  
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+  
+    console.log("allDelete")
+    const jsonResult = await response.json();
+  
+    if (jsonResult.result != 'success') {
+      throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+    }
+
+    setIsAllRead(true);
+    setNotifications([]);
+
+    } catch(err) {
+      console.log(err);
+    }
+  };
+
   return (
     <Card className="h-100">
       <FalconCardHeader title="Your Notifications">
         <div className="fs--1">
           <Link className="text-sans-serif" to="#!" onClick={markAsRead}>
             Mark all as read
+          </Link>
+          <Link className="text-sans-serif ml-2 ml-sm-3" to="#!" onClick={allRemove}>
+            all remove
           </Link>
           {/* <Link className="text-sans-serif ml-2 ml-sm-3" to="#!" onClick={toggleSettingsModal}>
             Notification settings

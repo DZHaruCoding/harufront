@@ -137,6 +137,8 @@ const KanbanProvider = ({ children, curprojectNo, curprojectTitle }) => {
         throw new Error(`${jsonResult.result} ${jsonResult.message}`);
       }
 
+      console.log("요청 완료");
+
       return 'true';
     } catch (err) {
       console.error(err);
