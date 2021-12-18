@@ -37,7 +37,7 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 
 const KanbanContainer = () => {
 
-  const { kanbanColumns, UpdateColumnData, modalContent, modal, setModal, setModalContent } = useContext(KanbanContext);
+  const { kanbanColumns, UpdateColumnData, UpdateColumnData2, modalContent, modal, setModal, setModalContent } = useContext(KanbanContext);
 
   //const { kanbanColumns, UpdateColumnData, UpdateColumnData2, modalContent, modal, setModal } = useContext(KanbanContext);
 
