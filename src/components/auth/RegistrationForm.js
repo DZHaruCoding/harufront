@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Button, CustomInput, Form, FormGroup, Input, Label } from 'reactstrap';
+import { Button, CustomInput, Form, FormGroup, Input, Label, Spinner } from 'reactstrap';
 import withRedirect from '../../hoc/withRedirect';
+
 import '../../assets/scss/FormBox.scss';
 
 const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => {
@@ -13,8 +14,9 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isDisabled, setIsDisabled] = useState(true);
-  const [openModal, setOpenModal] = useState(false);
+  const [isClick, setIsClick] = useState(true);
 
+  const [showProgress, setShowProgress] = useState(true);
   // 오류 메세지 출력을 위한 상태값
   const [nameMessage, setNameMessage] = useState('')
   const [emailMessage, setEmailMessage] = useState('')
@@ -24,13 +26,11 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
   const [isName, setIsName] = useState(false)
   const [isEmail, setIsEmail] = useState(false)
   const [isPassword, setIsPassword] = useState(false)
-  // const [isAccepted, setIsAccepted] = useState(false);
-  // const [confirmPassword, setConfirmPassword] = useState('');
 
   const onChangeEmail = e => {
     setEmail(e.target.value);
     const emails = /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-    console.log("이메일 : " +email);
+    console.log("이메일 : " + email);
     if (emails.test(email)) {
       setEmailMessage('올바른 이메일 형식입니다')
       setIsEmail(true)
@@ -65,11 +65,16 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
 
   };
 
-
   // Handler
   const handleSubmit = async e => {
     //새로고침 방지를 위함
+
     e.preventDefault();
+    
+    setIsDisabled(true)
+    setShowProgress(false)
+    toast.success(`${email}로 이메일을 보내는 중입니다...시간이 걸릴수있습니다`);
+
 
     const json = {
       userEmail: email,
@@ -94,70 +99,77 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
       if (response.result !== 'success') {
         throw json.message;
       }
+      setShowProgress(true)
     } catch (err) {
+      setIsDisabled(false)
+      setShowProgress(true)
       console.log(err);
     }
 
-    //toast.success(`해당 이메일로 인증 메일이 발송되었습니다 ${email}`);
     setRedirect(true);
-  };
 
-  const findEmail = async ()=>{
-      console.log("확인할 email : "+email)
-      const emails = {userEmail : email}
-  
-      try {
-          const response = await fetch(`/haru/user/checkemail`, {
-            method: 'post',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify(emails)
-          })
-          
-          if (!response.ok) {
-            throw new Error(`${response.status} ${response.statusText}`)
-          }
-          
-          const json = await response.json();
-          console.log(json);
-
-          console.log(json.data);
-          if (json.result !== 'success') {
-            throw json.message;
-          }
-
-          if(json.data) {
-            setEmailMessage("이미 가입된 이메일 입니다.") 
-            setIsEmail(false)
-          } else {
-            setEmailMessage("가입이 가능한 이메일 입니다") 
-          }
-            
-           
-
-        } catch (err) {
-          console.log(err);
-        }
   }
 
-  useEffect(()=>{
-    if(isEmail){
-      findEmail();    
+  const findEmail = async () => {
+    console.log("확인할 email : " + email)
+    const emails = { userEmail: email }
+
+    try {
+      const response = await fetch(`/haru/user/checkemail`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(emails)
+      })
+
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`)
+      }
+
+      const json = await response.json();
+      console.log(json);
+
+      console.log(json.data);
+      if (json.result !== 'success') {
+        throw json.message;
+      }
+
+      if (json.data) {
+        setEmailMessage("이미 가입된 이메일 입니다.")
+        setIsEmail(false)
+      } else {
+        setEmailMessage("가입이 가능한 이메일 입니다")
+      }
+
+
+
+    } catch (err) {
+      console.log(err);
     }
-  },[isEmail])
+  }
 
   useEffect(() => {
-    setRedirectUrl(`/authentication/${layout}/login`);
+    console.log("가자아앙아")
+  }, [handleSubmit])
+
+  useEffect(() => {
+    if (isEmail) {
+      findEmail();
+    }
+  }, [isEmail])
+
+  useEffect(() => {
+    setRedirectUrl(`/authentication/${layout}/ConfirmMail`);
   }, [setRedirectUrl, layout]);
 
   useEffect(() => {
-    setIsDisabled(!isName || !isEmail ||!isPassword);
-  }, [isName, isEmail ,isPassword]);
+    setIsDisabled(!isName || !isEmail || !isPassword);
+  }, [isName, isEmail, isPassword]);
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form >
       {/* 이메일 입력 */}
       <FormGroup>
         {hasLabel && <Label>Email address</Label>}
@@ -165,7 +177,6 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
           placeholder={!hasLabel ? 'Email address' : ''}
           value={email}
           onChange={onChangeEmail}
-        // type="email"
         />
         {email.length > 0 && <span className={`message ${isEmail ? 'success' : 'error'}`}>{emailMessage}</span>}
       </FormGroup>
@@ -190,16 +201,11 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
       </div>
       <FormGroup>
 
-        {/* <Button tag={Link} to="/authentication/basic/forget-password" color="primary" block className="mt-3">
-          다음
-        </Button> */}
-        <Button color="primary" block className="mt-3" disabled={isDisabled} >
+        <Button color="primary" block className="mt-3" disabled={isDisabled} onClick={handleSubmit}>
           다음
         </Button>
       </FormGroup>
-      
-      {/* //<Divider className="mt-4">or register with</Divider> */}
-      {/* <SocialAuthButtons /> */}
+      <Spinner hidden={showProgress} color="info" />
     </Form>
   );
 };

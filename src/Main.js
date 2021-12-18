@@ -23,6 +23,8 @@ const Main = props => {
   const [navbarCollapsed, setNavbarCollapsed] = useState(false);
   const [isAllRead, setIsAllRead] = useState(true);
   const { loading, data: notifications, setData: setNotifications } = useFakeFetchV2([]);
+  // 프로필 상태값
+  const [profiles, setProfiles] = useState(null);
 
   //2개 title, no use만들고 value에 값,set
   const [projectNo, setProjectNo] = useState(0);
@@ -107,7 +109,9 @@ const Main = props => {
     setIsAllRead,
     loading, 
     notifications, 
-    setNotifications
+    setNotifications,
+    profiles,
+    setProfiles
   };
 
   const setStylesheetMode = mode => {

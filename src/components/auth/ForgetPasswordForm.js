@@ -19,7 +19,7 @@ const ForgetPasswordForm = ({ setRedirect, setRedirectUrl, layout }) => {
     setSendCheck(true);
 
     try {
-      const response = await fetch(`${localIp}/api/user/findPassword`, {
+      const response = await fetch(`haru/user/findPassword`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
