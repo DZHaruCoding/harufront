@@ -20,7 +20,7 @@ export const fileReducer = (state, action) => {
         return state;
       }
       console.log('리듀서 : 삭제하기 발동');
-      console.log(`${payload.fileNo}`);
+      console.log('reduer에서 ', `${payload.fileNo}`);
 
       return state.filter(item => item.fileNo !== id);
   }

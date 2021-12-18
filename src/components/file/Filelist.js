@@ -8,7 +8,8 @@ import txtimg from '../../assets/img/txt.png';
 import attachimg from '../../assets/img/attach.png';
 import { localIp } from '../../config';
 import axios from 'axios';
-export const API_URL = 'http://localhost:8080';
+import { Image } from 'react-bootstrap';
+const API_URL = 'http://localhost:8080';
 const Filelist = ({ fileNo }) => {
   const { products, productsDispatch } = useContext(ProductContext);
 
@@ -18,7 +19,7 @@ const Filelist = ({ fileNo }) => {
 
   function downloadData(fileNo) {
     //blob : 이미지, 사운드, 비디오와 같은 멀티미디어 데이터를 다룰 때 사용, MIME 타입을 알아내거나, 데이터를 송수신
-    fetch(`${API_URL}/haru/api/download/19`).then(response => {
+    fetch(`${API_URL}/haru/api/download/${fileNo}`).then(response => {
       console.log(`${fileNo}`);
       const filename = response.headers.get('Content-Disposition').split('filename=')[1];
       console.log(filename);
@@ -53,22 +54,27 @@ const Filelist = ({ fileNo }) => {
       </Col>
       <Col xs={9} md={2} className="p-2 px-md-3">
         {originName.split('.')[1] === 'csv' || originName.split('.')[1] === 'xlxs' ? (
-          <img src={excelimg} alt={originName} onClick={() => onClickDeleteFile(fileNo)} style={{ width: '50%' }} />
+          <Image src={excelimg} alt={originName} onClick={() => onClickDeleteFile(fileNo)} style={{ width: '50%' }} />
         ) : (
           <>
             {originName.split('.')[1] === 'txt' ? (
-              <img src={txtimg} alt={originName} onClick={() => downloadFile(fileNo)} style={{ width: '50%' }} />
+              <Image src={txtimg} alt={originName} onClick={() => downloadFile(fileNo)} style={{ width: '50%' }} />
             ) : (
               <>
                 {originName.split('.')[1] === 'png' || originName.split('.')[1] === 'jpg' ? (
-                  <img
-                    src={`${API_URL}${filePath}`}
+                  <Image
+                    src={`${API_URL}/haru${filePath}`}
                     alt={originName}
                     onClick={() => downloadFile(fileNo)}
                     style={{ width: '50%' }}
                   />
                 ) : (
-                  <img src={attachimg} alt={originName} onClick={() => downloadFile(fileNo)} style={{ width: '50%' }} />
+                  <Image
+                    src={attachimg}
+                    alt={originName}
+                    onClick={() => downloadFile(fileNo)}
+                    style={{ width: '50%' }}
+                  />
                 )}
               </>
             )}
@@ -115,16 +121,17 @@ const Filelist = ({ fileNo }) => {
   function onClickDeleteFile(fileNo) {
     if (window.confirm('파일을 삭제하시겠습니까?')) {
       axios
-        .post(`/haru/api/file/${fileNo}`)
-        .then()
+        .delete(`/haru/api/file/del/${fileNo}`)
+        .then(
+          productsDispatch({
+            type: 'FREMOVE',
+            payload: {
+              fileNo
+            },
+            id: fileNo
+          })
+        )
         .catch(console.error());
-      productsDispatch({
-        type: 'FREMOVE',
-        payload: {
-          fileNo
-        },
-        id: fileNo
-      });
     }
   }
 };
