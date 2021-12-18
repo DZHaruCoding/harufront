@@ -16,7 +16,7 @@ const ModalAttachmentsContent = () => {
   const { modalContent, setModalContent } = useContext(KanbanContext);
   const { filesInfo } = modalContent;
   useEffect(() => {
-    console.log('Modal첨부파일', modalContent.filesInfo);
+    // console.log('Modal첨부파일', modalContent.filesInfo);
     // changeName: "202111179152736.jpg"
     // fileMaker: "이종윤"
     // fileNo: 19
