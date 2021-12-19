@@ -16,7 +16,7 @@ const ModalLabelContent = () => {
         // console.log('키는 뭘까', modalContent.taskCard.taskNo);
         // console.log('키가 들어갈 data', response.data.data);
         let data = _.cloneDeep(response.data.data);
-        data.map(item => (item.taskNo = modalContent.taskCard.taskNo));
+        // data.map(item => (item.taskNo = modalContent.taskCard.taskNo));
         // console.log('axios로 불러온 data', data);
         setTagList(data);
       })

@@ -17,11 +17,13 @@ import _ from 'lodash';
 import ModalLabelContent from './ModalLabelContent';
 import ModalAttachmentsContent from './ModalAttachmentsContent';
 import ModalCommentContent from './ModalCommentContent';
-import ModalActivityContent from './ModalActivityContent';
+import ModalCheckListContent from './ModalCheckListContent';
 import { KanbanContext } from '../../context/Context';
-import UpdateModalDesc from './UpdateModalDesc';
-import axios from 'axios';
+import ModalDescContent from './ModalDescContent';
 const API_URL = 'http://localhost:8080/haru';
+const API_HEADERS = {
+  'Context-Type': 'application/json'
+};
 const KanbanModal = ({ modal, setModal, className }) => {
   const { modalContent, setModalContent } = useContext(KanbanContext);
   const [selectedFile, setSelectedFile] = useState('');
@@ -90,12 +92,18 @@ const KanbanModal = ({ modal, setModal, className }) => {
       formData.append('taskNo', modalContent.taskCard.taskNo);
       formData.append('userNo', '1');
 
-      axios
-        .post(`${API_URL}/api/upload`, formData)
+      fetch(`${API_URL}/api/upload`, {
+        method: 'post',
+        headers: API_HEADERS,
+        body: formData
+      })
         .then(response => response.json())
-        .then(json => {})
-        .catch(err => {
-          console.log(err);
+        .then(json => {
+          json.data.taskListNo = modalContent.taskCard.taskListNo;
+          console.log(json.data);
+          let data = _.cloneDeep(modalContent);
+          data.filesInfo = [...data.filesInfo, json.data];
+          setModalContent(data);
         });
     } else {
       const newAlert = {
@@ -104,7 +112,7 @@ const KanbanModal = ({ modal, setModal, className }) => {
         message: '지원하지 않는 파일 형식입니다.'
       };
       setAlerts([...alerts, newAlert]);
-      console.log(alerts);
+      alert(alerts);
     }
   };
 
@@ -143,7 +151,12 @@ const KanbanModal = ({ modal, setModal, className }) => {
         </div>
         <div className="p-4">
           <Row>
-            <Col lg="12">
+            <Col lg="10">
+              <ModalMediaContent title="할 일 리스트" icon="list-ul" headingClass="mb-3" isHr={false}>
+                <ModalCheckListContent />
+              </ModalMediaContent>
+              <hr />
+              <br />
               {/* //Group member */}
               {/* //labels */}
               <ModalMediaContent title="태그" icon="tag">
@@ -152,7 +165,7 @@ const KanbanModal = ({ modal, setModal, className }) => {
               {/* //description */}
               <ModalMediaContent title="테스크 설명" icon="paperclip">
                 <p className="text-word-break fs--1">{modalContent.taskCard && modalContent.taskCard.taskContents}</p>
-                <UpdateModalDesc />
+                <ModalDescContent />
               </ModalMediaContent>
               {/* //Attachment */}
               <ModalMediaContent
@@ -180,9 +193,6 @@ const KanbanModal = ({ modal, setModal, className }) => {
                 <ModalCommentContent />
               </ModalMediaContent>
               {/* //Activity */}
-              <ModalMediaContent title="Activity" icon="list-ul" headingClass="mb-3" isHr={false}>
-                <ModalActivityContent />
-              </ModalMediaContent>
             </Col>
           </Row>
         </div>
