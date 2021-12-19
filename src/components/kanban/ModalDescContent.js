@@ -6,7 +6,7 @@ import _, { isArray, set } from 'lodash';
 import { localIp } from '../../config';
 import SockJsClient from 'react-stomp';
 
-const UpdateModalDesc = () => {
+const ModalDescContent = () => {
   const { kanbanColumns, kanbanColumnsDispatch } = useContext(KanbanContext);
   const [showForm, setShowForm] = useState(false);
   const { modalContent, setModalContent } = useContext(KanbanContext);
@@ -134,4 +134,4 @@ const UpdateModalDesc = () => {
   );
 };
 
-export default UpdateModalDesc;
+export default ModalDescContent;
