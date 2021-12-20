@@ -23,7 +23,8 @@ const AddScheduleModal = ({
   setInitialEvents,
   initialEvents,
   addScheduleStartDate,
-  setAddScheduleStartDate
+  setAddScheduleStartDate,
+  isOpen
 }) => {
   const toggle = () => setIsOpenScheduleModal(!isOpenScheduleModal);
 
