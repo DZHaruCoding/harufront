@@ -21,8 +21,30 @@ const ModalDescContent = () => {
     let data = _.cloneDeep(modalContent);
 
     data.taskCard.taskContents = value;
+    const taskNo = data.taskCard.taskNo;
+    const taskData = { taskContents: value, taskNo: taskNo };
+    const updateContents = async () => {
+      const response = await fetch(`haru/api/tasksetting/task/update`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(taskData)
+      });
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
 
+      const jsonResult = await response.json();
+
+      if (jsonResult.result != 'success') {
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      }
+    };
+    updateContents();
     setModalContent(data);
+
     // console.log('수정 후 내용', data.taskCard.taskContents);
 
     // try {

@@ -62,23 +62,38 @@ const ModalAttachmentsContent = () => {
       <FontAwesomeIcon icon="times" transform="right-0.3 down-0.3" />
     </button>
   );
-  const newInfo = [];
+
+  // data.tagsInfo = filteredState;
+  // setModalContent(data);
+  // const newInfo = [];
   function onClickDeleteFile(id) {
     if (window.confirm('파일을 삭제하시겠습니까?')) {
-      console.log(modalContent);
-      console.log('내가 지울 파일 번호id', id);
-      axios
-        .delete(`/haru/api/file/del/${id}`)
-        .then(
-          setModalContent({
-            filesInfo: _.filter(modalContent.filesInfo, function(item) {
-              return item.fileNo !== id;
-            })
-          })
-        )
-        .catch(console.error());
+      const delfile = async () => {
+        const response = await fetch(`/haru/api/file/del/${id}`, {
+          method: 'delete',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+          }
+        });
+        if (!response.ok) {
+          throw new Error(`${response.status} ${response.statusText}`);
+        }
+
+        const jsonResult = await response.json();
+
+        if (jsonResult.result != 'success') {
+          throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+        }
+        let data = _.cloneDeep(modalContent);
+        const filteredState = modalContent.filesInfo.filter(item => item.fileNo !== id);
+        data.filesInfo = filteredState;
+        setModalContent(data);
+      };
+      delfile();
     }
   }
+
   console.log(modalContent);
   function downloadFile(fileNo) {
     if (window.confirm('파일을 다운로드 하시겠습니까?')) {
@@ -88,7 +103,7 @@ const ModalAttachmentsContent = () => {
 
   function downloadData(fileNo) {
     //blob : 이미지, 사운드, 비디오와 같은 멀티미디어 데이터를 다룰 때 사용, MIME 타입을 알아내거나, 데이터를 송수신
-    fetch(`${API_URL}/haru/api/download/${fileNo}`).then(response => {
+    fetch(`haru/api/download/${fileNo}`).then(response => {
       console.log(`${fileNo}`);
       const filename = response.headers.get('Content-Disposition').split('filename=')[1];
       console.log(filename);
@@ -126,7 +141,11 @@ const ModalAttachmentsContent = () => {
                   {item.originName.split('.')[1] === 'png' || item.originName.split('.')[1] === 'jpg' ? (
                     <>
                       <FalconLightBox imgSrc={`${API_URL}/haru${item.filePath}`}>
-                        <Link to={'#'} className="text-decoration-none" onClick={() => downloadFile(item.fileNo)}>
+                        <Link
+                          to={window.location.href}
+                          className="text-decoration-none"
+                          onClick={() => downloadFile(item.fileNo)}
+                        >
                           {item.originName}
                         </Link>
                       </FalconLightBox>

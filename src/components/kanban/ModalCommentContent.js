@@ -13,6 +13,7 @@ const API_URL = 'http://localhost:8080/haru';
 const API_HEADERS = {
   'Context-Type': 'application/json'
 };
+
 const ModalCommentContent = () => {
   const { modalContent, setModalContent } = useContext(KanbanContext);
   const [form, setForm] = useState('');
@@ -23,10 +24,9 @@ const ModalCommentContent = () => {
     const userNo = window.sessionStorage.getItem('authUserNo');
     const userName = window.sessionStorage.getItem('authUserName');
     const userPhoto = window.sessionStorage.getItem('authUserPhoto');
-    console.log('userPhoto===', userPhoto);
     const commentRegdate = 'Now';
     const commentContents = form;
-    //     commentContents: "이종윤이 Task1에 코멘트달았다"
+    // commentContents: "이종윤이 Task1에 코멘트달았다"
     // commentNo: 1
     // commentRegdate: "2021년 11월 30일"
     // commentState: null
@@ -36,20 +36,60 @@ const ModalCommentContent = () => {
     // userNo: 1
     // userPhoto: "empty.jpg"
 
-    const NewData = { taskNo, userNo, userName, commentContents, userPhoto, commentRegdate };
-    console.log(NewData);
-    let data = _.cloneDeep(modalContent);
-    data.commentsInfo = [NewData, ...data.commentsInfo];
-    setModalContent(data);
+    const NewData2 = { taskNo, userNo, commentContents };
+
+    const insertComment = async () => {
+      const response = await fetch(`haru/api/comment`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(NewData2)
+      });
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+
+      const jsonResult = await response.json();
+      const commentNo = jsonResult.data;
+      const NewData = { taskNo, userNo, userName, commentContents, userPhoto, commentRegdate, commentNo };
+
+      if (jsonResult.result != 'success') {
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      }
+      console.log(NewData);
+      let data = _.cloneDeep(modalContent);
+      data.commentsInfo = [NewData, ...data.commentsInfo];
+      setModalContent(data);
+    };
+    insertComment();
   }
   function deleteComment(commentNo) {
-    axios.delete(`/api/comment/${commentNo}`).then(
-      setModalContent({
-        commentsInfo: _.filter(modalContent.commentsInfo, function(item) {
-          return item.commentNo !== commentNo;
-        })
-      })
-    );
+    const delComment = async () => {
+      const response = await fetch(`haru/api/comment/${commentNo}`, {
+        method: 'delete',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        }
+      });
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+
+      const jsonResult = await response.json();
+
+      if (jsonResult.result != 'success') {
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      }
+      let data = _.cloneDeep(modalContent);
+      const filteredState = modalContent.commentsInfo.filter(item => item.commentNo !== commentNo);
+      data.commentsInfo = filteredState;
+      setModalContent(data);
+    };
+
+    delComment();
     // .catch(console.error());
   }
 
@@ -86,7 +126,7 @@ const ModalCommentContent = () => {
         modalContent.commentsInfo.map((comment, index) => {
           return (
             <Media className="mb-3" key={index}>
-              <Link to="pages/profile">
+              <Link to="window.location.href">
                 {comment.userPhoto == '/assets/img/Default.png' ? (
                   <Avatar src={`/assets/img/Default.png`} size="l" />
                 ) : (
@@ -95,7 +135,7 @@ const ModalCommentContent = () => {
               </Link>
               <Media body className="ml-2 fs--1">
                 <p className="mb-1 bg-200 rounded-soft p-2">
-                  <Link to="pages/profile" className="font-weight-semi-bold">
+                  <Link to="window.location.href" className="font-weight-semi-bold">
                     {comment.userName} :
                   </Link>
                   {comment.commentContents}
@@ -103,7 +143,7 @@ const ModalCommentContent = () => {
                 <Link
                   to="#!"
                   onClick={() => {
-                    deleteComment(comment.commentNo, index);
+                    deleteComment(comment.commentNo);
                   }}
                 >
                   Remove

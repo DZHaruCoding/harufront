@@ -103,7 +103,7 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
                       <Badge
                         className={`d-inline-block py-1 mr-1 mb-1`}
                         style={{ color: '#FFFFFF', backgroundColor: tagListVo.tagColor }}
-                        key={taskCard.taskNo}
+                        key={index}
                       >
                         {tagListVo.tagName}
                       </Badge>

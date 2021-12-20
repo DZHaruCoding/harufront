@@ -76,18 +76,37 @@ const KanbanModal = ({ modal, setModal, className }) => {
     const NewtaskName = form;
     let data = _.cloneDeep(modalContent);
     data.taskCard.taskName = NewtaskName;
-    setModalContent(data);
     setForm('');
     setOpen(false);
-    const data2 = data.taskCard;
-    const id = data2.taskNo;
-    const order = data2.taskOrder;
 
-    kanbanTaskCardsDispatch({
-      type: 'TASKNAME',
-      payload: { data2, order },
-      id: id
-    });
+    const taskNo = data.taskCard.taskNo;
+    const taskData = { taskNo: taskNo, taskName: NewtaskName };
+    const updatetitle = async () => {
+      const response = await fetch(`haru/api/tasksetting/task/update`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(taskData)
+      });
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+
+      const jsonResult = await response.json();
+
+      if (jsonResult.result != 'success') {
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      }
+    };
+    updatetitle();
+    setModalContent(data);
+    // kanbanTaskCardsDispatch({
+    //   type: 'TASKNAME',
+    //   payload: { data2, order },
+    //   id: id
+    // });
 
     // newTaskList = update(newTaskList, {
     //   [taskListIndex]: {
@@ -113,7 +132,6 @@ const KanbanModal = ({ modal, setModal, className }) => {
     setSelectedFile(event.target.files[0]);
   }
   const handleFileUpload = event => {
-    console.log(selectedFile);
     if (
       selectedFile !== null &&
       (selectedFile.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
@@ -126,12 +144,11 @@ const KanbanModal = ({ modal, setModal, className }) => {
         selectedFile.type === 'application/haansofthwp')
     ) {
       const formData = new FormData();
-
-      formData.append('file', selectedFile, selectedFile.name);
+      formData.append('file', selectedFile);
       formData.append('taskNo', modalContent.taskCard.taskNo);
-      formData.append('userNo', '1');
+      formData.append('userNo', window.sessionStorage.getItem('authUserNo'));
 
-      fetch(`${API_URL}/api/upload`, {
+      fetch(`haru/api/upload`, {
         method: 'post',
         headers: API_HEADERS,
         body: formData
@@ -139,7 +156,7 @@ const KanbanModal = ({ modal, setModal, className }) => {
         .then(response => response.json())
         .then(json => {
           json.data.taskListNo = modalContent.taskCard.taskListNo;
-          console.log(json.data);
+
           let data = _.cloneDeep(modalContent);
           data.filesInfo = [...data.filesInfo, json.data];
           setModalContent(data);
