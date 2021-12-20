@@ -73,6 +73,8 @@ const Calendar = () => {
   useEffect( () => {
     const fetchfun = async () => {
       try {
+        window.sessionStorage.getItem("authUserNo")
+        console.log('authUserNo',window.sessionStorage.getItem("authUserNo"));
         const response = await fetch('/haru/api/calendar/1',{
           method: 'get',
           headers:{
@@ -109,7 +111,9 @@ const Calendar = () => {
                                   id: task.taskNo,
                                   title: task.taskContents,
                                   start: task.taskStart,
-                                  end: task.taskEnd
+                                  end: task.taskEnd,
+                                  color:task.taskLabel,
+                                  textColor:"white"
                                   }]);
         console.log(test);
         setCalendarList(test);
