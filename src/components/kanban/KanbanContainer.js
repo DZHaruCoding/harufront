@@ -50,7 +50,7 @@ const KanbanContainer = () => {
 
 
 
-  //const { kanbanColumns, UpdateColumnData, UpdateColumnData2, modalContent, modal, setModal } = useContext(KanbanContext);
+  // const { kanbanColumns, UpdateColumnData, UpdateColumnData2, modalContent, modal, setModal } = useContext(KanbanContext);
 
 
   const containerRef = useRef(null);

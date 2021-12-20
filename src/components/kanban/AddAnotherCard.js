@@ -5,13 +5,11 @@ import { localIp } from '../../config';
 import SockJsClient from 'react-stomp';
 
 
-const AddAnotherCard = ({ kanbanColumnItem, setShowForm }) => {
+const AddAnotherCard = ({ kanbanColumnItem, setShowForm, websocket }) => {
   const { kanbanColumnsDispatch, kanbanTaskCards, kanbanTaskCardsDispatch } = useContext(KanbanContext);
 
   const [cardHeaderTitle, setCardHeaderTitle] = useState('');
-
-  const API_URL = 'http://localhost:8080/haru';
-  let clientRef = useRef(null);
+  
   const { projectNo, projectTitle } = useContext(AppContext);
 
   const handleAddCard = async value => {
@@ -21,7 +19,7 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm }) => {
       taskContents: value,
       taskListNo: kanbanColumnItem.taskListNo,
       taskOrder: kanbanColumnItem.taskVoList.length,
-      taskWriter: '조진석'
+      taskWriter: window.sessionStorage.getItem("authUserName")
     }
 
     const response = await fetch(`/haru/api/task/add`, {
@@ -71,15 +69,12 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm }) => {
       taskVoList : taskVoList,
       kanbanColumnItem : kanbanColumnItem,
       projectNo : projectNo,
-      projectTitle : projectTitle
+      projectTitle : projectTitle,
+      userNo : window.sessionStorage.getItem("authUserNo")
     }
 
-    clientRef.current.sendMessage("/app/task/add", JSON.stringify(kanbanboardSocketData));
+    websocket.current.sendMessage("/app/task/add", JSON.stringify(kanbanboardSocketData));
   };
-
-  const socketCallback = e => {
-      console.log(e);
-  }
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -89,18 +84,7 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm }) => {
   };
   return (
     <div className="p-3 border bg-white rounded-soft transition-none mt-3">
-    <SockJsClient
-          url={`${API_URL}/socket`}
-          topics={[`/topic/kanban/task/add/${window.sessionStorage.getItem("authUserNo")}`]}
-          onMessage={socketData => {socketCallback(socketData)}}
-          ref={(client) => {
-            if (clientRef == null) {
-              clientRef = client
-            }
-            console.log(client);
-            
-          }}
-      />
+    
       <Form onSubmit={e => handleSubmit(e)}>
         <Input
           type="textarea"
