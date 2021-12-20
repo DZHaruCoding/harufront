@@ -214,9 +214,9 @@ const SettingDetail = ({ setRedirect, setRedirectUrl, layout}) => {
                     <Button color="red" onClick={() => setIsOpenModal(true)}>계정탈퇴</Button>
                 </FormGroup>
             </Form>
-            {/* <UserDeledModal isOpen={isOpenModal}/> */}
-            {/* <div className={modalStyles.modal_container}>
-                <Modal
+            {/* <UserDeledModal isOpen={isOpenModal}/>  */}
+             <div className={modalStyles.modal_container}>
+                {/* <Modal
                     isOpen={modalData.isOpen}
                     onRequestClose={() => setModalData({ isOpen: true })}
                     shouldCloseOnOverlayClick={true}
@@ -244,8 +244,8 @@ const SettingDetail = ({ setRedirect, setRedirectUrl, layout}) => {
                         </div>
                         <Button>취소</Button>
                     </Form>
-                </Modal>
-            </div> */}
+                </Modal> */}
+            </div>
         </Fragment>
     );
 };

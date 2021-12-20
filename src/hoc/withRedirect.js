@@ -9,7 +9,7 @@ const withRedirect = OriginalComponent => {
   const UpdatedComponent = props => {
     // State
     const [redirect, setRedirect] = useState(false);
-    const [redirectUrl, setRedirectUrl] = useState('/');
+    const [redirectUrl, setRedirectUrl] = useState('/pages/events');
 
     if (redirect) {
       return <Redirect to={redirectUrl} />;
