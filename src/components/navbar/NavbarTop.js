@@ -51,13 +51,13 @@ const NavbarTop = () => {
       {isTopNav ? (
         <Collapse navbar isOpen={navbarCollapsed} className="scrollbar">
           <Nav navbar>
-            <Button tag={Link} to="/" outline color={'info'} className="mr-2">
+            <Button tag={Link} to="/pages/events" outline color={'info'} className="mr-2">
               프로젝트
             </Button>
-            <Button tag={Link} to="/calendar" outline color={'info'} className="mr-2">
+            <Button tag={Link} to="/pages/calendar" outline color={'info'} className="mr-2">
               캘린더
             </Button>
-            <Button tag={Link} to="/kanban" outline color={'info'} className="mr-2">
+            <Button tag={Link} to="/pages/kanban" outline color={'info'} className="mr-2">
               칸반차트
             </Button>
             {/* <Button tag={Link} color="outline-light" className="mt-2 px-4" to="/authentication/card/login"></Button> */}

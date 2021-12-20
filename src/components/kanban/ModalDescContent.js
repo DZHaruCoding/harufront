@@ -15,7 +15,7 @@ const ModalDescContent = () => {
   const API_URL = 'http://localhost:8080/haru';
 
   const handleAddColumn = async value => {
-    // console.log('수정할 내용', value);
+    console.log('수정할 내용', value);
     // console.log('수정 전 내용', modalContent.taskCard.taskContents);
 
     let data = _.cloneDeep(modalContent);
@@ -45,6 +45,15 @@ const ModalDescContent = () => {
     updateContents();
     setModalContent(data);
 
+    const taskData2 = data.taskCard;
+    const id = data.taskCard.taskNo;
+    setModalContent(data);
+
+    kanbanColumnsDispatch({
+      type: 'TASKDESC',
+      payload: taskData2,
+      id: id
+    });
     // console.log('수정 후 내용', data.taskCard.taskContents);
 
     // try {

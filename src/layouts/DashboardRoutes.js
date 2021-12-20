@@ -61,7 +61,7 @@ import InvitePeople from '../components/page/InvitePeople';
 import Invoice from '../components/page/Invoice';
 import Notifications from '../components/page/Notifications';
 import People from '../components/page/People';
-import Settings from '../components/page/Settings';
+//import Settings from '../components/page/Settings';
 import BulkSelect from '../components/plugins/BulkSelect';
 import CalendarExample from '../components/plugins/CalendarExample';
 import Chart from '../components/plugins/Chart';
@@ -107,7 +107,7 @@ import Typography from '../components/utilities/Typography';
 import VerticalAlign from '../components/utilities/VerticalAlign';
 import Visibility from '../components/utilities/Visibility';
 import Widgets from '../components/widgets/Widgets';
-import ProfileAndSettings from '../components/page/ProfileAndSettings';
+import ProfileAndSettings from '../components/auth/ProfileAndSettings';
 
 const InboxRoutes = ({ match: { url } }) => (
   <InboxProvider>
@@ -165,23 +165,23 @@ const DashboardRoutes = () => (
 
     {/*calendar*/}
     {/* 행운 */}
-    <Route path="/calendar" exact component={Calendar} />
+    <Route path="/pages/calendar" exact component={Calendar} />
 
     {/*kanban*/}
     {/* 진석 */}
-    <Route path="/kanban" exact component={Kanban} />
+    <Route path="/pages/kanban" exact component={Kanban} />
 
     {/*E commerce*/}
     {/* <Route path="/e-commerce" component={ProductRoutes} /> */}
 
     {/* profile */}
     {/* 승현 */}
-    <Route path="/page/ProfileAndSettings" exact component={ProfileAndSettings}/>
+    <Route path="/pages/auth/ProfileAndSettings" exact component={ProfileAndSettings}/>
 
     {/*activity*/}
     {/* 종윤 */}
-    <Route path="/activity" exact component={Activity} />
-    <Route path="/files" exact component={Files} />
+    <Route path="/pages/activity" exact component={Activity} />
+    <Route path="/pages/files" exact component={Files} />
     {/*Email*/}
     {/* <Route path="/email" component={InboxRoutes} /> */}
 

@@ -28,7 +28,7 @@ const API_HEADERS = {
   'Context-Type': 'application/json'
 };
 const KanbanModal = ({ modal, setModal, className }) => {
-  const { modalContent, setModalContent, kanbanTaskCards, kanbanTaskCardsDispatch } = useContext(KanbanContext);
+  const { modalContent, setModalContent, kanbanTaskCards, kanbanTaskCardsDispatch, kanbanColumnsDispatch } = useContext(KanbanContext);
   const [selectedFile, setSelectedFile] = useState('');
   const [alerts, setAlerts] = useState([]);
   const [form, setForm] = useState('');
@@ -102,11 +102,12 @@ const KanbanModal = ({ modal, setModal, className }) => {
     };
     updatetitle();
     setModalContent(data);
-    // kanbanTaskCardsDispatch({
-    //   type: 'TASKNAME',
-    //   payload: { data2, order },
-    //   id: id
-    // });
+
+    kanbanColumnsDispatch({
+      type: 'TASKNAME',
+      payload: data2,
+      id: id
+    })
 
     // newTaskList = update(newTaskList, {
     //   [taskListIndex]: {

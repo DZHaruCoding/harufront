@@ -2,8 +2,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 import Image from 'react-bootstrap/Image';
 import DefaultImage from '../../assets/img/Default.png';
+import { toast } from 'react-toastify';
 import styles from '../../assets/scss/profile.scss';
 import axios from 'axios';
+
 
 const ProfileDetail = () => {
   const [userName, setUserName] = useState(''); // 이름
@@ -80,6 +82,8 @@ const ProfileDetail = () => {
     } catch (err) {
       console.log(err);
     }
+
+    toast.success(`변경되었습니다!!!`);
   };
 
   // 최초 유저정보 가져오기
@@ -141,14 +145,14 @@ const ProfileDetail = () => {
   }, [userPhoto]);
 
   return (
-    <div className="div-Form">
+    <div className="div-Form" >
       <Form onSubmit={handlerSubmit}>
         <FormGroup>
           <Label for="exampleFile">프로필사진 변경 하기</Label>
           <div>
-            {/* {userPhoto ?
-                        <Image src={userPhoto} roundedCircle /> : */}
-            <Image style={{ width: '150px', height: '150px' }} src={`/haru${userPhoto}`} roundedCircle />
+             {userPhoto === "/Default.png" ?
+                        <Image style={{ width: '150px', height: '150px' }} src={DefaultImage} roundedCircle /> : 
+                        <Image style={{ width: '150px', height: '150px' }} src={`/haru${userPhoto}`} roundedCircle />}
           </div>
           <Input type="file" onChange={ImgChange} />
         </FormGroup>
@@ -164,8 +168,8 @@ const ProfileDetail = () => {
           />
         </FormGroup>
         <FormGroup>
-          <Label for="exampleEmail">현제사용중인 이메일</Label>
-          <Input plaintext onChange={CheckedEmail} value={userEmail} />
+          <Label for="exampleEmail">현재사용중인 이메일</Label>
+          <Input plaintext onChange={CheckedEmail} value={userEmail} readOnly/>
         </FormGroup>
         <FormGroup>
           <Label for="exampleName">직함</Label>

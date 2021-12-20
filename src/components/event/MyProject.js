@@ -7,9 +7,12 @@ import EventDetailsForm from './EventDetailsForm';
 import styles from './modal.scss';
 import Datetime from 'react-datetime';
 import { localIp } from '../../config';
-import '../../assets/scss/cardTest.scss';
+import '../../assets/scss/cardTest.scss'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faBell, faCheckCircle, faTimesCircle, faAt, faCog, faTimes, faPlus} from '@fortawesome/free-solid-svg-icons';
 
-const Project = ({project, callback, deletecallback}) => {
+
+const Project = ({project, callback, deletecallback,key}) => {
   const {setProjectNo, setProjectTitle, projectNo, projectTitle} = useContext(AppContext);
 
   const members = project.members;
@@ -38,9 +41,14 @@ const Project = ({project, callback, deletecallback}) => {
 
   //프로젝트 업데이트 모달창 띄우기
   const projectUpdate = () =>{
+    setProjectUpdateTitle(project.projectTitle);
+    setProjectUpdateDesc(project.projectDesc);
+    setStartDate(project.projectStart);
+    setEndDate(project.projectEnd);
+    setMSelects([m]);
     setProjectUpdateModal(true);
     setProjectDetailModal(false);
-    setMSelects([]);
+    
     //
   }
 
@@ -234,39 +242,62 @@ const Project = ({project, callback, deletecallback}) => {
         className="position-relative pl-3"
         style={{
           flexWrap: "wrap",
-          flexDirection: "row"
+          flexDirection: "row",
+          maxWidth: "25%"
         }}>
  
-          <div style={{display:"flex"}}>
+
+          <div className='mt-2' style={{
+            border: "1px solid black",
+            height: "300px",
+            borderRadius:"20px",
+            padding:"10px",
+          }}>
+          <div style={{display:"flex",justifyContent:'space-between'}}>
           
-          <div style={{display:"flex"}}>
+          <div style={{display:"flex", justifyContent:"center",alignItems:"center"}}>
           <h6 className="fs-0 mb-1 " style={{color:"red"}}>
             제목 : {' '}
             {/* <Button className="ml-5">수정</Button> */}
-            <Link to={{pathname:"/kanban" ,state:{ projectNo:project.projectNo, projectTitle:project.projectTitle} }}>{project.projectTitle}</Link>
+            <Link to={{pathname:"/pages/kanban" ,state:{ projectNo:project.projectNo, projectTitle:project.projectTitle} }}>{project.projectTitle}</Link>
           </h6>
           </div>
-            <Button onClick={ () => { btnclick() }}>*</Button>
+            <Button style={{backgroundColor:"white", border:"0px", marginTop:"-5px"}} onClick={ () => { btnclick() }}><FontAwesomeIcon style={{color:"gray"}} icon={faCog}/></Button>
+            
           </div>
 
-          <p className="mb-1">
-           내용 : {' '}
-              {project.projectDesc}
-          </p>
-          <p className="mb-1">
-           시작일 :{' '}
-              {project.projectStart}
-          </p>
-          <p className="mb-1">
-           마감일 :{' '}
-              {project.projectEnd}
-          </p>
-          <p className="mb-1">
-           멤버 :{' '}
+          <div className="mb-1">
+           <Label>
+              내용 : 
+           </Label>
+           {' '}{project.projectDesc}
+          </div>
+          <div className="mb-1">
+           <Label>
+              시작일 :
+            </Label>
+           {' '}{project.projectStart}
+          </div>
+          <div className="mb-1">
+           <Label>
+              마감일 :
+           </Label>
+           {' '}{project.projectEnd}
+          </div>
+          <div className="mb-1">
+           <Label>
+           멤버 
+           </Label>
+           {' '}
               {
-                members.map( member => <Member member={member}/>)
+                members.map( member => <Member 
+                                          key={member.no}
+                                          member={member}/>)
               }
-          </p>
+          </div>
+          </div>
+
+
 
           {/* DetailModal 모달창 생성 */}
           {
@@ -283,12 +314,12 @@ const Project = ({project, callback, deletecallback}) => {
           
           >
           <div className='modal-content p-3'> 
-            <headers className="bg-light d-flex flex-between-center border-bottom-0">
+            <headers className=" d-flex flex-between-center border-bottom-0">
               <h1>{project.projectTitle}{' '}프로젝트</h1>
-              <button onClick={ () => modalFalse() }> Close</button>
+              <button style={{backgroundColor:"white", border:"0px", marginTop:"-10px"}} onClick={ () => modalFalse() }> <FontAwesomeIcon style={{fontSize:"25px"}} icon={faTimes}/></button>
             </headers>
             
-            <body className='p-2'>
+            <body className='p-2' style={{borderRadius:"10px"}}>
           <FormGroup>
             <Label className="fs-0" for="eventTitle" style={{color : "black", fontWeight: "bold"}}>
               제목
@@ -344,10 +375,15 @@ const Project = ({project, callback, deletecallback}) => {
             </div>
           </FormGroup>
           
-          <FormGroup style={{alignItems:'flex-center'}}>
-              <Button  onClick={ () => {projectUpdate() }}>수정</Button>
-              <Button  onClick={ () => {projectDelete() }}>삭제</Button>
-              <Button style={{alignItems:'flex-center', marginLeft:"10px",marginRight:"10px"}} onClick={ () => { modalFalse() }}>확인</Button>
+          <FormGroup style={{display:"flex", justifyContent:"end"}}>
+
+            <div style={{marginRight:"100px"}}>
+              <Button style={{marginRight:"10px",backgroundColor:"white", color:"black"}}  onClick={ () => {projectUpdate() }}>수정</Button>
+              <Button style={{backgroundColor:"white", color:"black"}} onClick={ () => {projectDelete() }}>삭제</Button>
+            </div>  
+            <div style={{}}>
+              <Button style={{backgroundColor:"white", color:"black"}} onClick={ () => { modalFalse() }}>확인</Button>
+            </div>
           </FormGroup>
             </body>
           </div>
@@ -368,9 +404,9 @@ const Project = ({project, callback, deletecallback}) => {
             >
             
             <div className='modal-content p-3'> 
-            <headers className="bg-light d-flex flex-between-center border-bottom-0">
+            <headers className="d-flex flex-between-center border-bottom-0">
               <h1>프로젝트 수정</h1>
-              <button onClick={ () => modalFalse() }> Close</button>
+              <button style={{backgroundColor:"white", border:"0px", marginTop:"-10px"}} onClick={ () => modalFalse() }> <FontAwesomeIcon style={{fontSize:"25px"}} icon={faTimes}/></button>
             </headers>
             
             <body className='p-2'>
@@ -442,10 +478,11 @@ const Project = ({project, callback, deletecallback}) => {
               멤버 추가
             </Label>
             <br/>
-            <button onClick={ () => {
+            <button style={{backgroundColor:"#EDF2F9",border:"0px" }} onClick={ () => {
               memberSearchandInput();
             }} className='mr-3 '>
-              +</button>
+              <FontAwesomeIcon style={{color:"#27BCFD", fontSize:"25px"}} icon={faPlus}/></button>
+
               {
               memberInputOpen == false ?
               null
@@ -479,7 +516,7 @@ const Project = ({project, callback, deletecallback}) => {
                 <div style={{marginLeft:"20px"}}>
                   {
                     m
-                      .map(mlist => <div> <div>{mlist.userName}{mlist.userEmail}</div> </div>)
+                      .map(mlist => <div> <div>{mlist.userName}{' '}{mlist.userEmail}</div> </div>)
                   }
                 </div>
               }
@@ -487,8 +524,8 @@ const Project = ({project, callback, deletecallback}) => {
               
           </FormGroup>
           
-          <FormGroup>
-              <Button style={{alignItems:'flex-center'}} onClick={ () => {pUpdate()}}>확인</Button>
+          <FormGroup style={{display:"flex", justifyContent:"end"}}>
+              <Button style={{backgroundColor:"white", color:"black"}} onClick={ () => {pUpdate()}}>확인</Button>
           </FormGroup>
             </body>
           </div>

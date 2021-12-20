@@ -1,14 +1,18 @@
 import React, { Fragment, useEffect, useState, useRef } from 'react';
-import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
-import Modal from 'react-modal';
+import { Button, Form, FormGroup, Input, Label,Modal } from 'reactstrap';
+// import Modal from 'react-modal';
+import withRedirect from '../../hoc/withRedirect';
 import UserDeledModal from './UserDeledModal';
 import modalStyles from '../../assets/scss/Modal.scss'
 import styles from '../../assets/scss/SettingDetails.scss';
+import styless from './modal.scss';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faBell, faCheckCircle, faTimesCircle, faAt, faCog, faTimes, faPlus} from '@fortawesome/free-solid-svg-icons';
 
 
-Modal.setAppElement('body');
+// Modal.setAppElement('body');
 
-const SettingDetail = () => {
+const SettingDetail = ({ setRedirect, setRedirectUrl, layout}) => {
     const [password, setPassword] = useState("");
     const [nowPassword, setNowPassword] = useState("");
     const [changedPassword, setChangedPassword] = useState("");
@@ -24,6 +28,8 @@ const SettingDetail = () => {
     const [NowPasswordMessage, setNowPasswordMessage] = useState("");
     const [isNowPassword, setIsNowPassword] = useState(false);
 
+    const [modalData,setModalData] = useState({isOpen: false});
+    const refForm = useRef(null);
 
     // 모달 상태값
     const [isOpenModal, setIsOpenModal] = useState(false);
@@ -69,60 +75,66 @@ const SettingDetail = () => {
                 setIsNowPassword(false)
                 setNowPasswordMessage("비밀번호가 일치하지 않습니다")
             }
+        
 
         } catch (err) {
             console.log(err);
         }
+
+
+
+        setRedirect(true);
     }
+
     
     // 계정 탈퇴시 사용하는 핸들러 함수
-    // const handleSubmitModal = async (e) => {
-    //     e.preventDefault();
-    //     try {
-    //         if (e.target.password.value === '') {
-    //             setModalData(Object.assign({}, modalData, {
-    //                 label: '비밀번호를 입력해주세요.',
-    //                 password: ''
-    //             }));
-    //             return;
-    //         }
+    const handleSubmitModal = async (e) => {
+        e.preventDefault();
+        try {
+            if (e.target.password.value === '') {
+                setModalData(Object.assign({}, modalData, {
+                    label: '비밀번호를 입력해주세요.',
+                    password: ''
+                }));
+                return;
+            }
 
-    //         console.log(modalData.messageNo, e.target.password.value)
+            console.log(modalData.messageNo, e.target.password.value)
 
-    //         const response = await fetch(`/haru/user/deleteUser`, {
-    //             method: 'post',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'Accept': 'application/json'
-    //             },
-    //             body: JSON.stringify({ userPassword: e.target.password.value })
-    //         });
+            const response = await fetch(`/haru/user/deleteUser`, {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ userPassword: e.target.password.value })
+            });
 
-    //         if (!response.ok) {
-    //             throw `${response.status} ${response.statusText}`;
-    //         }
+            if (!response.ok) {
+                throw `${response.status} ${response.statusText}`;
+            }
 
-    //         const json = await response.json();
-    //         console.log(json)
+            const json = await response.json();
+            console.log(json)
 
-    //         // 비밀번호가 틀린 경우
-    //         if (json.data === false) {
-    //             setModalData(Object.assign({}, modalData, {
-    //                 label: '비밀번호가 일치하지 않습니다.',
-    //                 password: ''
-    //             }));
-    //             return;
-    //         }
+            // 비밀번호가 틀린 경우
+            if (json.data === false) {
+                setModalData(Object.assign({}, modalData, {
+                    label: '비밀번호가 일치하지 않습니다.',
+                    password: ''
+                }));
+                return;
+            }
 
-    //         setModalData({
-    //             isOpen: false,
-    //             password: ''
-    //         });
+            setModalData({
+                isOpen: false,
+                password: ''
+            });
 
-    //     } catch (err) {
-    //         console.error(err);
-    //     }
-    // }
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
     const onChangePassword = e => {
         setChangedPassword(e.target.value);
@@ -157,7 +169,13 @@ const SettingDetail = () => {
         setIsDisabled(!isCkPassword || !isPassword);
     }, [isPassword, isCkPassword]);
 
+    useEffect(() => {
+        setRedirectUrl(`/authentication/basic/change-password`);
+    }, [setRedirectUrl, layout]);
 
+    const btnclick = () =>{
+        setIsOpenModal(false);
+    }
     return (
         <Fragment>
 
@@ -203,25 +221,30 @@ const SettingDetail = () => {
                 <FormGroup>
                     <Label for="examplePassword">계정 탈퇴하기</Label>
                     <br />
-                    <Button color="red" onClick={() => setIsOpenModal(true)}>계정탈퇴</Button>
+                    <Button style={{color:"red",backgroundColor:"#EDF2F9",border:"0px"}}  onClick={() => setIsOpenModal(true)}>계정탈퇴</Button>
                 </FormGroup>
             </Form>
+
             {/* <UserDeledModal isOpen={isOpenModal}/> */}
-            {/* <div className={modalStyles.modal_container}>
                 <Modal
-                    isOpen={modalData.isOpen}
+                    isOpen={isOpenModal}
                     onRequestClose={() => setModalData({ isOpen: true })}
                     shouldCloseOnOverlayClick={true}
-                    className={modalStyles.Modal}
-                    overlayClassName={modalStyles.Overlay}
-                    style={{ content: { width: 350 } }} >
-                    <h1>비밀번호입력</h1>
+                    className={ styless.Modal }
+                    overlayClassName={ styless.Overlay } 
+                  >
+                <div style={{padding:"10px"}}>
+                    <div style={{display:"flex", justifyContent:'space-between'}}>
+                    <h1>비밀번호 입력</h1>
+                    <Button style={{backgroundColor:"white", border:"0px", marginTop:"-5px"}} onClick={ () => { btnclick() }}><FontAwesomeIcon style={{color:"gray"}} icon={faTimes}/></Button>
+                    </div>
 
-
-                    <Form
+                    <div
                         ref={refForm}
                         className={styles.DeleteForm}
-                        onSubmit={handleSubmitModal}>
+                        onSubmit={handleSubmitModal}
+                        // style={{position:}}
+                        >
                         <Label>{modalData.label || ''}</Label>
                         <Input
                             type={'password'}
@@ -231,15 +254,17 @@ const SettingDetail = () => {
                             placeholder={'비밀번호'}
                             onChange={(e) => setModalData(Object.assign({}, modalData, { password: e.target.value }))} />
                         <br />
-                        <div  className={modalStyles['modal-dialog-buttons'] }>
-                        <Button >확인</Button>
+                        <div style={{display:"flex", justifyContent:"end"}}>
+                            <div  className={modalStyles['modal-dialog-buttons'] }>
+                                <Button style={{backgroundColor:"white", color:"black"}}>확인</Button>
+                            </div>
+                               <Button style={{marginLeft:"10px",backgroundColor:"white", color:"black"}} onClick={ () => {btnclick() }}>취소</Button>
                         </div>
-                        <Button>취소</Button>
-                    </Form>
+                    </div>
+                </div>    
                 </Modal>
-            </div> */}
         </Fragment>
     );
 };
 
-export default SettingDetail;
+export default withRedirect(SettingDetail);
