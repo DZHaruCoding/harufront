@@ -31,41 +31,101 @@ const ModalCheckListContent = () => {
       checklistState: check.checklistState === 'done' ? 'do' : 'done',
       taskNo: check.taskNo
     };
+    let newCheckList1 = {
+      checklistNo: check.checklistNo,
+      checklistState: check.checklistState === 'done' ? 'do' : 'done',
+      taskNo: check.taskNo
+    };
     data.checkListInfo.splice(index, 1, newCheckList);
-    setModalContent(data);
-    // data.checkListInfo.checklistState == 'done';
 
-    // data.checkListInfo.checklistState == 'do';
+    const fetchupdate = async () => {
+      const response = await fetch(`haru/api/tasksetting/checklist/update`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(newCheckList1)
+      });
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+
+      const jsonResult = await response.json();
+
+      if (jsonResult.result != 'success') {
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      }
+      setModalContent(data);
+    };
+    fetchupdate();
   }
 
   function delCheckList(check) {
     let data = _.cloneDeep(modalContent);
-    const index = _.findIndex(data.checkListInfo, { checklistNo: check.checklistNo });
+    const checklistNo = check.checklistNo;
+    const index = _.findIndex(data.checkListInfo, { checklistNo: checklistNo });
     let newCheckList = {
-      checklistNo: check.checklistNo,
+      checklistNo: checklistNo,
       checklistContents: check.checklistContents,
       checklistState: check.checklistState === 'del' ? 'del' : 'del',
       taskNo: check.taskNo
     };
     data.checkListInfo.splice(index, 1, newCheckList);
-    setModalContent(data);
+
+    const delcheck = async () => {
+      const response = await fetch(`haru/api/tasksetting/checklist/${checklistNo}`, {
+        method: 'delete',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        }
+      });
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+
+      const jsonResult = await response.json();
+
+      if (jsonResult.result != 'success') {
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      }
+      setModalContent(data);
+    };
+
+    delcheck();
   }
 
-  function insertChecklist() {
-    // const NewTodo = { taskNo, checklistContents };
-    const NewTodo = { taskNo: 1, checklistContents: 'test 입니다.' };
+  function insertcheck() {
     const taskNo = modalContent.taskCard.taskNo;
     const checklistContents = form;
-    let data = _.cloneDeep(modalContent);
-    data.checkListInfo = [NewTodo, ...data.checkListInfo];
+    const NewTodo = { taskNo, checklistContents };
+    let data1 = _.cloneDeep(modalContent);
+    data1.checkListInfo = [NewTodo, ...data1.checkListInfo];
     //
-    axios
-      .post(`haru/api/tasksetting/checklist/add`, {
-        body: JSON.stringify(NewTodo)
-      })
-      .then(response => console.log(response));
 
-    setModalContent(data);
+    const fetchinsert = async () => {
+      const response = await fetch(`haru/api/tasksetting/checklist/add`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(NewTodo)
+      });
+      setModalContent(data1);
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+
+      const jsonResult = await response.json();
+
+      if (jsonResult.result != 'success') {
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      }
+    };
+    fetchinsert();
+
     setForm('');
     setOpen(false);
   }
@@ -127,7 +187,7 @@ const ModalCheckListContent = () => {
             onChange={e => setForm(e.target.value)}
             value={form}
           />
-          <Button variant="outline-secondary" id="button-addon2" onClick={() => insertChecklist()}>
+          <Button variant="outline-secondary" id="button-addon2" onClick={() => insertcheck()}>
             추가
           </Button>
         </InputGroup>
