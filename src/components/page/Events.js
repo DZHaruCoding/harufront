@@ -77,9 +77,10 @@ const Events = () => {
   
   //멤버 인풋
   const [memberInputOpen, setMemberInputOpen] = useState(false);
+  const [searchInputOpen,setSearchInputOpen] = useState(false);
   const [searchMembers, setSearchMembers] = useState(); 
 
-  const memberSearchandInput = () => {    
+  const memberSearchandInput = (memberInputOpen) => {    
     const fetchfun = async () => {
       try {
         const response = await fetch('/haru/api/project/member',{
@@ -113,7 +114,14 @@ const Events = () => {
       }
     }
     fetchfun();
-    setMemberInputOpen(true);
+    if(memberInputOpen === true){
+      setMemberInputOpen(false)
+      setSearchInputOpen(false)
+    }else{
+    setMemberInputOpen(true)
+    setSearchInputOpen(true)
+    }
+
   }
   //키워드
   const [keyword,setKeyword] = useState('');
@@ -202,7 +210,7 @@ const Events = () => {
     }
 
     const rending = (render) =>{
-      if(render == true){
+      if(render === true){
         setRend(true);
       }else{
         setRend(false);
@@ -224,8 +232,11 @@ const Events = () => {
         )} */}
         <Button color='info' onClick={ () => { setModalIsOpen(true) }}>프로젝트 생성</Button>
         
+ 
         {/* 프로젝트 생성 모달 창 */}
-        <Modal
+        {
+          modalIsOpen === true?
+          <Modal
           isOpen = {modalIsOpen}
           onRequestClose = { () => setModalIsOpen(false)}
           shouldCloseOnOverlayClick={ true } 
@@ -308,25 +319,27 @@ const Events = () => {
           <FormGroup>
             <h3>멤버 추가</h3>
             <button style={{backgroundColor:"#EDF2F9",border:"0px" }} onClick={ () => {
-              memberSearchandInput();
+              memberSearchandInput(memberInputOpen);
             }} className='mr-3 '>
               <FontAwesomeIcon style={{color:"#27BCFD", fontSize:"25px"}} icon={faPlus}/></button>
               {
               memberInputOpen == false ?
               null
               :
-              <input  id="member" name="meber" placeholder='멤버 찾기' value={keyword} onChange={ (e) => { let data = e.target.value; setKeyword(data)}}/>
+              <input style={{borderRadius:"5px", border:"1px solid black"}} id="member" name="meber" placeholder='멤버 찾기' value={keyword} onChange={ (e) => { let data = e.target.value; setKeyword(data)}}/>
               }
               {
+              searchInputOpen ==false ?
+              null :
                 !searchMembers ?
                 null:
                 //멤버 리스트 출력
-                <div>
+                <div className='mt-2' style={{overflowY:'scroll', height:"150px", border:"1px solid black",padding:"10px", borderRadius:"5px"}}>
                 {
                   searchMembers
                     .filter((searchMember)=> searchMember.userName.indexOf(keyword) !== -1 || searchMember.userEmail.indexOf(keyword) !== -1)
-                    .map(searchMember => <div onClick={ ()=>{ memberselect(searchMember.userNo, searchMember.userName, searchMember.userEmail, searchMember.userPhoto)}} 
-                    key={searchMember.userNo}><h6>{searchMember.userName}{' '}{searchMember.userEmail}</h6></div>)      
+                    .map(searchMember => <div style={{borderBottom:"1px dashed"}} onClick={ ()=>{ memberselect(searchMember.userNo, searchMember.userName, searchMember.userEmail, searchMember.userPhoto)}} 
+                    key={searchMember.userNo}><span style={{fontWeight:"bold", color:"rgb(94,110,130)"}}>{searchMember.userName}</span>{' '}<span>{searchMember.userEmail}</span></div>)      
                 }
                 </div>
               }
@@ -356,6 +369,9 @@ const Events = () => {
             </body>
           </div>
         </Modal>
+          :null
+        }
+        
         {/* end 프로젝트 생성 모달창 */}
 
 
