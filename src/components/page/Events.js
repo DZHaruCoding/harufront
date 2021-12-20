@@ -41,12 +41,14 @@ const Events = () => {
     console.log('들어옴?');
     const data = async ()=>{ 
     try {
+      console.log('authUserNo / fetch 수정해야함',window.sessionStorage.getItem("authUserNo"))
       const response = await fetch('/haru/api/project/1',{
         method: 'get',
         headers:{
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
+        // redirect:'manual(response.url)',
         body: null
       });
 
@@ -148,6 +150,7 @@ const Events = () => {
     setKeyword('');
     setMSelects([]);
     setMemberInputOpen(false);
+    setRend(true);
   }
   //프로젝트 모달창 input태그 오브젝트로 변환
   const [modalformObj, setModalFormObj] = useState();
@@ -192,7 +195,7 @@ const Events = () => {
         throw new Error(`${jsonResult.result} ${jsonResult.message}`);
         }
         setProjects([...projects,jsonResult.data]);
-        setRend(true);
+        
         modalFalse();
     }
     fetchfun();
