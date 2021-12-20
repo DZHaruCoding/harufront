@@ -47,6 +47,7 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
         sessionStorage.setItem('authUserEmail', json.data.userEmail);
         sessionStorage.setItem('authUserName', json.data.userName);
         sessionStorage.setItem('authUserNo', json.data.userNo);
+        sessionStorage.setItem('authUserPhoto', json.data.userPhoto);
         toast.success(`Logged in as ${email}`);
         setRedirect(true);
       }

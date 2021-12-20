@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 import {
   Button,
   Modal,
@@ -8,7 +8,8 @@ import {
   UncontrolledButtonDropdown,
   DropdownItem,
   DropdownMenu,
-  DropdownToggle
+  DropdownToggle,
+  Input
 } from 'reactstrap';
 import Background from '../common/Background';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -20,14 +21,18 @@ import ModalCommentContent from './ModalCommentContent';
 import ModalCheckListContent from './ModalCheckListContent';
 import { KanbanContext } from '../../context/Context';
 import ModalDescContent from './ModalDescContent';
+import { Collapse, FormControl, InputGroup } from 'react-bootstrap';
+import { arrayReducer } from '../../reducers/arrayReducer';
 const API_URL = 'http://localhost:8080/haru';
 const API_HEADERS = {
   'Context-Type': 'application/json'
 };
 const KanbanModal = ({ modal, setModal, className }) => {
-  const { modalContent, setModalContent } = useContext(KanbanContext);
+  const { modalContent, setModalContent, kanbanTaskCards, kanbanTaskCardsDispatch } = useContext(KanbanContext);
   const [selectedFile, setSelectedFile] = useState('');
   const [alerts, setAlerts] = useState([]);
+  const [form, setForm] = useState('');
+  const [open, setOpen] = useState(false);
 
   const toggle = () => setModal(!modal);
   useEffect(() => {
@@ -46,7 +51,6 @@ const KanbanModal = ({ modal, setModal, className }) => {
           const { checkListInfo, commentsInfo, filesInfo, tagsInfo } = jsonResult.data;
 
           // console.log('따끈따끈fetch데이터들', jsonResult);
-
           let data = _.cloneDeep(modalContent);
           data.checkListInfo = checkListInfo;
           data.commentsInfo = commentsInfo;
@@ -66,11 +70,46 @@ const KanbanModal = ({ modal, setModal, className }) => {
       fun();
     }
   }, [modal]);
-
   // formData라는 instance에 담아 보냄
   // onChange역할
+  function updataTaskName() {
+    const NewtaskName = form;
+    let data = _.cloneDeep(modalContent);
+    data.taskCard.taskName = NewtaskName;
+    setModalContent(data);
+    setForm('');
+    setOpen(false);
+    const data2 = data.taskCard;
+    const id = data2.taskNo;
+    const order = data2.taskOrder;
+
+    kanbanTaskCardsDispatch({
+      type: 'TASKNAME',
+      payload: { data2, order },
+      id: id
+    });
+
+    // newTaskList = update(newTaskList, {
+    //   [taskListIndex]: {
+    //     tasks: {
+    //       [taskIndex]: {
+    //         checkList: {
+    //           [checklistIndex]: {
+    //             socketType: { $set: 'checklistInsert' },
+    //             taskListIndex: { $set: taskListIndex },
+    //             taskIndex: { $set: taskIndex },
+    //             authUserNo: { $set: sessionStorage.getItem('authUserNo') },
+    //             projectNo: { $set: this.props.match.params.projectNo },
+    //             members: { $set: this.state.projectMembers }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // });
+    // kanbanTaskCardsDispatch({ type: 'TASKNAME', payload: { data2 } });
+  }
   function handleFileChange(event) {
-    console.log('선택한파일', event.target.files[0]);
     setSelectedFile(event.target.files[0]);
   }
   const handleFileUpload = event => {
@@ -132,13 +171,34 @@ const KanbanModal = ({ modal, setModal, className }) => {
           </div>
         )}
         <div className="bg-light rounded-soft-top px-4 py-3">
-          <h4 className="mb-1">{modalContent.taskCard && modalContent.taskCard.taskName} </h4>
-          <p className="fs--2 mb-0">
-            Added by{' '}
-            <a href="#!" className="text-600 font-weight-semi-bold">
-              Antony
-            </a>
-          </p>
+          <Button
+            onClick={() => setOpen(!open)}
+            aria-controls="example-collapse-text"
+            aria-expanded={open}
+            variant="falcon-secondary"
+            className="mb-2 float-end bg-black border"
+            sm={{
+              offset: 1,
+              size: 'auto'
+            }}
+          >
+            업무 명 : {modalContent.taskCard.taskName}
+          </Button>
+          <Collapse in={open}>
+            <InputGroup className="mb-3">
+              <FormControl
+                placeholder="제목을 입력해 주세요."
+                aria-label="Recipient's username"
+                aria-describedby="basic-addon2"
+                onChange={e => setForm(e.target.value)}
+                value={form}
+              />
+              <Button variant="outline-secondary" id="button-addon2" onClick={() => updataTaskName()}>
+                수정
+              </Button>
+            </InputGroup>
+          </Collapse>
+          <p className="fs--2 mb-0">Added by{modalContent.taskCard.taskWriter}</p>
         </div>
         <div className="position-absolute t-0 r-0  z-index-1">
           <Button

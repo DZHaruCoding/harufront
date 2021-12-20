@@ -2,12 +2,6 @@ import React, { useContext, useEffect, useReducer, useState } from 'react';
 import AppContext, { KanbanContext } from '../../context/Context';
 import { arrayReducer } from '../../reducers/arrayReducer';
 
-import rawKanbanItems, { rawItems } from '../../data/kanban/kanbanItems';
-import { localIp } from '../../config';
-import { json } from 'is_js';
-import { kanbanList } from '../../service/kanbanService';
-import axios from 'axios';
-
 const KanbanProvider = ({ children, curprojectNo, curprojectTitle }) => {
   const [kanbanColumns, kanbanColumnsDispatch] = useReducer(arrayReducer, []);
   const [kanbanTaskCards, kanbanTaskCardsDispatch] = useReducer(arrayReducer, []);
