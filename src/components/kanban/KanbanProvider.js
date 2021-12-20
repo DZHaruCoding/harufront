@@ -26,7 +26,6 @@ const KanbanProvider = ({ children, curprojectNo, curprojectTitle }) => {
   useEffect(() => {
     const fun = async () => {
       try {
-        console.log('aaaaaa', projectNo);
         // ${curprojectNo !== '' ? curprojectNo : projectNo}
         const response = await fetch(`/haru/api/tasklist/data/${curprojectNo !== '' ? curprojectNo : projectNo}`, {
           method: 'get',
@@ -96,7 +95,7 @@ const KanbanProvider = ({ children, curprojectNo, curprojectTitle }) => {
       },
       id: column.taskListNo
     });
-  }
+  };
 
   const UpdateColumnData = async (column, taskVoList) => {
     kanbanColumnsDispatch({
@@ -122,7 +121,7 @@ const KanbanProvider = ({ children, curprojectNo, curprojectTitle }) => {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          Accept: 'application/json'
         },
         body: JSON.stringify(json)
       });
@@ -137,7 +136,7 @@ const KanbanProvider = ({ children, curprojectNo, curprojectTitle }) => {
         throw new Error(`${jsonResult.result} ${jsonResult.message}`);
       }
 
-      console.log("요청 완료");
+      console.log('요청 완료');
 
       return 'true';
     } catch (err) {

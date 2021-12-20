@@ -19,7 +19,7 @@ const DashboardRoutes = loadable(() => import('./DashboardRoutes'));
 const DashboardLayout = ({ location }) => {
   const { isFluid, isVertical, navbarStyle } = useContext(AppContext);
   const { loading, notifications, setNotifications } = useContext(AppContext);
-  const {isAllRead, setIsAllRead} = useContext(AppContext);
+  const { isAllRead, setIsAllRead } = useContext(AppContext);
 
   const isKanban = getPageName('kanban');
 
@@ -33,24 +33,26 @@ const DashboardLayout = ({ location }) => {
 
   useEffect(() => {
     const noticeFetch = async () => {
-
       try {
-        const response = await fetch(`/haru/api/notice/getMyNotice`, {
-          method: 'post',
-          headers: {
-            "Content-Type": 'application/json',
-            'Accept': 'application/json'
+        const response = await fetch(
+          `/haru/api/notice/getMyNotice`,
+          {
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json'
+            },
+            body: JSON.stringify(window.sessionStorage.getItem('authUserNo'))
           },
-          body: JSON.stringify(window.sessionStorage.getItem("authUserNo"))
-        }, []);
-      
+          []
+        );
+
         if (!response.ok) {
           throw new Error(`${response.status} ${response.statusText}`);
         }
-      
+
         const jsonResult = await response.json();
-        console.log(jsonResult);
-      
+
         if (jsonResult.result != 'success') {
           throw new Error(`${jsonResult.result} ${jsonResult.message}`);
         }
@@ -63,11 +65,10 @@ const DashboardLayout = ({ location }) => {
         }
 
         setNotifications(jsonResult.data);
-      } catch(err) {
+      } catch (err) {
         console.log(err);
       }
-      
-    }
+    };
     noticeFetch();
   }, []);
 

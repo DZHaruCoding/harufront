@@ -2,13 +2,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Button, Badge, UncontrolledButtonDropdown, DropdownMenu, DropdownItem, DropdownToggle } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
-import _, { isArray, set } from 'lodash';
+import _ from 'lodash';
 import { KanbanContext } from '../../context/Context';
 
 const ModalLabelContent = () => {
   const { modalContent, setModalContent } = useContext(KanbanContext);
   const [tagList, setTagList] = useState([]);
-  const [test, setTest] = useState(modalContent);
 
   useEffect(() => {
     axios
@@ -16,8 +15,8 @@ const ModalLabelContent = () => {
       .then(response => {
         // console.log('키는 뭘까', modalContent.taskCard.taskNo);
         // console.log('키가 들어갈 data', response.data.data);
-        let data = response.data.data;
-        data.map(dat => (dat.taskNo = modalContent.taskCard.taskNo));
+        let data = _.cloneDeep(response.data.data);
+        // data.map(item => (item.taskNo = modalContent.taskCard.taskNo));
         // console.log('axios로 불러온 data', data);
         setTagList(data);
       })
@@ -28,9 +27,7 @@ const ModalLabelContent = () => {
     // console.log('지금 taskData', modalContent.tagsInfo);
     // console.log('새로넣을 tag', [tag]);
     let data = _.cloneDeep(modalContent);
-
     data.tagsInfo = data.tagsInfo.filter(item => item.tagNo != tagNo);
-
     if (data) {
       data.tagsInfo = [tag, ...data.tagsInfo];
     } else {

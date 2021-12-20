@@ -10,13 +10,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { KanbanContext, ProductContext } from '../../context/Context';
 import { Image } from 'react-bootstrap';
 import axios from 'axios';
+import _ from 'lodash';
 const API_URL = 'http://localhost:8080';
 const ModalAttachmentsContent = () => {
   const [nestedModal, setNestedModal] = useState(false);
   const { modalContent, setModalContent } = useContext(KanbanContext);
+  // const [filesInfo, setFilesInfo] = useState(modalContent.filesInfo);
   const { filesInfo } = modalContent;
+
+  function updataAttachments(val) {
+    let data = _.cloneDeep(modalContent);
+    data.commentsInfo = [val, ...data.commentsInfo];
+    setModalContent(data);
+  }
   useEffect(() => {
-    console.log('Modal첨부파일', modalContent.filesInfo);
+    // console.log('Modal첨부파일', modalContent.filesInfo);
     // changeName: "202111179152736.jpg"
     // fileMaker: "이종윤"
     // fileNo: 19
@@ -54,20 +62,30 @@ const ModalAttachmentsContent = () => {
       <FontAwesomeIcon icon="times" transform="right-0.3 down-0.3" />
     </button>
   );
-
+  const newInfo = [];
   function onClickDeleteFile(id) {
     if (window.confirm('파일을 삭제하시겠습니까?')) {
+      console.log(modalContent);
+      console.log('내가 지울 파일 번호id', id);
       axios
         .delete(`/haru/api/file/del/${id}`)
-        .then(setModalContent(filesInfo.filter(item => item.fileNo != id)))
+        .then(
+          setModalContent({
+            filesInfo: _.filter(modalContent.filesInfo, function(item) {
+              return item.fileNo !== id;
+            })
+          })
+        )
         .catch(console.error());
     }
   }
+  console.log(modalContent);
   function downloadFile(fileNo) {
     if (window.confirm('파일을 다운로드 하시겠습니까?')) {
       downloadData(fileNo);
     }
   }
+
   function downloadData(fileNo) {
     //blob : 이미지, 사운드, 비디오와 같은 멀티미디어 데이터를 다룰 때 사용, MIME 타입을 알아내거나, 데이터를 송수신
     fetch(`${API_URL}/haru/api/download/${fileNo}`).then(response => {
@@ -83,7 +101,6 @@ const ModalAttachmentsContent = () => {
       });
     });
   }
-
   return (
     <>
       {filesInfo &&
