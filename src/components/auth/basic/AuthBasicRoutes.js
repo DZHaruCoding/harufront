@@ -8,6 +8,7 @@ import ForgetPassword from './ForgetPassword';
 import PasswordReset from './PasswordReset';
 import ConfirmMail from './ConfirmMail';
 import LockScreen from './LockScreen';
+import Logoutchange from './Logoutchange'
 
 const AuthBasicRoutes = ({ match: { url } }) => (
   <Switch>
@@ -18,6 +19,7 @@ const AuthBasicRoutes = ({ match: { url } }) => (
     <Route path={`${url}/confirm-mail`} exact component={ConfirmMail} />
     <Route path={`${url}/password-reset`} exact component={PasswordReset} />
     <Route path={`${url}/lock-screen`} exact component={LockScreen} />
+    <Route path={`${url}/change-password`} exact component={Logoutchange} />
 
     {/*Redirect*/}
     <Redirect to="/errors/404" />

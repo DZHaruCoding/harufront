@@ -10,7 +10,7 @@ const ConfirmMailContent = ({ email, layout, titleTag: TitleTag }) => (
     <img className="d-block mx-auto mb-4" src={envelope} alt="sent" width={70} />
     <TitleTag>이메일을 확인해 주세요!!</TitleTag>
     <p>
-      회원가입시 입력하신 이메일 <strong>{email}</strong>로 인증 이메일이 발송되었습니다!. 이메일을 확인해주세요
+      입력하신 이메일로 인증 이메일이 발송되었습니다!<br /> 이메일을 확인해주세요.
     </p>
     <Button tag={Link} color="primary" size="sm" className="mt-3" to={`/authentication/${layout}/login`}>
       <FontAwesomeIcon icon="chevron-left" transform="shrink-4 down-1" className="mr-1" />
