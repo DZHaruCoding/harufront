@@ -52,7 +52,7 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm, websocket }) => {
       taskListNo: kanbanColumnItem.taskListNo,
       taskOrder: kanbanColumnItem.taskVoList.length,
       taskWriter: '조진석',
-      taskLabel:'red',
+      taskLabel:'#777777',
       taskVoList
     };
 
@@ -74,7 +74,8 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm, websocket }) => {
       kanbanColumnItem : kanbanColumnItem,
       projectNo : projectNo,
       projectTitle : projectTitle,
-      userNo : window.sessionStorage.getItem("authUserNo")
+      userNo : window.sessionStorage.getItem("authUserNo"),
+      userName : window.sessionStorage.getItem("authUserName")
     }
 
 
