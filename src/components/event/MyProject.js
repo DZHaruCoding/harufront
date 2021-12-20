@@ -45,7 +45,7 @@ const Project = ({project, callback, deletecallback,key}) => {
     setProjectUpdateDesc(project.projectDesc);
     setStartDate(project.projectStart);
     setEndDate(project.projectEnd);
-    setMSelects([members]);
+    setMSelects([m]);
     setProjectUpdateModal(true);
     setProjectDetailModal(false);
     

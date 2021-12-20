@@ -39,8 +39,10 @@ const Events = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => {
   //useEffect에 async 바로 주지말고 함수 만들어서 함수에 async
   useEffect(() => {
     console.log('들어옴?');
+
     const data = async () => {
       try {
+        console.log('authUserNo / fetch 수정해야함',window.sessionStorage.getItem("authUserNo"))
         const response = await fetch('/haru/api/project/1', {
           method: 'get',
           headers: {
@@ -155,6 +157,7 @@ const Events = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => {
     setKeyword('');
     setMSelects([]);
     setMemberInputOpen(false);
+    setRend(true);
   }
   //프로젝트 모달창 input태그 오브젝트로 변환
   const [modalformObj, setModalFormObj] = useState();
@@ -197,10 +200,12 @@ const Events = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => {
       const jsonResult = await response.json(); //여기서부터 오류 null값..
       if (jsonResult.result !== 'success') {
         throw new Error(`${jsonResult.result} ${jsonResult.message}`);
-      }
-      setProjects([...projects, jsonResult.data]);
-      setRend(true);
-      modalFalse();
+
+
+        }
+        setProjects([...projects,jsonResult.data]);
+        
+        modalFalse();
     }
     fetchfun();
   }

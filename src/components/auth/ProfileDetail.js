@@ -145,7 +145,7 @@ const ProfileDetail = () => {
   }, [userPhoto]);
 
   return (
-    <div className="div-Form">
+    <div className="div-Form" >
       <Form onSubmit={handlerSubmit}>
         <FormGroup>
           <Label for="exampleFile">프로필사진 변경 하기</Label>
@@ -168,8 +168,8 @@ const ProfileDetail = () => {
           />
         </FormGroup>
         <FormGroup>
-          <Label for="exampleEmail">현제사용중인 이메일</Label>
-          <Input plaintext onChange={CheckedEmail} value={userEmail} />
+          <Label for="exampleEmail">현재사용중인 이메일</Label>
+          <Input plaintext onChange={CheckedEmail} value={userEmail} readOnly/>
         </FormGroup>
         <FormGroup>
           <Label for="exampleName">직함</Label>

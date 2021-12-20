@@ -70,15 +70,20 @@ export const arrayReducer = (state, action) => {
         return state;
       }
       return orderBy(state, sortBy, order);
-    case 'TASKNAME':
-      /* Taskname 변경 */
-      const newTask = _.cloneDeep(payload.data2);
-      console.log('newTask', newTask);
-      const taskNo = newTask.taskNo;
-      console.log('taskNo', taskNo);
-      let data = state.filter(item => item.taskNo != taskNo);
-      console.log('data', data);
-      return [...data, newTask];
+    case 'TASKNAME': {       
+      let itemData = _.cloneDeep(state);
+
+      state.map((item1, i) => (itemData[i].taskVoList = item1.taskVoList.map(item2 => item2.taskNo === id ? payload : item2)));
+    
+      return itemData;
+    }
+    case 'TASKDESC': {
+      let itemData = _.cloneDeep(state);
+
+      state.map((item1, i) => (itemData[i].taskVoList = item1.taskVoList.map(item2 => item2.taskNo === id ? payload : item2)));
+    
+      return itemData;
+    }
     default:
       return state;
   }

@@ -15,18 +15,18 @@ const Profiles = () => {
     };
 
     return (
-        <div className={styles.Card}> 
+        <div className={styles.Card} style={{marginRight:"10px",width:"50%"}}> 
             <div style={ styleSideColor }/>
             <div 
                 className={
                     showDetails ?
                         [styles.Card__Title, styles.Card__Title__open].join(' ') : styles.Card__Title
                 }
-                onClick={(e)=> setShowDetails(!showDetails)}>프로필
+                onClick={(e)=> setShowDetails(!showDetails)} style={{display:"flex",justifyContent:"center", border:"1px solid black",backgroundColor:"white",borderRadius:"5px"}} >프로필
             </div>
             {
                 showDetails ?
-                <div className={styles.Card__Details}>
+                <div className={styles.Card__Details} style={{padding:"20px"}}>
                     <ProfileDetail />
                 </div> :
                 null
