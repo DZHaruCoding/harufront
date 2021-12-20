@@ -2,24 +2,24 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Button, Form, FormGroup, Input } from 'reactstrap';
+import { Button, Form, FormGroup, Input, Spinner } from 'reactstrap';
 import withRedirect from '../../hoc/withRedirect';
-import { localIp } from '../../config';
 
 const ForgetPasswordForm = ({ setRedirect, setRedirectUrl, layout }) => {
   // State
   const [email, setEmail] = useState('');
   const [sendCheck, setSendCheck] = useState(false);
   const [isfailCheck, setIsfailCheck] = useState(false);
+  const [showProgress, setShowProgress] = useState(true);
   // Handler
   // 이메일 보내는곳
   const handleSubmit = async e => {
     e.preventDefault();
     console.log(email);
-    setSendCheck(true);
-
+    setSendCheck(false);
+    setShowProgress(false)
     try {
-      const response = await fetch(`haru/user/findPassword`, {
+      const response = await fetch("/haru/user/findPassword", {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
@@ -32,11 +32,11 @@ const ForgetPasswordForm = ({ setRedirect, setRedirectUrl, layout }) => {
         throw new Error(`${response.status} ${response.statusText}`)
       }
 
-      // const json = await response.json();
-      // console.log(json);
-      if (response.result !== 'success') {
+      const json = await response.json();
+      console.log(json);
+      if (json.data == false) {
         setIsfailCheck(true);
-        throw response.message;
+        throw json.message;
       } else {
         setIsfailCheck(false);
       }
@@ -49,7 +49,7 @@ const ForgetPasswordForm = ({ setRedirect, setRedirectUrl, layout }) => {
     setRedirect(true);
 
 
-    //toast.success(`An email is sent to ${email} with password reset link`);
+    toast.success(`${email}로 이메일을 보내는 중이니다...시간이 걸릴수있습니다.`);
 
   };
 
@@ -76,8 +76,9 @@ const ForgetPasswordForm = ({ setRedirect, setRedirectUrl, layout }) => {
       </div>
       <FormGroup>
         <Button color="primary" block disabled={!email}>
-          Send reset link
+          이메일 전송
         </Button>
+        <Spinner hidden={showProgress} color="info" />
       </FormGroup>
       <Link className="fs--1 text-600" to={`/authentication/${layout}/login`}>
         로그인 페이지로 돌아가기

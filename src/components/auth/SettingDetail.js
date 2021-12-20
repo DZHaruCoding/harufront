@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState, useRef } from 'react';
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 import Modal from 'react-modal';
+import withRedirect from '../../hoc/withRedirect';
 import UserDeledModal from './UserDeledModal';
 import modalStyles from '../../assets/scss/Modal.scss'
 import styles from '../../assets/scss/SettingDetails.scss';
@@ -8,7 +9,7 @@ import styles from '../../assets/scss/SettingDetails.scss';
 
 Modal.setAppElement('body');
 
-const SettingDetail = () => {
+const SettingDetail = ({ setRedirect, setRedirectUrl, layout}) => {
     const [password, setPassword] = useState("");
     const [nowPassword, setNowPassword] = useState("");
     const [changedPassword, setChangedPassword] = useState("");
@@ -69,10 +70,15 @@ const SettingDetail = () => {
                 setIsNowPassword(false)
                 setNowPasswordMessage("비밀번호가 일치하지 않습니다")
             }
+        
 
         } catch (err) {
             console.log(err);
         }
+
+
+
+        setRedirect(true);
     }
     
     // 계정 탈퇴시 사용하는 핸들러 함수
@@ -157,7 +163,9 @@ const SettingDetail = () => {
         setIsDisabled(!isCkPassword || !isPassword);
     }, [isPassword, isCkPassword]);
 
-
+    useEffect(() => {
+        setRedirectUrl(`/authentication/basic/change-password`);
+    }, [setRedirectUrl, layout]);
     return (
         <Fragment>
 
@@ -242,4 +250,4 @@ const SettingDetail = () => {
     );
 };
 
-export default SettingDetail;
+export default withRedirect(SettingDetail);

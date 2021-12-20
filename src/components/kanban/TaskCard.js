@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect,useRef } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import {
   Card,
@@ -12,25 +12,42 @@ import {
   UncontrolledTooltip
 } from 'reactstrap';
 
+
+import SockJsClient from 'react-stomp';
 import { Link } from 'react-router-dom';
 import Avatar from '../common/Avatar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { KanbanContext } from '../../context/Context';
+import AppContext, { KanbanContext } from '../../context/Context';
 import { localIp } from '../../config';
 import { backgroundColor } from 'echarts/lib/theme/dark';
 import axios from 'axios';
 
 const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIndex }) => {
   const { kanbanColumns, kanbanColumnsDispatch, kanbanTaskCardsDispatch } = useContext(KanbanContext);
+  const { projectNo, projectTitle } = useContext(AppContext);
+  // 알림 떴는지 안떳는지의 상태
+  const { loading, notifications, setNotifications } = useContext(AppContext);
+  // 알림을 읽었는지 않있었는지에 대한 상태
+  const { isAllRead, setIsAllRead } = useContext(AppContext);
+
+  let clientRef = useRef(null);
+  const API_URL = 'http://localhost:8080/haru';
 
   const taskCardDelete = async () => {
+
+    const json = {
+      projectNo: projectNo,
+      projectTitle: projectTitle,
+      taskCardItemId: taskCardItemId
+    }
+
     const response = await fetch(`haru/api/task/delete`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json'
       },
-      body: JSON.stringify(taskCardItemId)
+      body: JSON.stringify(json)
     });
 
     if (!response.ok) {
@@ -55,6 +72,21 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
     });
   };
 
+  const socketCallback = (socketData) => {
+    console.log("asdsad", socketData);
+
+    kanbanTaskCardsDispatch({
+      type: 'REMOVE',
+      id: socketData.data,
+      isCard: true
+    });
+
+    kanbanColumnsDispatch({
+      type: 'TASKREMOVE',
+      id: socketData.data
+    });
+  }
+
   const tempStyle = {
     display: 'inline-block',
     margin: '5px'
@@ -69,6 +101,7 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
   return (
     <Draggable draggableId={`draggableId${taskCardItemId}`} index={taskCardIndex}>
       {(provided, snapshot) => (
+
         <div
           className="kanban-item"
           ref={provided.innerRef}
@@ -76,6 +109,16 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
           {...provided.dragHandleProps}
           style={provided.draggableProps.style}
         >
+          <SockJsClient
+            url={`${API_URL}/socket`}
+            topics={[`/topic/kanban/task/delete/${window.sessionStorage.getItem('authUserNo')}`]}
+            onMessage={socketData => {
+              socketCallback(socketData);
+            }}
+            ref={client => {
+              clientRef = client;
+            }}
+          />
           <Card
             className="kanban-item-card hover-actions-trigger "
             style={getItemStyle(snapshot.isDragging)}

@@ -14,7 +14,7 @@ const AuthCardRoutes = ({ match: { url } }) => (
     <Route path={`${url}/logout`} exact component={Logout} />
     <Route path={`${url}/register`} exact component={Registration} />
     <Route path={`${url}/forget-password`} exact component={ForgetPassword} />
-    <Route path={`${url}/confirm-mail`} exact component={ConfirmMail} />
+    <Route path={`${url}/confirm-mail/:email`} exact component={ConfirmMail} />
     <Route path={`${url}/password-reset`} exact component={PasswordReset} />
     <Route path={`${url}/lock-screen`} exact component={LockScreen} />
 
