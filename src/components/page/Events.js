@@ -15,6 +15,8 @@ import { flexibleCompare } from '@fullcalendar/react';
 import Datetime from 'react-datetime';
 import { Link } from 'react-router-dom';
 import { offline } from 'is_js';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faBell, faCheckCircle, faTimesCircle, faAt, faCog, faTimes, faPlus} from '@fortawesome/free-solid-svg-icons';
 
 
 const Events = () => {
@@ -62,6 +64,7 @@ const Events = () => {
 
       // setEmails에 데이터 셋팅하기
       setProjects(jsonResult.data);
+      setRend(false);
 
     } catch (error) {
       console.log(error);
@@ -230,9 +233,9 @@ const Events = () => {
           setSearchMembers={setSearchMembers}
           >
           <div className='modal-content p-3'> 
-            <headers className="bg-light d-flex flex-between-center border-bottom-0">
+            <headers className="d-flex flex-between-center border-bottom-0">
               <h1>프로젝트 생성</h1>
-              <button onClick={ () => modalFalse() }> Close</button>
+              <button style={{backgroundColor:"white", border:"0px", marginTop:"-10px"}} onClick={ () => modalFalse() }> <FontAwesomeIcon style={{fontSize:"25px"}} icon={faTimes}/></button>
             </headers>
             
             <body className='p-2'>
@@ -301,10 +304,10 @@ const Events = () => {
 
           <FormGroup>
             <h3>멤버 추가</h3>
-            <button onClick={ () => {
+            <button style={{backgroundColor:"#EDF2F9",border:"0px" }} onClick={ () => {
               memberSearchandInput();
             }} className='mr-3 '>
-              +</button>
+              <FontAwesomeIcon style={{color:"#27BCFD", fontSize:"25px"}} icon={faPlus}/></button>
               {
               memberInputOpen == false ?
               null
@@ -344,8 +347,8 @@ const Events = () => {
               
           </FormGroup>
           
-          <FormGroup>
-              <Button style={{alignItems:'flex-center'}} onClick={ () => {projectAdd()}}>생성</Button>
+          <FormGroup style={{display:"flex", justifyContent:"center"}}>
+              <Button style={{backgroundColor:"white", color:"black"}} onClick={ () => {projectAdd()}}>생성</Button>
           </FormGroup>
             </body>
           </div>

@@ -1,12 +1,14 @@
 import React from "react";
 
-const Member = ( {member})  => {
+const Member = ( {member,key})  => {
+    
+    // key();
     return(
-        <div>
-            <p>{member && member.userName}{' '}{member && member.userEmail}</p>
+        <div style={{marginBottom:"5px"}} className="ml-2">
+            <div>{member && member.userName}{' '}{member && member.userEmail}</div>
         </div>
     );
-    };
+};
 
 
 export default Member;
