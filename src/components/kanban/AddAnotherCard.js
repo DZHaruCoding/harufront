@@ -11,7 +11,7 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm }) => {
   const [cardHeaderTitle, setCardHeaderTitle] = useState('');
 
   const API_URL = 'http://localhost:8080/haru';
-  let clientRef = useRef(null);
+  let $webSocket = useRef(null);
   const { projectNo, projectTitle } = useContext(AppContext);
 
   const handleAddCard = async value => {
@@ -74,11 +74,11 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm }) => {
       projectTitle : projectTitle
     }
 
-    clientRef.current.sendMessage("/app/task/add", JSON.stringify(kanbanboardSocketData));
+    $webSocket.current.sendMessage("/app/task/add", JSON.stringify(kanbanboardSocketData));
   };
 
   const socketCallback = e => {
-      console.log(e);
+      console.log("sdsas" + e);
   }
 
   const handleSubmit = e => {
@@ -93,13 +93,7 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm }) => {
           url={`${API_URL}/socket`}
           topics={[`/topic/kanban/task/add/${window.sessionStorage.getItem("authUserNo")}`]}
           onMessage={socketData => {socketCallback(socketData)}}
-          ref={(client) => {
-            if (clientRef == null) {
-              clientRef = client
-            }
-            console.log(client);
-            
-          }}
+          ref={$webSocket}
       />
       <Form onSubmit={e => handleSubmit(e)}>
         <Input

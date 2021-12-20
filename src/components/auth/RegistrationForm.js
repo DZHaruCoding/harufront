@@ -150,9 +150,9 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
     }
   }
 
-  useEffect(() => {
-    console.log("가자아앙아")
-  }, [handleSubmit])
+  // useEffect(() => {
+  //   console.log("가자아앙아")
+  // }, [handleSubmit])
 
   useEffect(() => {
     if (isEmail) {
@@ -161,7 +161,7 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
   }, [isEmail])
 
   useEffect(() => {
-    setRedirectUrl(`/authentication/${layout}/ConfirmMail`);
+    setRedirectUrl(`/authentication/basic/confirm-mail`);
   }, [setRedirectUrl, layout]);
 
   useEffect(() => {
