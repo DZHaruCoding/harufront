@@ -18,6 +18,7 @@ const EventSummary = ({ projects, rendcallback }) => {
       <MyProject project={project}
                  callback={updatecallback}
                  deletecallback={deletecallback}
+                 key={project.no}
        />)
     }
     </Media>
