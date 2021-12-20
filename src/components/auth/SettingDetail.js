@@ -224,6 +224,7 @@ const SettingDetail = ({ setRedirect, setRedirectUrl, layout}) => {
                     <Button style={{color:"red",backgroundColor:"#EDF2F9",border:"0px"}}  onClick={() => setIsOpenModal(true)}>계정탈퇴</Button>
                 </FormGroup>
             </Form>
+
             {/* <UserDeledModal isOpen={isOpenModal}/> */}
                 <Modal
                     isOpen={isOpenModal}

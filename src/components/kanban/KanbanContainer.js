@@ -50,13 +50,13 @@ const KanbanContainer = () => {
 
 
 
-  // const { kanbanColumns, UpdateColumnData, UpdateColumnData2, modalContent, modal, setModal } = useContext(KanbanContext);
+  //const { kanbanColumns, UpdateColumnData, UpdateColumnData2, modalContent, modal, setModal } = useContext(KanbanContext);
 
 
   const containerRef = useRef(null);
   let clientRef = useRef(null);
-  const [kanban, setKanban] = useState();
   const API_URL = 'http://localhost:8080/haru';
+  const [kanban, setKanban] = useState();
 
   // Detect device
   useEffect(() => {

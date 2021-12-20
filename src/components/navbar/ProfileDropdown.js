@@ -28,7 +28,7 @@ const ProfileDropdown = () => {
       </DropdownToggle>
       <DropdownMenu right className="dropdown-menu-card">
         <div className="bg-white rounded-soft py-2">
-          <DropdownItem tag={Link} to="/auth/ProfileAndSettings">
+          <DropdownItem tag={Link} to="/pages/auth/ProfileAndSettings">
             프로필수정 &amp; 개인설정
           </DropdownItem>
           <DropdownItem divider />

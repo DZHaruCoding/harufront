@@ -11,7 +11,7 @@ const Registration = () => (
       </Col>
       <Col xs="auto">
         <p className="fs--1 text-600">
-          계정이 있으신가요? <Link to="/authentication/basic/login">Login</Link>
+          계정이 있으신가요? <Link to="">Login</Link>
         </p>
       </Col>
     </Row>
