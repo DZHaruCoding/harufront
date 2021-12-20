@@ -8,7 +8,11 @@ import { KanbanContext } from '../../context/Context';
 import team3 from '../../assets/img/team/3.jpg';
 import _ from 'lodash';
 import axios from 'axios';
-
+import { Image } from 'react-bootstrap';
+const API_URL = 'http://localhost:8080/haru';
+const API_HEADERS = {
+  'Context-Type': 'application/json'
+};
 const ModalCommentContent = () => {
   const { modalContent, setModalContent } = useContext(KanbanContext);
   const [form, setForm] = useState('');
@@ -18,7 +22,8 @@ const ModalCommentContent = () => {
     const taskNo = modalContent.taskCard.taskNo;
     const userNo = window.sessionStorage.getItem('authUserNo');
     const userName = window.sessionStorage.getItem('authUserName');
-    const userPhoto = team3;
+    const userPhoto = window.sessionStorage.getItem('authUserPhoto');
+    console.log('userPhoto===', userPhoto);
     const commentRegdate = 'Now';
     const commentContents = form;
     //     commentContents: "이종윤이 Task1에 코멘트달았다"
@@ -82,10 +87,10 @@ const ModalCommentContent = () => {
           return (
             <Media className="mb-3" key={index}>
               <Link to="pages/profile">
-                {comment.userPhoto == '/Default.png' ? (
-                  <Avatar src={`/haru/Default.png`} size="l" />
+                {comment.userPhoto == '/assets/img/Default.png' ? (
+                  <Avatar src={`/assets/img/Default.png`} size="l" />
                 ) : (
-                  <Avatar src={`/haru${comment.userPhoto}`} size="l" />
+                  <Avatar src={`${API_URL}${comment.userPhoto}`} size="l" />
                 )}
               </Link>
               <Media body className="ml-2 fs--1">

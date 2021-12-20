@@ -2,6 +2,7 @@ import React from 'react';
 import orderBy from 'lodash/orderBy';
 import { toast } from 'react-toastify';
 import { localIp } from '../config';
+import _ from 'lodash';
 
 export const arrayReducer = (state, action) => {
   const { type, id, payload, sortBy, order, isAddToStart, isUpdatedStart, isCard } = action;
@@ -69,6 +70,15 @@ export const arrayReducer = (state, action) => {
         return state;
       }
       return orderBy(state, sortBy, order);
+    case 'TASKNAME':
+      /* Taskname 변경 */
+      const newTask = _.cloneDeep(payload.data2);
+      console.log('newTask', newTask);
+      const taskNo = newTask.taskNo;
+      console.log('taskNo', taskNo);
+      let data = state.filter(item => item.taskNo != taskNo);
+      console.log('data', data);
+      return [...data, newTask];
     default:
       return state;
   }

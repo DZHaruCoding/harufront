@@ -6,6 +6,12 @@ import { KanbanContext } from '../../context/Context';
 import _ from 'lodash';
 import { Alert, Collapse, FormControl, InputGroup, ToggleButton } from 'react-bootstrap';
 import Flex from '../common/Flex';
+import axios from 'axios';
+
+const API_URL = 'http://localhost:8080/haru';
+const API_HEADERS = {
+  'Context-Type': 'application/json'
+};
 const ModalCheckListContent = () => {
   const { modalContent, setModalContent } = useContext(KanbanContext);
   const { checkListInfo } = modalContent;
@@ -46,13 +52,19 @@ const ModalCheckListContent = () => {
   }
 
   function insertChecklist() {
-    //
+    // const NewTodo = { taskNo, checklistContents };
+    const NewTodo = { taskNo: 1, checklistContents: 'test 입니다.' };
     const taskNo = modalContent.taskCard.taskNo;
     const checklistContents = form;
-
-    const NewTodo = { taskNo, checklistContents };
     let data = _.cloneDeep(modalContent);
     data.checkListInfo = [NewTodo, ...data.checkListInfo];
+    //
+    axios
+      .post(`haru/api/tasksetting/checklist/add`, {
+        body: JSON.stringify(NewTodo)
+      })
+      .then(response => console.log(response));
+
     setModalContent(data);
     setForm('');
     setOpen(false);
