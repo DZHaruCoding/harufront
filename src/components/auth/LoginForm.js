@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Button, Form, Row, Col, FormGroup, Input, CustomInput, Label } from 'reactstrap';
 import withRedirect from '../../hoc/withRedirect';
 import { localIp } from '../../config';
+import { ProfileContext } from '../../context/Context';
 
 const LoginForm = ({ setRedirect, hasLabel, layout }) => {
   // State
@@ -13,6 +14,7 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
   const [remember, setRemember] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
   const [isfailCheck, setIsfailCheck] = useState(false);
+  const {ProfilePhoto, setProfilePhoto} = useContext(ProfileContext);
 
   // 로그인
   const handleSubmit = async e => {
@@ -48,6 +50,7 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
         sessionStorage.setItem('authUserName', json.data.userName);
         sessionStorage.setItem('authUserNo', json.data.userNo);
         sessionStorage.setItem('authUserPhoto', json.data.userPhoto);
+        setProfilePhoto(json.data.userPhoto);
         toast.success(`Logged in as ${email}`);
         setRedirect(true);
       }

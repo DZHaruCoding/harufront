@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
@@ -6,6 +6,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import rocket from '../../assets/img/illustrations/rocket.png';
 
 const LogoutContent = ({ layout, titleTag: TitleTag }) => {
+
+  useEffect(()=>{
+    sessionStorage.clear();
+    try {
+      const response = fetch(`/haru/api/logout`, {
+        method: 'get'
+      })
+
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`)
+      }
+
+      console.log("로그아웃!!")
+
+    } catch (err) {
+      console.error(err);
+    }
+  },[])
+
   return (
     <Fragment>
       <img className="d-block mx-auto mb-4" src={rocket} alt="shield" width={70} />

@@ -54,14 +54,14 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
   const onChangePaswword = e => {
     setPassword(e.target.value);
     setIsPassword(true);
-    // const passwords = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/
-    // if (!passwords.test(password)) {
-    //   setPasswordMessage('특수문자, 문자, 숫자를 포함한 8~15 자리 이상이여야 합니다');
-    //   setIsPassword(false);
-    // } else {
-    //   setPasswordMessage("안정한 비밀번호 입니다");
-    //   setIsPassword(true)
-    // }
+    const passwords = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/
+    if (!passwords.test(password)) {
+      setPasswordMessage('특수문자, 문자, 숫자를 포함한 8~15 자리 이상이여야 합니다');
+      setIsPassword(false);
+    } else {
+      setPasswordMessage("안정한 비밀번호 입니다");
+      setIsPassword(true)
+    }
 
   };
 
@@ -196,7 +196,7 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
             onChange={onChangePaswword}
             type="password"
           />
-          {/* {password.length > 0 && (<span className={`message ${isPassword ? 'success' : 'error'}`}>{passwordMessage}</span>)} */}
+          {password.length > 0 && (<span className={`message ${isPassword ? 'success' : 'error'}`}>{passwordMessage}</span>)}
         </FormGroup>
       </div>
       <FormGroup>
