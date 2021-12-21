@@ -204,8 +204,6 @@ const Notifications = ({ items = rawNotifications.length, children }) => {
     e.preventDefault();
 
     try {
-      //TODO 조진석 : 더미데이터 사용
-
     const response = await fetch(`/haru/api/notice/noticeAllCheck`, {
       method: 'post',
       headers: {
