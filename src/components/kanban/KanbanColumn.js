@@ -11,7 +11,7 @@ import users from '../../data/dashboard/users';
 import ButtonIcon from '../common/ButtonIcon';
 import TaskCard from './TaskCard';
 import SockJsClient from 'react-stomp';
-import { API_URL } from '../../config';
+import { API_URL, GCP_API_URL } from '../../config';
 
 const KanbanColumn = ({ kanbanColumnItem, index }) => {
   const { kanbanTaskCards, kanbanTaskCardsDispatch, kanbanColumnsDispatch } = useContext(KanbanContext);
@@ -43,7 +43,7 @@ const KanbanColumn = ({ kanbanColumnItem, index }) => {
   return (
     <div className={classNames('kanban-column', { 'form-added': showForm })}>
       <SockJsClient
-          url={`${API_URL}/haru/socket`}
+          url={`${GCP_API_URL}/haru/socket`}
           topics={[`/topic/kanban/task/add/${window.sessionStorage.getItem("authUserNo")}`]}
           onMessage={socketData => {socketCallback(socketData)}}
           ref={$websocket}
