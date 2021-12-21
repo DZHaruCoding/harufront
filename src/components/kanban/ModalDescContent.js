@@ -24,7 +24,7 @@ const ModalDescContent = () => {
     const taskNo = data.taskCard.taskNo;
     const taskData = { taskContents: value, taskNo: taskNo };
     const updateContents = async () => {
-      const response = await fetch(`haru/api/tasksetting/task/update`, {
+      const response = await fetch(`/haru/api/tasksetting/task/update`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',

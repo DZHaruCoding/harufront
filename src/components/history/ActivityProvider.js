@@ -9,7 +9,7 @@ const ActivityProvider = ({ children }) => {
   useEffect(() => {
     const run = async projectNo => {
       // const response = await axios.get(`${localIp}/haru/api/history/${projectNo}`);
-      const response = await axios.get(`${localIp}/haru/api/history/1`);
+      const response = await axios.get(`/haru/api/history/1`);
       console.log(response.data);
       const item = response.data;
       activityLogDispatch({

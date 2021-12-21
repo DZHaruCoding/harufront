@@ -11,7 +11,7 @@ const ModalLabelContent = () => {
 
   useEffect(() => {
     axios
-      .get(`haru/api/taglist`)
+      .get(`/haru/api/taglist`)
       .then(response => {
         // console.log('키는 뭘까', modalContent.taskCard.taskNo);
         // console.log('키가 들어갈 data', response.data.data);
@@ -36,7 +36,7 @@ const ModalLabelContent = () => {
     }
 
     const taginsert = async () => {
-      const response = await fetch(`haru/api/tag/add`, {
+      const response = await fetch(`/haru/api/tag/add`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ const ModalLabelContent = () => {
   function deltag(tagNo) {
     const taskNo = modalContent.taskCard.taskNo;
     const delcheck = async () => {
-      const response = await fetch(`haru/api/tag/${taskNo}/${tagNo}`, {
+      const response = await fetch(`/haru/api/tag/${taskNo}/${tagNo}`, {
         method: 'delete',
         headers: {
           'Content-Type': 'application/json',
