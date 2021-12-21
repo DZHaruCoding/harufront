@@ -13,11 +13,11 @@ import {faBell, faCheckCircle, faTimesCircle, faAt, faCog, faTimes, faPlus} from
 
 
 const Project = ({project, callback, deletecallback,key}) => {
-  const {setProjectNo, setProjectTitle, projectNo, projectTitle} = useContext(AppContext);
+  const {setProjectNo, setProjectTitle, projectNo, projectTitle,members,setMembers} = useContext(AppContext);
 
-  const members = project.members;
+  const projectmembers = project.members;
 
-  const [m,setM] = useState(members);
+  const [m,setM] = useState(projectmembers);
   //DetailModal 상태
   const [projectDetailModal, setProjectDetailModal] = useState(false);
 
@@ -47,7 +47,7 @@ const Project = ({project, callback, deletecallback,key}) => {
     setProjectUpdateDesc(project.projectDesc);
     setStartDate(project.projectStart);
     setEndDate(project.projectEnd);
-    setM(members);
+    setM(projectmembers);
     setProjectUpdateModal(true);
     setProjectDetailModal(false);
     
@@ -103,7 +103,7 @@ const Project = ({project, callback, deletecallback,key}) => {
   //멤버 클릭 시 중복 제거
   const memberselect = (userNo,userName,userEmail,userPhoto) =>{
     console.log("클릭된 유저 no :",userNo,userName,userEmail,userPhoto)
-    console.log('기존 멤버',members);
+    console.log('기존 멤버',projectmembers);
 
     // setMSelects([members]);
     const data = {
@@ -299,7 +299,7 @@ const Project = ({project, callback, deletecallback,key}) => {
            </Label>
            {' '}
               {
-                members.map( member => <Member 
+                projectmembers.map( member => <Member 
                                           key={member.no}
                                           member={member}/>)
               }
@@ -379,7 +379,7 @@ const Project = ({project, callback, deletecallback,key}) => {
             </Label>
             <div style={{marginLeft:"20px"}}>
             {
-                members.map( member => <Member member={member}/>)
+                projectmembers.map( member => <Member member={member}/>)
             }
             </div>
           </FormGroup>

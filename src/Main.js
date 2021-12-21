@@ -29,6 +29,7 @@ const Main = props => {
   //2개 title, no use만들고 value에 값,set
   const [projectNo, setProjectNo] = useState(0);
   const [projectTitle, setProjectTitle] = useState('');
+  const [members,setMembers] = useState([]);
 
   const [navbarStyle, setNavbarStyle] = useState(getItemFromStore('navbarStyle', settings.navbarStyle));
 
@@ -111,7 +112,9 @@ const Main = props => {
     notifications, 
     setNotifications,
     profiles,
-    setProfiles
+    setProfiles,
+    members,
+    setMembers
   };
 
   const setStylesheetMode = mode => {
