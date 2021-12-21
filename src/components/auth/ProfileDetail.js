@@ -122,6 +122,9 @@ const ProfileDetail = () => {
         setUserDept(json.data.userDept);
         setUserPhoto(json.data.userPhoto);
         setProfilePhoto(json.data.userPhoto);
+
+        console.log(DefaultImage)
+        console.log(userPhoto)
       }
     } catch (err) {
       console.log(err);
@@ -153,9 +156,10 @@ const ProfileDetail = () => {
         <FormGroup>
           <Label for="exampleFile">프로필사진 변경 하기</Label>
           <div>
-             {userPhoto === "/Default.png" ?
-                        <Image style={{ width: '150px', height: '150px' }} src={DefaultImage} roundedCircle /> : 
-                        <Image style={{ width: '150px', height: '150px' }} src={`/haru${userPhoto}`} roundedCircle />}
+             {userPhoto == "/Default.png" ?
+                        <Image style={{ width: '150px', height: '150px' }} src={DefaultImage} roundedCircle /> :  
+                        <Image style={{ width: '150px', height: '150px' }} src={`/haru${userPhoto}`} roundedCircle />
+            }
           </div>
           <Input type="file" onChange={ImgChange} />
         </FormGroup>

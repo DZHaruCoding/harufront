@@ -1,8 +1,47 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ProfileContext } from '../../context/Context';
 
 const ProfileProvider = ({children}) => {
     const [ProfilePhoto, setProfilePhoto] = useState("");
+
+    useEffect(()=>{
+        const photoFetch = async () => {
+
+            const emailJson = { userEmail: window.sessionStorage.getItem("authUserEmail") };
+
+            try {
+                const response = await fetch(`/haru/user/findUserProfile`, {
+                    method: 'post',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(emailJson)
+                  });
+            
+                  if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                  }
+            
+                  const json = await response.json();
+                  console.log(json);
+            
+                  console.log(json.data);
+                  if (json.result !== 'success') {
+                    throw json.message;
+                  }
+            
+                  
+                  if (json.data) {
+                    console.log("유저 프로필" + json.data.userPhoto);
+                    setProfilePhoto(json.data.userPhoto);
+                  }
+            } catch(err) {
+                console.error(err);
+            }
+        }
+        photoFetch();
+    },[])
 
     const value = {
         ProfilePhoto,
