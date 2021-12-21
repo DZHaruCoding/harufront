@@ -5,7 +5,7 @@ const Member = ( {member,key})  => {
     // key();
     return(
         <div style={{marginBottom:"5px"}} className="ml-2">
-            <div>{member && member.userName}{' '}{member && member.userEmail}</div>
+            <div style={{borderBottom:"1px solid black"}}>{member && member.userName}{' '}{member && member.userEmail}</div>
         </div>
     );
 };

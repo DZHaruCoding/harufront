@@ -16,6 +16,7 @@ const Project = ({project, callback, deletecallback,key}) => {
   const {setProjectNo, setProjectTitle, projectNo, projectTitle} = useContext(AppContext);
 
   const members = project.members;
+
   const [m,setM] = useState(members);
   //DetailModal 상태
   const [projectDetailModal, setProjectDetailModal] = useState(false);
@@ -41,11 +42,12 @@ const Project = ({project, callback, deletecallback,key}) => {
 
   //프로젝트 업데이트 모달창 띄우기
   const projectUpdate = () =>{
+    console.log("m",m)
     setProjectUpdateTitle(project.projectTitle);
     setProjectUpdateDesc(project.projectDesc);
     setStartDate(project.projectStart);
     setEndDate(project.projectEnd);
-    setMSelects([m]);
+    setM(members);
     setProjectUpdateModal(true);
     setProjectDetailModal(false);
     
@@ -129,6 +131,7 @@ const Project = ({project, callback, deletecallback,key}) => {
   }
     //멤버 인풋
     const [memberInputOpen, setMemberInputOpen] = useState(false);
+    const [searchInputOpen,setSearchInputOpen] = useState(false);
     const [searchMembers, setSearchMembers] = useState(); 
   
     const memberSearchandInput = () => {    
@@ -165,7 +168,13 @@ const Project = ({project, callback, deletecallback,key}) => {
         }
       }
       fetchfun();
-      setMemberInputOpen(true);
+      if(memberInputOpen === true){
+        setMemberInputOpen(false)
+        setSearchInputOpen(false)
+      }else{
+      setMemberInputOpen(true)
+      setSearchInputOpen(true)
+      }
     }
 
   const pUpdate = () => {
@@ -490,15 +499,17 @@ const Project = ({project, callback, deletecallback,key}) => {
               <input  id="member" name="meber" placeholder='멤버 찾기' value={keyword} onChange={ (e) => { let data = e.target.value; setKeyword(data)}}/>
               }
               {
+              searchInputOpen ==false ?
+              null :
                 !searchMembers ?
                 null:
                 //멤버 리스트 출력
-                <div className='mt-2'>
+                <div className='mt-2' style={{overflowY:'scroll', height:"150px", border:"1px solid black",padding:"10px", borderRadius:"5px"}}>
                 {
                   searchMembers
                     .filter((searchMember)=> searchMember.userName.indexOf(keyword) !== -1 || searchMember.userEmail.indexOf(keyword) !== -1)
-                    .map(searchMember => <div onClick={ ()=>{ memberselect(searchMember.userNo, searchMember.userName, searchMember.userEmail, searchMember.userPhoto)}} 
-                    key={searchMember.userNo}><h6>{searchMember.userName}{' '}{searchMember.userEmail}</h6></div>)      
+                    .map(searchMember => <div style={{borderBottom:"1px dashed "}} className="mb-2" onClick={ ()=>{ memberselect(searchMember.userNo, searchMember.userName, searchMember.userEmail, searchMember.userPhoto)}} 
+                    key={searchMember.userNo}><span style={{fontWeight:"bold", color:"rgb(94,110,130)"}}>{searchMember.userName}</span>{' '}<span>{searchMember.userEmail}</span></div>)      
                 }
                 </div>
               }
@@ -510,13 +521,13 @@ const Project = ({project, callback, deletecallback,key}) => {
               추가된 멤버 Update
             </Label>
               {
-                !mSelects ?
+                !m ?
                 null 
                 :
                 <div style={{marginLeft:"20px"}}>
                   {
                     m
-                      .map(mlist => <div> <div>{mlist.userName}{' '}{mlist.userEmail}</div> </div>)
+                      .map(mlist => <div>{mlist.userName}{' '}{mlist.userEmail} </div>)
                   }
                 </div>
               }

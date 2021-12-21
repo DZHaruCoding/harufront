@@ -176,6 +176,14 @@ const Calendar = () => {
 
   }
 
+  const addcallback = (addsuccess) =>{
+    if(addsuccess == true){
+      setChangeChk(true);
+    }else{
+      setChangeChk(false);
+    }
+  }
+
   const updateData = (data) =>{
     console.log('캘린더 업데이트 데이터',data);
 
@@ -396,7 +404,7 @@ const Calendar = () => {
         setCalendarList={setCalendarList}
         addScheduleStartDate={addScheduleStartDate}
         setAddScheduleStartDate={setAddScheduleStartDate}
-        palra={false}
+        addcallback={addcallback}
       />
       :
       null
