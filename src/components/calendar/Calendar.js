@@ -102,15 +102,15 @@ const Calendar = () => {
         //setInitialEvents에 데이터 셋팅하기
         setInitialEvents(jsonResult.data);
         console.log('init',initialEvents);
-        let data=[];
-        let schedule = [];
-        let task = [];
-        jsonResult.data.scheduleList.map(schedule => schedule = [...schedule,{ 
+        let scheduledata = [];
+        jsonResult.data.scheduleList.map(schedule => scheduledata = [...scheduledata,{ 
                                   id: schedule.scheduleNo,
                                   title: schedule.scheduleContents,
                                   start: schedule.scheduleStart,
                                   end: schedule.scheduleEnd
                                   }]);
+        
+        let task = [];
         jsonResult.data.taskList.map(task => task = [...task,{
                                   id: task.taskNo,
                                   title: task.taskContents,
@@ -119,9 +119,10 @@ const Calendar = () => {
                                   color:task.taskLabel,
                                   textColor:"white"
                                   }]);
-        
-        console.log('++업무,스케줄++',test);
-        setCalendarList(test);
+                                  
+        console.log('캘린더 데이터 / 스케줄 : ',scheduledata);
+        console.log('캘린더 데이터 / 업무 : ',task);
+        setCalendarList(scheduledata);
         setChangeChk(false);
       } catch (error) {
         console.log(error);
