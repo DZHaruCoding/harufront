@@ -39,7 +39,7 @@ const ModalCheckListContent = () => {
     data.checkListInfo.splice(index, 1, newCheckList);
 
     const fetchupdate = async () => {
-      const response = await fetch(`haru/api/tasksetting/checklist/update`, {
+      const response = await fetch(`/haru/api/tasksetting/checklist/update`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ const ModalCheckListContent = () => {
     data.checkListInfo.splice(index, 1, newCheckList);
 
     const delcheck = async () => {
-      const response = await fetch(`haru/api/tasksetting/checklist/${checklistNo}`, {
+      const response = await fetch(`/haru/api/tasksetting/checklist/${checklistNo}`, {
         method: 'delete',
         headers: {
           'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ const ModalCheckListContent = () => {
     //
 
     const fetchinsert = async () => {
-      const response = await fetch(`haru/api/tasksetting/checklist/add`, {
+      const response = await fetch(`/haru/api/tasksetting/checklist/add`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',

@@ -39,7 +39,7 @@ const ModalCommentContent = () => {
     const NewData2 = { taskNo, userNo, commentContents };
 
     const insertComment = async () => {
-      const response = await fetch(`haru/api/comment`, {
+      const response = await fetch(`/haru/api/comment`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ const ModalCommentContent = () => {
   }
   function deleteComment(commentNo) {
     const delComment = async () => {
-      const response = await fetch(`haru/api/comment/${commentNo}`, {
+      const response = await fetch(`/haru/api/comment/${commentNo}`, {
         method: 'delete',
         headers: {
           'Content-Type': 'application/json',
