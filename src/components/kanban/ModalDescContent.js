@@ -1,10 +1,8 @@
+import _ from 'lodash';
 import React, { useContext, useState } from 'react';
+import { Button, Col, Form, Input, Row } from 'reactstrap';
 import AppContext, { KanbanContext } from '../../context/Context';
-import { Button, Form, Input, Row, Col } from 'reactstrap';
 import ButtonIcon from '../common/ButtonIcon';
-import _, { isArray, set } from 'lodash';
-import { localIp } from '../../config';
-import SockJsClient from 'react-stomp';
 
 const ModalDescContent = () => {
   const { kanbanColumns, kanbanColumnsDispatch } = useContext(KanbanContext);

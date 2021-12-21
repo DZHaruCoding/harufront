@@ -9,7 +9,7 @@ import kanbanService from '../../service/kanbanService';
 
 const Kanban = ({ location }) => {
   const { setIsNavbarVerticalCollapsed } = useContext(AppContext);
-  const { setProjectNo, setProjectTitle } = useContext(AppContext);
+  const { setProjectNo, setProjectTitle, setMembers } = useContext(AppContext);
   useEffect(() => {
     document.getElementsByTagName('body')[0].classList.add('overflow-hidden');
     setIsNavbarVerticalCollapsed(true);
@@ -22,6 +22,7 @@ const Kanban = ({ location }) => {
     if (location.state) {
       setProjectNo(location.state.projectNo);
       setProjectTitle(location.state.projectTitle);
+      setMembers(location.state.members);
     }
   }, []);
 
@@ -31,6 +32,7 @@ const Kanban = ({ location }) => {
       <KanbanProvider
         curprojectNo={location.state ? location.state.projectNo : ''}
         curprojectTitle={location.state ? location.state.projectTitle : ''}
+        curmembers={location.state ? location.state.members : ''}
       >
         <KanbanContainer />
       </KanbanProvider>

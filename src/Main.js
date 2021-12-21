@@ -29,11 +29,11 @@ const Main = props => {
   //2개 title, no use만들고 value에 값,set
   const [projectNo, setProjectNo] = useState(0);
   const [projectTitle, setProjectTitle] = useState('');
+  const [members, setMembers] = useState([]);
 
   const [navbarStyle, setNavbarStyle] = useState(getItemFromStore('navbarStyle', settings.navbarStyle));
 
   const toggleModal = () => setIsOpenSidePanel(prevIsOpenSidePanel => !prevIsOpenSidePanel);
-
 
   // useEffect(() => {
   //   const noticeFetch = async () => {
@@ -47,14 +47,14 @@ const Main = props => {
   //         },
   //         body: JSON.stringify(window.sessionStorage.getItem("authUserNo"))
   //       }, []);
-      
+
   //       if (!response.ok) {
   //         throw new Error(`${response.status} ${response.statusText}`);
   //       }
-      
+
   //       const jsonResult = await response.json();
   //       console.log(jsonResult);
-      
+
   //       if (jsonResult.result != 'success') {
   //         throw new Error(`${jsonResult.result} ${jsonResult.message}`);
   //       }
@@ -70,7 +70,7 @@ const Main = props => {
   //     } catch(err) {
   //       console.log(err);
   //     }
-      
+
   //   }
   //   noticeFetch();
   // }, []);
@@ -105,13 +105,15 @@ const Main = props => {
     setProjectNo,
     projectTitle,
     setProjectTitle,
-    isAllRead, 
+    isAllRead,
     setIsAllRead,
-    loading, 
-    notifications, 
+    loading,
+    notifications,
     setNotifications,
     profiles,
-    setProfiles
+    setProfiles,
+    members,
+    setMembers
   };
 
   const setStylesheetMode = mode => {
