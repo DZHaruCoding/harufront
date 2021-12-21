@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { API_URL, localIp } from '../../config';
+import { API_URL, GCP_API_URL, localIp } from '../../config';
 import AppContext, { KanbanContext } from '../../context/Context';
 import SockJsClient from 'react-stomp';
 
@@ -60,7 +60,7 @@ const KanbanColumnHeder = ({ kanbanColumnItem }) => {
   return (
     <div className="kanban-column-header">
       <SockJsClient
-          url={`${API_URL}/haru/socket`}
+          url={`${GCP_API_URL}/haru/socket`}
           topics={[`/topic/kanban/tasklist/remove/${window.sessionStorage.getItem("authUserNo")}`]}
           onMessage={socketData => {socketCallback(socketData)}}
           ref={(client) => {

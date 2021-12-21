@@ -26,6 +26,7 @@ import ModalMediaContent from './ModalMediaContent';
 import SockJsClient from 'react-stomp';
 import moment from 'moment';
 import axios from 'axios';
+import { GCP_API_URL } from '../../config';
 
 const API_URL = 'http://localhost:8080/haru';
 const API_HEADERS = {
@@ -377,7 +378,7 @@ const KanbanModal = ({ modal, setModal, className }) => {
       size="lg"
     >
       <SockJsClient
-        url={`${API_URL}/socket`}
+        url={`${GCP_API_URL}/socket`}
         topics={[
           `/topic/all/${sessionStorage.getItem('authUserNo')}`,
           `/topic/history/all/${sessionStorage.getItem('authUserNo')}`

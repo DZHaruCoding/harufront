@@ -18,7 +18,7 @@ import { Link } from 'react-router-dom';
 import Avatar from '../common/Avatar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AppContext, { KanbanContext } from '../../context/Context';
-import { API_URL, localIp } from '../../config';
+import { API_URL, GCP_API_URL, localIp } from '../../config';
 import { backgroundColor } from 'echarts/lib/theme/dark';
 import axios from 'axios';
 
@@ -115,7 +115,7 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
           style={provided.draggableProps.style}
         >
           <SockJsClient
-            url={`${API_URL}/haru/socket`}
+            url={`${GCP_API_URL}/haru/socket`}
             topics={[`/topic/kanban/task/delete/${window.sessionStorage.getItem('authUserNo')}`]}
             onMessage={socketData => {
               socketCallback(socketData);
