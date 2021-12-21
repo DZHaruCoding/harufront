@@ -3,7 +3,7 @@ import styles from '../../assets/scss/Cards.scss'
 import SettingDetail from "./SettingDetail";
 
 const Setting = () => {
-    const [showDetails, setShowDetails] = useState(true);
+    const [showDetails, setShowDetails] = useState(false);
     
     const styleSideColor ={
         position: 'absolute',

@@ -1,13 +1,21 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DropdownItem, DropdownMenu, DropdownToggle, Dropdown } from 'reactstrap';
-import team3 from '../../assets/img/team/3.jpg';
-import Avatar from '../common/Avatar';
+import Image from 'react-bootstrap/Image';
+import { ProfileContext } from '../../context/Context';
+
 
 const ProfileDropdown = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const toggle = () => setDropdownOpen(prevState => !prevState);
+  const {ProfilePhoto, setProfilePhoto} = useContext(ProfileContext);
+  
+  
+  useEffect(() =>{
+    console.log("우저 프로필 : " + ProfilePhoto);
+  },[ProfilePhoto])
+  
   return (
     <Dropdown
       nav
@@ -24,8 +32,10 @@ const ProfileDropdown = () => {
       }}
     >
       <DropdownToggle nav className="pr-0">
-        <Avatar src={team3} />
-      </DropdownToggle>
+
+        {ProfilePhoto ? <Image style={{ width: '40px', height: '40px' }} src={`/haru${ProfilePhoto}`} roundedCircle/>
+                        :<Image style={{ width: '40px', height: '40px' }} src={`/haru${window.sessionStorage.getItem("authUserPhoto")}`} roundedCircle/>
+}      </DropdownToggle>
       <DropdownMenu right className="dropdown-menu-card">
         <div className="bg-white rounded-soft py-2">
           <DropdownItem tag={Link} to="/pages/auth/ProfileAndSettings">

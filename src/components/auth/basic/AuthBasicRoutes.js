@@ -9,6 +9,7 @@ import PasswordReset from './PasswordReset';
 import ConfirmMail from './ConfirmMail';
 import LockScreen from './LockScreen';
 import Logoutchange from './Logoutchange'
+import AfterDeleteUser from '../AfterDeleteUser'
 
 const AuthBasicRoutes = ({ match: { url } }) => (
   <Switch>
@@ -20,6 +21,7 @@ const AuthBasicRoutes = ({ match: { url } }) => (
     <Route path={`/authentication/basic/password-reset`} exact component={PasswordReset} />
     <Route path={`/authentication/basic/lock-screen`} exact component={LockScreen} />
     <Route path={`/authentication/basic/change-password`} exact component={Logoutchange} />
+    <Route path={`/authentication/basic/delete-user`} exact component={AfterDeleteUser} />
 
     {/*Redirect*/}
     <Redirect to="/errors/404" />

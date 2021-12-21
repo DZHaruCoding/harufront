@@ -39,10 +39,8 @@ const Events = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => {
   //useEffect에 async 바로 주지말고 함수 만들어서 함수에 async
   useEffect(() => {
     console.log('들어옴?');
-
     const data = async () => {
       try {
-        console.log('authUserNo / fetch 수정해야함',window.sessionStorage.getItem("authUserNo"))
         const response = await fetch('/haru/api/project/1', {
           method: 'get',
           headers: {
@@ -55,8 +53,8 @@ const Events = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => {
         });
 
         //성공하면
+        console.log(response)
         console.log(response.url);
-
         if (!response.ok) {
           window.location.href= response.url;
           throw new Error(`${response.status} ${response.statusText}`);
@@ -157,7 +155,6 @@ const Events = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => {
     setKeyword('');
     setMSelects([]);
     setMemberInputOpen(false);
-    setRend(true);
   }
   //프로젝트 모달창 input태그 오브젝트로 변환
   const [modalformObj, setModalFormObj] = useState();
@@ -193,6 +190,7 @@ const Events = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => {
         },
         body: JSON.stringify(modalformObj)
       });
+      console.log();
       if (!response.ok) {
         throw new Error(`${response.status} ${response.statusText}`);
       }
@@ -200,12 +198,10 @@ const Events = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => {
       const jsonResult = await response.json(); //여기서부터 오류 null값..
       if (jsonResult.result !== 'success') {
         throw new Error(`${jsonResult.result} ${jsonResult.message}`);
-
-
-        }
-        setProjects([...projects,jsonResult.data]);
-        
-        modalFalse();
+      }
+      setProjects([...projects, jsonResult.data]);
+      setRend(true);
+      modalFalse();
     }
     fetchfun();
   }

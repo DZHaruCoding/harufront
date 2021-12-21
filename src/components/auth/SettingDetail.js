@@ -31,6 +31,8 @@ const SettingDetail = ({ setRedirect, setRedirectUrl, layout}) => {
     const [modalData,setModalData] = useState({isOpen: false});
     const refForm = useRef(null);
 
+    const [userState, isUserStata] = useState(true);
+
     // 모달 상태값
     const [isOpenModal, setIsOpenModal] = useState(false);
 
@@ -127,13 +129,17 @@ const SettingDetail = ({ setRedirect, setRedirectUrl, layout}) => {
             }
 
             setModalData({
-                isOpen: false,
                 password: ''
             });
-
+            setIsOpenModal(false)
         } catch (err) {
             console.error(err);
         }
+
+        sessionStorage.clear();
+        isUserStata(false);
+        setRedirect(true);
+
     }
 
     const onChangePassword = e => {
@@ -164,6 +170,9 @@ const SettingDetail = ({ setRedirect, setRedirectUrl, layout}) => {
         }
     }
 
+    useEffect(()=> {
+        setRedirectUrl(`/authentication/basic/delete-user`)
+    },[userState])
 
     useEffect(() => {
         setIsDisabled(!isCkPassword || !isPassword);
@@ -239,7 +248,7 @@ const SettingDetail = ({ setRedirect, setRedirectUrl, layout}) => {
                     <Button style={{backgroundColor:"white", border:"0px", marginTop:"-5px"}} onClick={ () => { btnclick() }}><FontAwesomeIcon style={{color:"gray"}} icon={faTimes}/></Button>
                     </div>
 
-                    <div
+                    <Form
                         ref={refForm}
                         className={styles.DeleteForm}
                         onSubmit={handleSubmitModal}
@@ -256,11 +265,11 @@ const SettingDetail = ({ setRedirect, setRedirectUrl, layout}) => {
                         <br />
                         <div style={{display:"flex", justifyContent:"end"}}>
                             <div  className={modalStyles['modal-dialog-buttons'] }>
-                                <Button style={{backgroundColor:"white", color:"black"}}>확인</Button>
+                                <Button style={{backgroundColor:"white", color:"black"}} >확인</Button>
                             </div>
                                <Button style={{marginLeft:"10px",backgroundColor:"white", color:"black"}} onClick={ () => {btnclick() }}>취소</Button>
                         </div>
-                    </div>
+                    </Form>
                 </div>    
                 </Modal>
         </Fragment>
