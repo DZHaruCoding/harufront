@@ -25,7 +25,8 @@ const AddScheduleModal = ({
   addScheduleStartDate,
   setAddScheduleStartDate,
   calendarList,
-  setCalendarList
+  setCalendarList,
+  addcallback
 }) => {
   const toggle = () => setIsOpenScheduleModal(!isOpenScheduleModal);
 
@@ -70,7 +71,7 @@ const handleAdd = async (formObj) =>{
     };
     console.log(data);
     setCalendarList([...calendarList, data]);
-
+    addcallback(true);
 
   } catch (error) {
     console.log(error);

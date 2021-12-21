@@ -30,6 +30,7 @@ const Calendar = () => {
   const [detailData, setDetailData] = useState();
   const {projectNo} = useContext(AppContext);
   const {projectTitle} = useContext(AppContext);
+  // const {members} = useContext(AppContext);
 
   const buttonText = {
     today: 'Today',
@@ -71,6 +72,7 @@ const Calendar = () => {
   
   
   useEffect( () => {
+    // console.log('%%%%%%',members);
     const fetchfun = async () => {
       try {
         window.sessionStorage.getItem("authUserNo")
@@ -100,14 +102,16 @@ const Calendar = () => {
         //setInitialEvents에 데이터 셋팅하기
         setInitialEvents(jsonResult.data);
         console.log('init',initialEvents);
-        let test = [];
-        jsonResult.data.scheduleList.map(schedule => test = [...test,{ 
+        let data=[];
+        let schedule = [];
+        let task = [];
+        jsonResult.data.scheduleList.map(schedule => schedule = [...schedule,{ 
                                   id: schedule.scheduleNo,
                                   title: schedule.scheduleContents,
                                   start: schedule.scheduleStart,
                                   end: schedule.scheduleEnd
                                   }]);
-        jsonResult.data.taskList.map(task => test = [...test,{
+        jsonResult.data.taskList.map(task => task = [...task,{
                                   id: task.taskNo,
                                   title: task.taskContents,
                                   start: task.taskStart,
@@ -115,8 +119,8 @@ const Calendar = () => {
                                   color:task.taskLabel,
                                   textColor:"white"
                                   }]);
-                                  
-        console.log(test);
+        
+        console.log('++업무,스케줄++',test);
         setCalendarList(test);
         setChangeChk(false);
       } catch (error) {
@@ -174,6 +178,14 @@ const Calendar = () => {
       setChangeChk(false);
     }
 
+  }
+
+  const addcallback = (addsuccess) =>{
+    if(addsuccess == true){
+      setChangeChk(true);
+    }else{
+      setChangeChk(false);
+    }
   }
 
   const updateData = (data) =>{
@@ -396,7 +408,7 @@ const Calendar = () => {
         setCalendarList={setCalendarList}
         addScheduleStartDate={addScheduleStartDate}
         setAddScheduleStartDate={setAddScheduleStartDate}
-        palra={false}
+        addcallback={addcallback}
       />
       :
       null
