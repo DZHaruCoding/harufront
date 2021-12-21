@@ -14,16 +14,15 @@ import {faBell, faCheckCircle, faTimesCircle, faAt, faCog, faTimes, faPlus} from
 
 const Project = ({project, callback, deletecallback,key}) => {
   const {setProjectNo, setProjectTitle, projectNo, projectTitle,members,setMembers} = useContext(AppContext);
-
   const projectmembers = project.members;
-
+  console.log('멤버 : ',project.members);
   const [m,setM] = useState(projectmembers);
   //DetailModal 상태
   const [projectDetailModal, setProjectDetailModal] = useState(false);
 
   //UpdateModal 상태
   const [pojectUpdateModal, setProjectUpdateModal] = useState(false);
-
+  
   //디테일 버튼 클릭
   const btnclick = () => {
     setProjectDetailModal(true);
@@ -269,7 +268,7 @@ const Project = ({project, callback, deletecallback,key}) => {
           <h6 className="fs-0 mb-1 " style={{color:"red"}}>
             제목 : {' '}
             {/* <Button className="ml-5">수정</Button> */}
-            <Link to={{pathname:"/pages/kanban" ,state:{ projectNo:project.projectNo, projectTitle:project.projectTitle} }}>{project.projectTitle}</Link>
+            <Link to={{pathname:"/pages/kanban" ,state:{ projectNo:project.projectNo, projectTitle:project.projectTitle, members:project.members} }}>{project.projectTitle}</Link>
           </h6>
           </div>
             <Button style={{backgroundColor:"white", border:"0px", marginTop:"-5px"}} onClick={ () => { btnclick() }}><FontAwesomeIcon style={{color:"gray"}} icon={faCog}/></Button>
