@@ -2,12 +2,12 @@ import React, { useContext, useEffect, useReducer, useState } from 'react';
 import AppContext, { KanbanContext } from '../../context/Context';
 import { arrayReducer } from '../../reducers/arrayReducer';
 
-const KanbanProvider = ({ children, curprojectNo, curprojectTitle }) => {
+const KanbanProvider = ({ children, curprojectNo, curprojectTitle,}) => {
   const [kanbanColumns, kanbanColumnsDispatch] = useReducer(arrayReducer, []);
   const [kanbanTaskCards, kanbanTaskCardsDispatch] = useReducer(arrayReducer, []);
   const [modal, setModal] = useState(false);
   const [modalContent, setModalContent] = useState({});
-  const { projectNo, projectTitle } = useContext(AppContext);
+  const { projectNo, projectTitle, members } = useContext(AppContext);
 
   const getItemStyle = isDragging => ({
     // change background colour if dragging
@@ -18,6 +18,7 @@ const KanbanProvider = ({ children, curprojectNo, curprojectTitle }) => {
   });
 
   useEffect(() => {
+    console.log('칸반 멤버',members);
     const fun = async () => {
       try {
         // ${curprojectNo !== '' ? curprojectNo : projectNo}

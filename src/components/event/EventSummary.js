@@ -14,11 +14,11 @@ const EventSummary = ({ projects, rendcallback }) => {
   return(
     <Media>
     {
-      projects.map( project =>
+      projects.map( (project,index) =>
       <MyProject project={project}
                  callback={updatecallback}
                  deletecallback={deletecallback}
-                 key={project.no}
+                 key={index}
        />)
     }
     </Media>
