@@ -13,6 +13,8 @@ export const ChatContext = createContext();
 
 export const KanbanContext = createContext({ KanbanColumns: [], kanbanTaskCards: [] });
 
+export const ProfileContext = createContext({ Profile : []})
+
 export const ActivityContext = createContext({ activityLog: [] });
 export const ProductContext = createContext({ products: [] });
 export const TaskContext = createContext({ task: [] });
