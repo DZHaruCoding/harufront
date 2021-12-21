@@ -2,13 +2,13 @@ import React, { useContext, useEffect, useReducer, useState } from 'react';
 import AppContext, { KanbanContext } from '../../context/Context';
 import { arrayReducer } from '../../reducers/arrayReducer';
 
-const KanbanProvider = ({ children, curprojectNo, curprojectTitle }) => {
+const KanbanProvider = ({ children, curprojectNo, curmembers, curprojectTitle }) => {
   const [kanbanColumns, kanbanColumnsDispatch] = useReducer(arrayReducer, []);
   const [kanbanTaskCards, kanbanTaskCardsDispatch] = useReducer(arrayReducer, []);
   const [modal, setModal] = useState(false);
   const [modalContent, setModalContent] = useState({});
-  const { projectNo, projectTitle } = useContext(AppContext);
-
+  const { projectNo, projectTitle, members, setMembers } = useContext(AppContext);
+  const [history, setHistory] = useState([]);
   const getItemStyle = isDragging => ({
     // change background colour if dragging
     cursor: isDragging ? 'grabbing' : 'pointer',
@@ -18,8 +18,11 @@ const KanbanProvider = ({ children, curprojectNo, curprojectTitle }) => {
   });
 
   useEffect(() => {
+    console.log('칸반 멤버,', curmembers);
+
     const fun = async () => {
       try {
+        setMembers(curmembers);
         // ${curprojectNo !== '' ? curprojectNo : projectNo}
         const response = await fetch(`/haru/api/tasklist/data/${curprojectNo !== '' ? curprojectNo : projectNo}`, {
           method: 'get',
@@ -141,6 +144,9 @@ const KanbanProvider = ({ children, curprojectNo, curprojectTitle }) => {
 
   const value = {
     kanbanTaskCards,
+    history,
+    setHistory,
+    members,
     kanbanTaskCardsDispatch,
     kanbanColumns,
     kanbanColumnsDispatch,
@@ -153,7 +159,11 @@ const KanbanProvider = ({ children, curprojectNo, curprojectTitle }) => {
     modal,
     setModal
   };
-  return <KanbanContext.Provider value={value}>{children}</KanbanContext.Provider>;
+  return (
+    <>
+      <KanbanContext.Provider value={value}>{children}</KanbanContext.Provider>;
+    </>
+  );
 };
 
 export default KanbanProvider;
