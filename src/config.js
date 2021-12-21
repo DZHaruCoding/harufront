@@ -17,9 +17,9 @@ export const settings = {
 };
 
 export const localIp = 'http://localhost:3000';
-export const gcpIp = 'http://34.64.174.225:22';
+export const gcpIp = 'http://34.64.118.83:22';
 export const API_URL = 'http://localhost:8080';
-export const GCP_API_URL = 'http://34.64.174.225:8080';
+export const GCP_API_URL = 'http://34.64.118.83:8080';
 const API_HEADERS = {
   'Content-Type': 'application/json'
 };
