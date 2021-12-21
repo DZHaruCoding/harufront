@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Button, Media } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import update from 'react-addons-update';
-import { KanbanContext } from '../../context/Context';
+import AppContext, { KanbanContext } from '../../context/Context';
 import _ from 'lodash';
 import { Alert, Collapse, FormControl, InputGroup, ToggleButton } from 'react-bootstrap';
 import Flex from '../common/Flex';
@@ -12,11 +12,12 @@ const API_URL = 'http://localhost:8080/haru';
 const API_HEADERS = {
   'Context-Type': 'application/json'
 };
-const ModalCheckListContent = () => {
-  const { modalContent, setModalContent } = useContext(KanbanContext);
+const ModalCheckListContent = ({ clientRef, members, fetchInsertHistory }) => {
+  const { modalContent, setModalContent, setHistory } = useContext(KanbanContext);
   const { checkListInfo } = modalContent;
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState('');
+  const { projectNo, projectTitle } = useContext(AppContext);
   //   checklistContents: "task1의 업무0"
   // checklistNo: 1
   // checklistState: "do"
@@ -98,11 +99,29 @@ const ModalCheckListContent = () => {
 
   function insertcheck() {
     const taskNo = modalContent.taskCard.taskNo;
+    const taskName = modalContent.taskCard.taskName;
     const checklistContents = form;
     const NewTodo = { taskNo, checklistContents };
     let data1 = _.cloneDeep(modalContent);
     data1.checkListInfo = [NewTodo, ...data1.checkListInfo];
     //
+    console.log(window.sessionStorage.getItem('authUserNo'));
+    console.log(window.sessionStorage.getItem('authUserName'));
+    console.log(members);
+    console.log(taskName);
+    console.log(projectNo);
+    console.log('clientRef', clientRef);
+    fetchInsertHistory(
+      window.sessionStorage.getItem('authUserNo'),
+      window.sessionStorage.getItem('authUserName'),
+      members,
+      'checklistInsert',
+      taskName,
+      projectNo,
+      clientRef
+    )
+      .then(response => response.json())
+      .then(json => setHistory(json.data));
 
     const fetchinsert = async () => {
       const response = await fetch(`/haru/api/tasksetting/checklist/add`, {

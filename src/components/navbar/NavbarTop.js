@@ -47,7 +47,7 @@ const NavbarTop = () => {
           </span>
         </button>
       </div>
-      <Logo at="navbar-top" width={150} id="topLogo" logoUrlType={true} />
+      <Logo at="navbar-top" width={150} id="topLogo" />
       {isTopNav ? (
         <Collapse navbar isOpen={navbarCollapsed} className="scrollbar">
           <Nav navbar>

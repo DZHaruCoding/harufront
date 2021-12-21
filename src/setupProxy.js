@@ -10,9 +10,9 @@ module.exports = function(app) {
     })
   );
   app.use(
-    '/socket',
+    '/haru/socket',
     createProxyMiddleware({
-      target: 'http://localhost:8080/haru',
+      target: 'http://localhost:8080',
       changeOrigin: true
     })
   );

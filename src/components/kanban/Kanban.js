@@ -32,7 +32,7 @@ const Kanban = ({ location }) => {
       <KanbanProvider
         curprojectNo={location.state ? location.state.projectNo : ''}
         curprojectTitle={location.state ? location.state.projectTitle : ''}
-        curprojectMembers={location.state ? location.state.members : ''}
+        curmembers={location.state ? location.state.members : ''}
       >
         <KanbanContainer />
       </KanbanProvider>

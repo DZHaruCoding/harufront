@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import AppContext, { KanbanContext } from '../../context/Context';
 import { Button, Form, Input, Row, Col } from 'reactstrap';
 import ButtonIcon from '../common/ButtonIcon';
-import {localIp} from '../../config';
+import {API_URL, localIp} from '../../config';
 import SockJsClient from 'react-stomp';
 
 const AddAnotherList = () => {
@@ -12,7 +12,6 @@ const AddAnotherList = () => {
   const [columnHeaderTitle, setColumnHeaderTitle] = useState('');
   const {projectNo, projectTitle} = useContext(AppContext);
   const { loading, notifications, setNotifications } = useContext(AppContext);
-  const API_URL = "http://localhost:8080/haru";
   let clientRef = null;
 
   const handleAddColumn = async value => {
@@ -87,7 +86,7 @@ const AddAnotherList = () => {
   return (
     <div className="kanban-column mr-3">
       <SockJsClient
-          url={`${API_URL}/socket`}
+          url={`${API_URL}/haru/socket`}
           topics={[`/topic/kanban/tasklist/add/${window.sessionStorage.getItem("authUserNo")}`]}
           onMessage={socketData => {socketCallback(socketData)}}
           ref={(client) => {
