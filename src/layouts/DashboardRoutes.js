@@ -165,23 +165,23 @@ const DashboardRoutes = () => (
 
     {/*calendar*/}
     {/* 행운 */}
-    <Route path="/calendar" exact component={Calendar} />
+    <Route path="/pages/calendar" exact component={Calendar} />
 
     {/*kanban*/}
     {/* 진석 */}
-    <Route path="/kanban" exact component={Kanban} />
+    <Route path="/pages/kanban" exact component={Kanban} />
 
     {/*E commerce*/}
     {/* <Route path="/e-commerce" component={ProductRoutes} /> */}
 
     {/* profile */}
     {/* 승현 */}
-    <Route path="/auth/ProfileAndSettings" exact component={ProfileAndSettings}/>
+    <Route path="/pages/auth/ProfileAndSettings" exact component={ProfileAndSettings}/>
 
     {/*activity*/}
     {/* 종윤 */}
-    <Route path="/activity" exact component={Activity} />
-    <Route path="/files" exact component={Files} />
+    <Route path="/pages/activity" exact component={Activity} />
+    <Route path="/pages/files" exact component={Files} />
     {/*Email*/}
     {/* <Route path="/email" component={InboxRoutes} /> */}
 

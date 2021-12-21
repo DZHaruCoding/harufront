@@ -1,45 +1,60 @@
-import React, { useContext, useEffect, useReducer, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import _ from 'lodash';
+import React, { useContext, useEffect, useState } from 'react';
+import { Collapse, FormControl, InputGroup } from 'react-bootstrap';
+import Datetime from 'react-datetime';
 import {
   Button,
+  Col,
+  DropdownMenu,
+  DropdownToggle,
+  FormGroup,
+  Label,
   Modal,
   ModalBody,
   Row,
-  Col,
-  UncontrolledButtonDropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Input
+  UncontrolledButtonDropdown
 } from 'reactstrap';
-import Background from '../common/Background';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import ModalMediaContent from './ModalMediaContent';
-import _ from 'lodash';
-import ModalLabelContent from './ModalLabelContent';
-import ModalAttachmentsContent from './ModalAttachmentsContent';
-import ModalCommentContent from './ModalCommentContent';
-import ModalCheckListContent from './ModalCheckListContent';
 import { KanbanContext } from '../../context/Context';
+import Background from '../common/Background';
+import ModalAttachmentsContent from './ModalAttachmentsContent';
+import ModalCheckListContent from './ModalCheckListContent';
+import ModalCommentContent from './ModalCommentContent';
 import ModalDescContent from './ModalDescContent';
-import { Collapse, FormControl, InputGroup } from 'react-bootstrap';
-import { arrayReducer } from '../../reducers/arrayReducer';
+import ModalLabelContent from './ModalLabelContent';
+import ModalMediaContent from './ModalMediaContent';
+
 const API_URL = 'http://localhost:8080/haru';
 const API_HEADERS = {
   'Context-Type': 'application/json'
 };
 const KanbanModal = ({ modal, setModal, className }) => {
-  const { modalContent, setModalContent, kanbanTaskCards, kanbanTaskCardsDispatch, kanbanColumnsDispatch } = useContext(KanbanContext);
+  const { modalContent, setModalContent, kanbanTaskCards, kanbanTaskCardsDispatch, kanbanColumnsDispatch } = useContext(
+    KanbanContext
+  );
+
   const [selectedFile, setSelectedFile] = useState('');
   const [alerts, setAlerts] = useState([]);
   const [form, setForm] = useState('');
   const [open, setOpen] = useState(false);
 
-  const toggle = () => setModal(!modal);
+  // const [addScheduleStartDate, setAddScheduleStartDate] = useState();
+  const [isOpenScheduleModal, setIsOpenScheduleModal] = useState(false);
+  const [endDate, setEndDate] = useState();
+  const [startDate, setStartDate] = useState();
+
+  const toggle = () => {
+    setModal(!modal);
+    setIsOpenScheduleModal(!isOpenScheduleModal);
+  };
+
   useEffect(() => {
     if (modal) {
+      !isOpenScheduleModal && setEndDate(null);
+      !isOpenScheduleModal && setStartDate(null);
       const fun = async () => {
         try {
-          const response = await fetch(`haru/api/tasksetting/${modalContent.taskCard.taskNo}`, { method: 'get' });
+          const response = await fetch(`/haru/api/tasksetting/${modalContent.taskCard.taskNo}`, { method: 'get' });
 
           if (!response.ok) {
             throw new Error(`${response.status} ${response.statusText}`);
@@ -72,54 +87,55 @@ const KanbanModal = ({ modal, setModal, className }) => {
   }, [modal]);
   // formData라는 instance에 담아 보냄
   // onChange역할
+
+  const handleChange = target => {
+    let name = target.name;
+    let value = name === 'allDay' ? target.checked : target.value;
+  };
+
   function updataTaskName() {
     const NewtaskName = form;
     let data = _.cloneDeep(modalContent);
     data.taskCard.taskName = NewtaskName;
-    setModalContent(data);
     setForm('');
     setOpen(false);
+
+    const taskNo = data.taskCard.taskNo;
+    const taskData = { taskNo: taskNo, taskName: NewtaskName };
+    const updatetitle = async () => {
+      const response = await fetch(`/haru/api/tasksetting/task/update`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(taskData)
+      });
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+
+      const jsonResult = await response.json();
+
+      if (jsonResult.result != 'success') {
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      }
+    };
+    updatetitle();
+    setModalContent(data);
     const data2 = data.taskCard;
     const id = data2.taskNo;
     const order = data2.taskOrder;
-
-    // kanbanTaskCardsDispatch({
-    //   type: 'TASKNAME',
-    //   payload: { data2, order },
-    //   id: id
-    // });
-
     kanbanColumnsDispatch({
       type: 'TASKNAME',
       payload: data2,
       id: id
-    })
-
-    // newTaskList = update(newTaskList, {
-    //   [taskListIndex]: {
-    //     tasks: {
-    //       [taskIndex]: {
-    //         checkList: {
-    //           [checklistIndex]: {
-    //             socketType: { $set: 'checklistInsert' },
-    //             taskListIndex: { $set: taskListIndex },
-    //             taskIndex: { $set: taskIndex },
-    //             authUserNo: { $set: sessionStorage.getItem('authUserNo') },
-    //             projectNo: { $set: this.props.match.params.projectNo },
-    //             members: { $set: this.state.projectMembers }
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // });
-    // kanbanTaskCardsDispatch({ type: 'TASKNAME', payload: { data2 } });
+    });
   }
   function handleFileChange(event) {
     setSelectedFile(event.target.files[0]);
   }
   const handleFileUpload = event => {
-    console.log(selectedFile);
     if (
       selectedFile !== null &&
       (selectedFile.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
@@ -132,12 +148,11 @@ const KanbanModal = ({ modal, setModal, className }) => {
         selectedFile.type === 'application/haansofthwp')
     ) {
       const formData = new FormData();
-
-      formData.append('file', selectedFile, selectedFile.name);
+      formData.append('file', selectedFile);
       formData.append('taskNo', modalContent.taskCard.taskNo);
-      formData.append('userNo', '1');
+      formData.append('userNo', window.sessionStorage.getItem('authUserNo'));
 
-      fetch(`${API_URL}/api/upload`, {
+      fetch(`/haru/api/upload`, {
         method: 'post',
         headers: API_HEADERS,
         body: formData
@@ -145,7 +160,7 @@ const KanbanModal = ({ modal, setModal, className }) => {
         .then(response => response.json())
         .then(json => {
           json.data.taskListNo = modalContent.taskCard.taskListNo;
-          console.log(json.data);
+
           let data = _.cloneDeep(modalContent);
           data.filesInfo = [...data.filesInfo, json.data];
           setModalContent(data);
@@ -176,6 +191,7 @@ const KanbanModal = ({ modal, setModal, className }) => {
             <Background image={modalContent.taskCardImage.url} className="rounded-soft-top" />
           </div>
         )}
+
         <div className="bg-light rounded-soft-top px-4 py-3">
           <Button
             onClick={() => setOpen(!open)}
@@ -206,6 +222,7 @@ const KanbanModal = ({ modal, setModal, className }) => {
           </Collapse>
           <p className="fs--2 mb-0">Added by{modalContent.taskCard.taskWriter}</p>
         </div>
+
         <div className="position-absolute t-0 r-0  z-index-1">
           <Button
             size="sm"
@@ -223,7 +240,51 @@ const KanbanModal = ({ modal, setModal, className }) => {
               </ModalMediaContent>
               <hr />
               <br />
-              {/* //Group member */}
+              <FormGroup>
+                <Label className="fs-0" for="eventStart">
+                  시작일
+                </Label>
+                {/* 시작일 날짜 */}
+                <Datetime
+                  timeFormat={true}
+                  value={startDate}
+                  onChange={dateTime => {
+                    if (dateTime._isValid) {
+                      setStartDate(dateTime);
+                      let date = {};
+                      date.value = dateTime.format('YYYY-MM-DD');
+                      date.name = 'scheduleStart';
+                      handleChange(date);
+                    }
+                  }}
+                  dateFormat="YYYY-DD-MM"
+                  inputProps={{ placeholder: 'YYYY-MM-DD', id: 'eventStart' }}
+                />
+              </FormGroup>
+
+              <FormGroup>
+                <Label className="fs-0" for="eventEnd">
+                  마감일
+                </Label>
+                {/* 마감일 날짜 */}
+                <Datetime
+                  value={endDate}
+                  timeFormat={true}
+                  onChange={dateTime => {
+                    if (dateTime._isValid) {
+                      setEndDate(dateTime);
+                      let date = {};
+                      date.value = dateTime.format('YYYY-MM-DD');
+                      date.name = 'scheduleEnd';
+                      handleChange(date);
+                    }
+                  }}
+                  dateFormat="YYYY-DD-MM"
+                  inputProps={{ placeholder: 'YYYY-DD-MM', id: 'eventEnd' }}
+                />
+              </FormGroup>
+              <hr />
+              <br />
               {/* //labels */}
               <ModalMediaContent title="태그" icon="tag">
                 <ModalLabelContent key={modalContent.taskCard && modalContent.taskCard.taskNo} />

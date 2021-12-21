@@ -20,15 +20,15 @@ const KanbanHeader = () => {
         <div className="vertical-line vertical-line-400 position-relative h-100 mx-3 d-none d-md-flex" />
         <InviteToBoard />
         <div className="vertical-line vertical-line-400 position-relative h-100 mx-3" />
-        <ButtonIcon icon="chevron-left" color="info" size="sm-2" className="border-300" tag={Link} to="/kanban">
+        <ButtonIcon icon="chevron-left" color="info" size="sm-2" className="border-300" tag={Link} to="/pages/kanban">
           KANBAN CHART
         </ButtonIcon>
         <div className="vertical-line vertical-line-400 position-relative h-100 mx-3" />
-        <ButtonIcon icon="chevron-left" color="info" size="sm-2" className="border-300" tag={Link} to="/files">
+        <ButtonIcon icon="chevron-left" color="info" size="sm-2" className="border-300" tag={Link} to="/pages/files">
           FILE LIST
         </ButtonIcon>
         <div className="vertical-line vertical-line-400 position-relative h-100 mx-3" />
-        <ButtonIcon icon="chevron-left" color="info" size="sm-2" className="border-300" tag={Link} to="/activity">
+        <ButtonIcon icon="chevron-left" color="info" size="sm-2" className="border-300" tag={Link} to="/pages/activity">
           HISTORY
         </ButtonIcon>
         <div className="vertical-line vertical-line-400 position-relative h-100 mx-3" />

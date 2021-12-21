@@ -11,7 +11,7 @@ const ModalLabelContent = () => {
 
   useEffect(() => {
     axios
-      .get(`haru/api/taglist`)
+      .get(`/haru/api/taglist`)
       .then(response => {
         // console.log('키는 뭘까', modalContent.taskCard.taskNo);
         // console.log('키가 들어갈 data', response.data.data);
@@ -22,10 +22,11 @@ const ModalLabelContent = () => {
       })
       .catch(err => console.error(err));
   }, []);
-
   function onClickSetTaskInfo(tag, tagNo) {
     // console.log('지금 taskData', modalContent.tagsInfo);
     // console.log('새로넣을 tag', [tag]);
+    const newTaskTag = { tagNo: tagNo, taskNo: modalContent.taskCard.taskNo };
+    console.log('🚀 새로넣을태그정보', newTaskTag);
     let data = _.cloneDeep(modalContent);
     data.tagsInfo = data.tagsInfo.filter(item => item.tagNo != tagNo);
     if (data) {
@@ -33,8 +34,56 @@ const ModalLabelContent = () => {
     } else {
       data.tagsInfo = [tag];
     }
-    setModalContent(data);
+
+    const taginsert = async () => {
+      const response = await fetch(`/haru/api/tag/add`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(newTaskTag)
+      });
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+
+      const jsonResult = await response.json();
+
+      if (jsonResult.result != 'success') {
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      }
+      setModalContent(data);
+    };
+    taginsert();
     // console.log('modalTags확인용', modalContent);
+  }
+
+  function deltag(tagNo) {
+    const taskNo = modalContent.taskCard.taskNo;
+    const delcheck = async () => {
+      const response = await fetch(`/haru/api/tag/${taskNo}/${tagNo}`, {
+        method: 'delete',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        }
+      });
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+
+      const jsonResult = await response.json();
+
+      if (jsonResult.result != 'success') {
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      }
+      let data = _.cloneDeep(modalContent);
+      const filteredState = modalContent.tagsInfo.filter(item => item.tagNo !== tagNo);
+      data.tagsInfo = filteredState;
+      setModalContent(data);
+    };
+    delcheck();
   }
 
   return (
@@ -46,6 +95,9 @@ const ModalLabelContent = () => {
               className={`d-inline-block py-1 mr-1 mb-1`}
               style={{ color: '#FFFFFF', backgroundColor: tag.tagColor }}
               key={index}
+              onClick={() => {
+                deltag(tag.tagNo);
+              }}
             >
               {tag.tagName}
             </Badge>
@@ -63,14 +115,14 @@ const ModalLabelContent = () => {
           <DropdownItem divider />
           <div className="px-3">
             {tagList &&
-              tagList.map(tag => {
+              tagList.map((tag, index) => {
                 return (
                   <button
                     className={`d-inline-block py-1 mr-1 mb-1`}
                     style={{ color: '#FFFFFF', backgroundColor: tag.tagColor }}
-                    key={tag.tagNo}
+                    key={index}
                     onClick={() => {
-                      onClickSetTaskInfo(tag, tag.tagNo);
+                      onClickSetTaskInfo(tag, tag.tagNo, tag.taskNo);
                     }}
                   >
                     {tag.tagName}

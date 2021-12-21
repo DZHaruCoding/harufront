@@ -14,7 +14,7 @@ const LogoutContent = ({ layout, titleTag: TitleTag }) => {
         HARU 프로젝트를 이용해주셔서 감사합니다 <br className="d-none d-sm-block" />
         변경한 비밀번호로 다시 로그인해 주시기 바랍니다.
       </p>
-      <Button tag={Link} color="primary" size="sm" className="mt-3" to={`/authentication/${layout}/login`}>
+      <Button tag={Link} color="primary" size="sm" className="mt-3" to={``}>
         <FontAwesomeIcon icon="chevron-left" transform="shrink-4 down-1" className="mr-1" />
         로그인 하러가기
       </Button>

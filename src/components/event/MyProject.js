@@ -268,7 +268,7 @@ const Project = ({project, callback, deletecallback,key}) => {
           <h6 className="fs-0 mb-1 " style={{color:"red"}}>
             제목 : {' '}
             {/* <Button className="ml-5">수정</Button> */}
-            <Link to={{pathname:"/kanban" ,state:{ projectNo:project.projectNo, projectTitle:project.projectTitle} }}>{project.projectTitle}</Link>
+            <Link to={{pathname:"/pages/kanban" ,state:{ projectNo:project.projectNo, projectTitle:project.projectTitle} }}>{project.projectTitle}</Link>
           </h6>
           </div>
             <Button style={{backgroundColor:"white", border:"0px", marginTop:"-5px"}} onClick={ () => { btnclick() }}><FontAwesomeIcon style={{color:"gray"}} icon={faCog}/></Button>

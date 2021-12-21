@@ -206,7 +206,7 @@ const NotificationDropdown = () => {
     >
       <SockJsClient
           url={`${API_URL}/socket`}
-          topics={[`/topic/kanban/tasklist/add/notice/${window.sessionStorage.getItem("authUserNo")}`]}
+          topics={[`/${window.sessionStorage.getItem("authUserNo")}`]}
           onMessage={socketData => {socketCallback(socketData)}}
           ref={(client) => {
             clientRef = client

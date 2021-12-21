@@ -7,7 +7,7 @@ import logo from '../../assets/img/illustrations/falcon.png';
 const Logo = ({ at, width, className, ...rest }) => {
   return (
     <Link
-      to="/"
+      to= "/pages/events"
       className={classNames(
         'text-decoration-none',
         { 'navbar-brand text-left': at === 'navbar-vertical' },

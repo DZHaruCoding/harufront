@@ -34,11 +34,14 @@ const ForgetPasswordForm = ({ setRedirect, setRedirectUrl, layout }) => {
 
       const json = await response.json();
       console.log(json);
-      if (json.data == false) {
+      if (json.data === "fail") {
+        setIsfailCheck(true);
         setIsfailCheck(true);
         throw json.message;
       } else {
         setIsfailCheck(false);
+        setRedirect(true);
+        toast.success(`${email}로 이메일을 보내는 중이니다...시간이 걸릴수있습니다.`);
       }
       
       
@@ -46,10 +49,9 @@ const ForgetPasswordForm = ({ setRedirect, setRedirectUrl, layout }) => {
       console.log(err);
     }
     
-    setRedirect(true);
+    setShowProgress(true)
 
 
-    toast.success(`${email}로 이메일을 보내는 중이니다...시간이 걸릴수있습니다.`);
 
   };
 
@@ -80,7 +82,7 @@ const ForgetPasswordForm = ({ setRedirect, setRedirectUrl, layout }) => {
         </Button>
         <Spinner hidden={showProgress} color="info" />
       </FormGroup>
-      <Link className="fs--1 text-600" to={`/authentication/${layout}/login`}>
+      <Link className="fs--1 text-600" to={`/`}>
         로그인 페이지로 돌아가기
         <span className="d-inline-block ml-1">&rarr;</span>
       </Link>

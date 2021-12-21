@@ -6,9 +6,10 @@ import NotificationDropdown from './NotificationDropdown';
 // import CartNotification from './CartNotification';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
-import AppContext from '../../context/Context';
+import AppContext, { ProfileContext } from '../../context/Context';
 // import classNames from 'classnames';
 import { localIp, navbarBreakPoint } from '../../config';
+import ProfileProvider from '../auth/ProfileProvider';
 
 
 const TopNavRightSideNavItem = () => {
@@ -54,7 +55,7 @@ const TopNavRightSideNavItem = () => {
       <NavItem>
         {/* <SettingsAnimatedIcon /> */}
       </NavItem>
-      {/* {(isCombo || isTopNav) && (
+     {/* {(isCombo || isTopNav) && (
         <NavItem className={classNames(`p-2 px-lg-0 cursor-pointer`, { [`d-${navbarBreakPoint}-none`]: isCombo })}>
           <NavLink tag={Link} to="/changelog" id="changelog">
             <FontAwesomeIcon icon="code-branch" transform="right-6 grow-4" />
@@ -63,15 +64,15 @@ const TopNavRightSideNavItem = () => {
             Changelog
           </UncontrolledTooltip>
         </NavItem>
-      )} */}
+      )}  */}
       {/* <CartNotification /> */}
       {/* 수정자 : 이승현  to={`/authentication/basic/logout`*/}
       {window.sessionStorage.getItem("authUserEmail") ?
         <Button tag={Link} color="primary" size="sm" className="mt-3" onClick={Logout} to={`/authentication/basic/logout`}>Logout</Button>
-        : <Button tag={Link} color="primary" size="sm" className="mt-3" to={`/authentication/basic/login`}>Login</Button>
+        : <Button tag={Link} color="primary" size="sm" className="mt-3" to={`/`}>Login</Button>
       }
       <NotificationDropdown />
-      <ProfileDropdown />
+        <ProfileDropdown /> 
     </Nav>
   );
 };
