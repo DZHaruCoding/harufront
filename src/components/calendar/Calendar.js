@@ -77,7 +77,7 @@ const Calendar = () => {
       try {
         window.sessionStorage.getItem("authUserNo")
         console.log('authUserNo',window.sessionStorage.getItem("authUserNo"));
-        const response = await fetch('/haru/api/calendar/1',{
+        const response = await fetch('/haru/api/calendar/'+window.sessionStorage.getItem("authUserNo"),{
           method: 'get',
           headers:{
             'Content-Type':'application/json',

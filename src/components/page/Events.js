@@ -42,7 +42,7 @@ const Events = () => {
     const data = async ()=>{ 
     try {
       console.log('authUserNo / fetch 수정해야함',window.sessionStorage.getItem("authUserNo"))
-      const response = await fetch('/haru/api/project/1',{
+      const response = await fetch('/haru/api/project/'+window.sessionStorage.getItem("authUserNo"),{
         method: 'get',
         headers:{
           'Content-Type': 'application/json',
