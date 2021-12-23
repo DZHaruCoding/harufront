@@ -434,7 +434,7 @@ const KanbanModal = ({ modal, setModal, className }) => {
       size="lg"
     >
       <SockJsClient
-        url={`${GCP_API_URL}/socket`}
+        url={`${GCP_API_URL}/haru/socket`}
         // url={`${API_URL}/haru/socket`}
         topics={[
           `/topic/all/${sessionStorage.getItem('authUserNo')}`,
