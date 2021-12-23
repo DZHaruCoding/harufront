@@ -437,8 +437,8 @@ const KanbanModal = ({ modal, setModal, className }) => {
         url={`${GCP_API_URL}/haru/socket`}
         // url={`${API_URL}/haru/socket`}
         topics={[
-          `/topic/all/${sessionStorage.getItem('authUserNo')}`,
-          `/topic/history/all/${sessionStorage.getItem('authUserNo')}`
+          `/topic/all/${window.sessionStorage.getItem('authUserNo')}`,
+          `/topic/history/all/${window.sessionStorage.getItem('authUserNo')}`
         ]}
         onMessage={receiveHistory}
         ref={$websocket}

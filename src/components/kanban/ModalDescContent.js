@@ -10,7 +10,6 @@ const ModalDescContent = ({ clientRef, members, fetchInsertHistory }) => {
   const { modalContent, setModalContent } = useContext(KanbanContext);
   const [columnContent, setColumnContent] = useState('');
   const { projectNo, projectTitle, activityLogDispatch } = useContext(AppContext);
-  const API_URL = 'http://localhost:8080/haru';
 
   const handleAddColumn = async value => {
     console.log('수정할 내용', value);

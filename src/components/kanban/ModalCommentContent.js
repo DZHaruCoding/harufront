@@ -1,18 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Media, Form, Input, Button } from 'reactstrap';
-import Avatar from '../common/Avatar';
-import users from '../../data/dashboard/users';
-import Flex from '../common/Flex';
-import { Link } from 'react-router-dom';
-import { KanbanContext } from '../../context/Context';
-import team3 from '../../assets/img/team/3.jpg';
 import _ from 'lodash';
-import axios from 'axios';
-import { Image } from 'react-bootstrap';
+import React, { useContext, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Button, Form, Input, Media } from 'reactstrap';
+import { KanbanContext } from '../../context/Context';
+import Avatar from '../common/Avatar';
+import Flex from '../common/Flex';
 const API_URL = 'http://localhost:8080/haru';
-const API_HEADERS = {
-  'Context-Type': 'application/json'
-};
 
 const ModalCommentContent = ({ clientRef, members, fetchInsertHistory }) => {
   const { modalContent, setModalContent } = useContext(KanbanContext);
@@ -128,8 +121,8 @@ const ModalCommentContent = ({ clientRef, members, fetchInsertHistory }) => {
           return (
             <Media className="mb-3" key={index}>
               <Link to="window.location.href">
-                {comment.userPhoto == '/assets/img/Default.png' ? (
-                  <Avatar src={`/assets/img/Default.png`} size="l" />
+                {comment.userPhoto == `${DefaultImage}` ? (
+                  <Avatar src={`${DefaultImage}`} size="l" />
                 ) : (
                   <Avatar src={`${API_URL}${comment.userPhoto}`} size="l" />
                 )}

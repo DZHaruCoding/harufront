@@ -15,7 +15,7 @@ const FileProvider = ({ children }) => {
   useEffect(() => {
     const pro = async projectNo => {
       // const response = await axios.get(`${localIp}/haru/api/history/${projectNo}`);
-      const response = await axios.get(`/haru/api/dashboard/1/file`);
+      const response = await axios.get(`/haru/api/dashboard/${projectNo}/file`);
       const item = response.data;
       productsDispatch({
         type: 'FADD',
