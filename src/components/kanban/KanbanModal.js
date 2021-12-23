@@ -59,7 +59,7 @@ const KanbanModal = ({ modal, setModal, className }) => {
 
   async function fetchInsertHistory(senderNo, senderName, receiver, historyType, actionName, projectNo, clientRef) {
     //보내는사람,받는사람,받는사람배열,히스토리 타입,엑션이름,프로젝트넘버,
-    let userArray = []; //받는사람들
+    let userArray = [1, 2]; //받는사람들
     receiver.map(user => userArray.push(user.userNo)); //receiver 에서 userArray에 하나씩 넣어준다.
 
     const historyData = {
@@ -72,6 +72,7 @@ const KanbanModal = ({ modal, setModal, className }) => {
       projectNo: projectNo,
       authUserNo: sessionStorage.getItem('authUserNo')
     };
+    console.log('historyDatahistory', historyData);
     clientRef.current.sendMessage('/app/history/all', JSON.stringify(historyData)); //서버로 메세지 전송
     /////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -432,7 +433,8 @@ const KanbanModal = ({ modal, setModal, className }) => {
       size="lg"
     >
       <SockJsClient
-        url={`${GCP_API_URL}/socket`}
+        url={`${GCP_API_URL}/haru/socket`}
+        // url={`/haru/socket`}
         topics={[
           `/topic/all/${sessionStorage.getItem('authUserNo')}`,
           `/topic/history/all/${sessionStorage.getItem('authUserNo')}`
