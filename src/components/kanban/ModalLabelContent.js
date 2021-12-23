@@ -13,12 +13,18 @@ const ModalLabelContent = ({ clientRef, members, fetchInsertHistory }) => {
   const { modalContent, setModalContent } = useContext(KanbanContext);
   const [tagList, setTagList] = useState([]);
   const radios = [
-    { name: 'blue', value: '#0003D3' },
+    { name: 'blue', value: '#00008C' },
     { name: 'gray', value: '#AAAAAA' },
-    { name: 'skyblue', value: '#1CD3EF' },
+    { name: 'green', value: '#1CD3EF' },
     { name: 'orenge', value: '#FF0004' },
     { name: 'red', value: '#FF1E1E' },
-    { name: 'black', value: '#000000' }
+    { name: 'brown', value: '#000000' }
+    // { name: 'blue', value: '#0003D3' },
+    // { name: 'gray', value: '#AAAAAA' },
+    // { name: 'skyblue', value: '#1CD3EF' },
+    // { name: 'orenge', value: '#FF0004' },
+    // { name: 'red', value: '#FF1E1E' },
+    // { name: 'black', value: '#000000' }
   ];
   useEffect(() => {
     axios
@@ -174,51 +180,56 @@ const ModalLabelContent = ({ clientRef, members, fetchInsertHistory }) => {
             >
               Create Label
             </Button>
-
-            <Modal show={modalShows} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
-              <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">
-                  1.태그의 색을 선택하고 2.태그의 이름을 입력하여 주세요.
-                </Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <ButtonGroup>
-                  {radios.map((radio, idx) => (
-                    <ToggleButton
-                      key={idx}
-                      id={`radio-${idx}`}
-                      type="radio"
-                      variant={idx % 2 ? 'outline-success' : 'outline-danger'}
-                      name="radio"
-                      value={radio.value}
-                      checked={radioValue === radio.value}
-                      onChange={e => setRadioValue(e.currentTarget.value)}
+            <>
+              {modalShows ? (
+                <Modal show={modalShows} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
+                  <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                      1.태그의 색을 선택하고 2.태그의 이름을 입력하여 주세요.
+                    </Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <ButtonGroup>
+                      {radios.map((radio, idx) => (
+                        <ToggleButton
+                          key={idx}
+                          id={`radio-${idx}`}
+                          type="radio"
+                          variant={idx % 2 ? 'outline-success' : 'outline-danger'}
+                          name="radio"
+                          value={radio.value}
+                          checked={radioValue === radio.value}
+                          onChange={e => setRadioValue(e.currentTarget.value)}
+                        >
+                          {radio.name}
+                        </ToggleButton>
+                      ))}
+                    </ButtonGroup>
+                    <FormControl
+                      placeholder="태그의 이름을 입력해주세요..."
+                      aria-label="Recipient's username"
+                      aria-describedby="basic-addon2"
+                      onChange={e => setForm(e.target.value)}
+                      value={form}
+                    />
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <button
+                      className={`d-inline-block py-1 mr-1 mb-1`}
+                      style={{ color: 'black' }}
+                      onClick={() => {
+                        setmodalShows(false);
+                        insertTaglist();
+                      }}
                     >
-                      {radio.name}
-                    </ToggleButton>
-                  ))}
-                </ButtonGroup>
-                <FormControl
-                  placeholder="태그의 이름을 입력해주세요..."
-                  aria-label="Recipient's username"
-                  aria-describedby="basic-addon2"
-                  onChange={e => setForm(e.target.value)}
-                  value={form}
-                />
-              </Modal.Body>
-              <Modal.Footer>
-                <button
-                  className={`d-inline-block py-1 mr-1 mb-1`}
-                  style={{ color: 'black' }}
-                  onClick={() => {
-                    setmodalShows(false);
-                    insertTaglist();
-                  }}
-                >
-                  라벨 추가
-                </button>
-              </Modal.Footer>
-            </Modal>
+                      라벨 추가
+                    </button>
+                  </Modal.Footer>
+                </Modal>
+              ) : (
+                <> </>
+              )}
+            </>
           </div>
         </DropdownMenu>
       </UncontrolledButtonDropdown>
