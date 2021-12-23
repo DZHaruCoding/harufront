@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Card, Dropdown, DropdownMenu, DropdownToggle } from 'reactstrap';
 import ListGroup from 'reactstrap/es/ListGroup';
 import ListGroupItem from 'reactstrap/es/ListGroupItem';
-import { API_URL, localIp } from '../../config';
+import { API_URL, GCP_API_URL, localIp } from '../../config';
 import AppContext from '../../context/Context';
 import { rawEarlierNotifications, rawNewNotifications } from '../../data/notification/notification';
 import { isIterableArray } from '../../helpers/utils';
@@ -202,7 +202,7 @@ const NotificationDropdown = () => {
       }}
     >
       <SockJsClient
-          url={`${API_URL}/haru/socket`}
+          url={`${GCP_API_URL}/haru/socket`}
           topics={[`/topic/kanban/tasklist/add/notice/${window.sessionStorage.getItem("authUserNo")}`]}
           onMessage={socketData => {socketCallback(socketData)}}
           ref={(client) => {

@@ -1,8 +1,8 @@
 import React, { useContext, useRef, useState } from 'react';
 import AppContext, { KanbanContext } from '../../context/Context';
 import { Button, Form, Input, Row, Col } from 'reactstrap';
-import { API_URL, localIp } from '../../config';
-import SockJsClient from 'react-stomp';
+import { API_URL, GCP_API_URL, localIp } from '../../config';
+import SockJsClient from 'react-stomp'; 
 
 
 const AddAnotherCard = ({ kanbanColumnItem, setShowForm, websocket }) => {
@@ -93,7 +93,7 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm, websocket }) => {
     <div className="p-3 border bg-white rounded-soft transition-none mt-3">
 
     <SockJsClient
-          url={`${API_URL}/haru/socket`}
+          url={`${GCP_API_URL}/haru/socket`}
           topics={[`/topic/kanban/task/add/${window.sessionStorage.getItem("authUserNo")}`]}
           onMessage={socketData => {socketCallback(socketData)}}
           ref={$webSocket}
