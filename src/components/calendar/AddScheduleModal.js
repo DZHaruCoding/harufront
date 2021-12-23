@@ -51,7 +51,7 @@ const AddScheduleModal = ({
 
 const handleAdd = async (formObj) =>{
   try {
-    const response = await fetch('/haru/api/calendar/add',{
+    const response = await fetch('/haru/api/calendar/add/'+window.sessionStorage.getItem("authUserNo"),{
       method : "post",
       headers:{
         'Content-Type':'application/json',
