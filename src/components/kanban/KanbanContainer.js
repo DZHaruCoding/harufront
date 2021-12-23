@@ -1,17 +1,12 @@
-import React, { useContext, useRef, useEffect, useState } from 'react';
-import { DragDropContext } from 'react-beautiful-dnd';
 import is from 'is_js';
-
-import { KanbanContext } from '../../context/Context';
-import { isIterableArray } from '../../helpers/utils';
-import KanbanColumn from './KanbanColumn';
-import AddAnotherList from './AddAnotherList';
-import KanbanModal from './KanbanModal';
-import { API_URL, GCP_API_URL, localIp } from '../../config';
-import SockJS from 'sockjs-client';
-import StompJs from 'stompjs';
+import React, { Fragment, useContext, useEffect, useRef, useState } from 'react';
+import { DragDropContext } from 'react-beautiful-dnd';
 import SockJsClient from 'react-stomp';
-import { Fragment } from 'react';
+import { GCP_API_URL } from '../../config';
+import { KanbanContext } from '../../context/Context';
+import AddAnotherList from './AddAnotherList';
+import KanbanColumn from './KanbanColumn';
+import KanbanModal from './KanbanModal';
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -36,7 +31,6 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 };
 
 const KanbanContainer = () => {
-
   const {
     kanbanColumns,
     UpdateColumnData,
@@ -47,11 +41,7 @@ const KanbanContainer = () => {
     setModalContent
   } = useContext(KanbanContext);
 
-
-
-
   //const { kanbanColumns, UpdateColumnData, UpdateColumnData2, modalContent, modal, setModal } = useContext(KanbanContext);
-
 
   const containerRef = useRef(null);
   let clientRef = useRef(null);
