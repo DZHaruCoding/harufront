@@ -13,9 +13,8 @@ import AddScheduleModal from './AddScheduleModal';
 import Flex from '../common/Flex';
 
 import events from '../../data/calendar/events';
-import { localIp } from '../../config';
-import { set } from 'lodash';
 import AppContext from '../../context/Context';
+import { Link } from 'react-router-dom';
 const Calendar = () => {
   const calendarRef = useRef();
   const [calendarApi, setCalendarApi] = useState({});
@@ -26,6 +25,7 @@ const Calendar = () => {
   const [isOpenScheduleModal, setIsOpenScheduleModal] = useState(false);
   const [modalEventContent, setModalEventContent] = useState(false);
   const [addScheduleStartDate, setAddScheduleStartDate] = useState();
+  const [addScheduleEndDate, setAddScheduleEndDate] = useState();
   const [palra,setPalra] = useState(false);
   const [detailData, setDetailData] = useState();
   const {projectNo} = useContext(AppContext);
@@ -100,29 +100,55 @@ const Calendar = () => {
         } 
 
         //setInitialEvents에 데이터 셋팅하기
-        setInitialEvents(jsonResult.data);
-        console.log('init',initialEvents);
-        let scheduledata = [];
-        jsonResult.data.scheduleList.map(schedule => scheduledata = [...scheduledata,{ 
+        // setInitialEvents('json 데이터 : ',jsonResult.data);
+        // let scheduledata = [];
+        // jsonResult.data.scheduleList.map(schedule => scheduledata = [...scheduledata,{ 
+        //                           id: schedule.scheduleNo,
+        //                           title: schedule.scheduleContents,
+        //                           start: schedule.scheduleStart,
+        //                           end: schedule.scheduleEnd
+        //                           }]);
+        // // setCalendarList(scheduledata);
+        // let taskdata = [];
+        // jsonResult.data.taskList.map(task => taskdata = [...taskdata,{
+        //                           id: task.taskNo,
+        //                           title: task.taskContents,
+        //                           start: task.taskStart,
+        //                           end: task.taskEnd,
+        //                           color:task.taskLabel,
+        //                           textColor:"white"
+        //                           }]);
+        // console.log('캘린더 데이터 / 스케줄 : ',scheduledata);
+        // console.log('캘린더 데이터 / 업무 : ',taskdata);
+
+        // const tst = [...scheduledata, ...taskdata]
+        // console.log(tst);
+        // // let data =[scheduledata.data,taskdata.data];
+        // // console.lod(scheduledata.data);
+        // setCalendarList(tst);
+
+        // // 
+
+        let test = [];
+        jsonResult.data.scheduleList.map(schedule => test = [...test,{ 
                                   id: schedule.scheduleNo,
                                   title: schedule.scheduleContents,
                                   start: schedule.scheduleStart,
                                   end: schedule.scheduleEnd
                                   }]);
-        
-        let task = [];
-        jsonResult.data.taskList.map(task => task = [...task,{
+        jsonResult.data.taskList.map(task => test = [...test,{
                                   id: task.taskNo,
                                   title: task.taskContents,
                                   start: task.taskStart,
                                   end: task.taskEnd,
                                   color:task.taskLabel,
-                                  textColor:"white"
+                                  textColor:"white",
+                                  url:"http://localhost:3000/pages/kanban"
                                   }]);
                                   
-        console.log('캘린더 데이터 / 스케줄 : ',scheduledata);
-        console.log('캘린더 데이터 / 업무 : ',task);
-        setCalendarList(scheduledata);
+        console.log('캘린더 데이터',test);
+        setCalendarList(test);
+
         setChangeChk(false);
       } catch (error) {
         console.log(error);
@@ -159,15 +185,79 @@ const Calendar = () => {
   };
 
   const handleEventClick = info => {
-    if (info.event.url) {
-      window.open(info.event.url);
-      info.jsEvent.preventDefault();
-    } else {
-      setModalEventContent(info);
-      console.log('info가 뭐야',info.event._def);
-      console.log('initialEvents',initialEvents);
-      setDetailData(info.event._def);
-      setIsOpenModal(true);
+    //스케줄 정보
+    if (info.event._def.ui.borderColor == "") { 
+      console.log('업무 정보 나와',info.event.id);
+      const no = info.event.id;
+      console.log(no)
+      const fetchfun = async() => {
+        const response = await fetch('/haru/api/calendar/detail/'+no,{
+          method:"get",
+          headers:{
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: null
+        });
+
+        if(!response.ok){
+          throw new Error(`${response.status} ${response.statusText}`);
+        }
+        const jsonResult = await response.json(); //여기서부터 오류 null값..
+       
+        console.log('캘린더 스케줄 찾기 json data :',jsonResult.data);
+        console.log('캘린더 스케줄 찾기 json data :',jsonResult.data.scheduleNo);
+  
+              //통신 했지만 결과값이 success가 아니면
+        if(jsonResult.result !== 'success'){
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+        }
+        
+        let data = [{
+          id : jsonResult.data.scheduleNo,
+          title : jsonResult.data.scheduleContents,
+          start : jsonResult.data.scheduleStart,
+          end : jsonResult.data.scheduleEnd
+        }]
+        setDetailData(data);
+        setIsOpenModal(true);
+
+
+      }
+      fetchfun()
+    } else { // 업무 정보
+      // console.log('color 정보있?',)
+      // setModalEventContent(info);
+      // console.log('info color',info.event._def.ui.borderColor);
+      // console.log('info가 뭐야',info.event._def);
+      // console.log('업무 선택 됨')
+      // const no = info.event.id;
+      // console.log(no)
+      
+      // const fetchfun = async () =>{
+      //   const response = await fetch('/haru/api/calendar/task/'+no,{
+      //     method: 'get',
+      //     headers:{
+      //       'Content-Type': 'application/json',
+      //       'Accept': 'application/json'
+      //     },
+      //     body: null
+      //   });
+
+      //   if(!response.ok){
+      //     throw new Error(`${response.status} ${response.statusText}`);
+      // }
+      // const jsonResult = await response.json(); //여기서부터 오류 null값..
+       
+      // console.log('업무 클릭 시 json data :',jsonResult.data);
+      // if(jsonResult.result !== 'success'){
+      //   throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      //   }
+
+      // } 
+      // fetchfun()
+      // setDetailData(info.event._def);
+      // setIsOpenModal(true);
     }
   };
   const [updata,setUpdata] = useState();
@@ -193,57 +283,8 @@ const Calendar = () => {
     console.log('캘린더 업데이트 데이터',data);
 
     if (data) {
-      // const fetchfun = async () => {
-      //   try {
-      //     const response = await fetch(`${localIp}/api/calendar/1`,{
-      //       method: 'get',
-      //       headers:{
-      //         'Content-Type':'application/json',
-      //         'Accept':'application/json'
-      //       },
-      //       body:null
-      //     });
-    
-      //     //fetch 성공하면
-      //     if(!response.ok){
-      //       throw new Error(`${response.status} ${response.statusText}`);
-      //     }
-      //     //결과를 json으로 변환하기
-      //     const jsonResult = await response.json();
-      //     console.log(jsonResult.data);
-    
-      //     //통신 했지만 결과값이 success가 아니면
-      //     if(jsonResult.result !== 'success'){
-      //       throw new Error(`${jsonResult.result} ${jsonResult.message}`);
-      //     } 
-    
-      //     //setInitialEvents에 데이터 셋팅하기
-      //     setInitialEvents(jsonResult.data);
-      //     console.log('init',initialEvents);
-      //     let test = [];
-      //     jsonResult.data.scheduleList.map(schedule => test = [...test,{ 
-      //                               id: schedule.scheduleNo,
-      //                               title: schedule.scheduleContents,
-      //                               start: schedule.scheduleStart,
-      //                               end: schedule.scheduleEnd
-      //                               }]);
-      //     jsonResult.data.taskList.map(task => test = [...test,{
-      //                               id: task.taskNo,
-      //                               title: task.taskContents,
-      //                               start: task.taskStart,
-      //                               end: task.taskEnd
-      //                               }]);
-      //     console.log(test);
-      //     setCalendarList([...calendarList],test);
-      //   } catch (error) {
-      //     console.log(error);
-      //   }
-      // };
-        // fetchfun();
+ 
       setChangeChk(true);
-        // setCalendarList([...calendarList,data]);
-      // FullCalendar.refetchEvents();
-      // FullCalendar.render();
     }
   }
 
@@ -382,12 +423,13 @@ const Calendar = () => {
             dayMaxEvents={2}
             height={800}
             stickyHeaderDates={false}
-            editable
-            selectable
-            selectMirror
+            selectable={true}
+            editable={true}
+            selectMirror={true}
             select={info => {
               setIsOpenScheduleModal(true);
               setAddScheduleStartDate(info.start);
+              setAddScheduleEndDate(info.end);
             }}
             views={views}
             eventTimeFormat={eventTimeFormat}
@@ -409,6 +451,8 @@ const Calendar = () => {
         setCalendarList={setCalendarList}
         addScheduleStartDate={addScheduleStartDate}
         setAddScheduleStartDate={setAddScheduleStartDate}
+        addScheduleEndDate={addScheduleEndDate}
+        setAddScheduleEndDate={setAddScheduleEndDate}
         addcallback={addcallback}
       />
       :
@@ -425,7 +469,7 @@ const Calendar = () => {
       // setInitialEvents={setInitialEvents}
       modalEventContent={modalEventContent}
       // setModalEventContent = {setModalEventContent}
-      detailData = {detailData}
+      scheduledetailData = {detailData}
       updatecallback = {updateData}
       deletecallback = {deletecallback}
       />

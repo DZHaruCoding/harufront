@@ -2,7 +2,7 @@ import React from 'react';
 import MyProject from './MyProject';
 import { Media } from 'reactstrap';
 
-const EventSummary = ({ projects, rendcallback }) => {
+const EventSummary = ({ projects, rendcallback,key }) => {
   const updatecallback = () =>{
     rendcallback(true);
   }
@@ -14,11 +14,11 @@ const EventSummary = ({ projects, rendcallback }) => {
   return(
     <Media>
     {
-      projects.map( (project,index) =>
+      projects.map( (project) =>
       <MyProject project={project}
                  callback={updatecallback}
                  deletecallback={deletecallback}
-                 key={index}
+                 key={`${project.projectNo}`}
        />)
     }
     </Media>

@@ -28,10 +28,12 @@ const UpdateScheduleModal = ({
   title,
   start,
   end,
-  eventData
+  eventData,
+  updatedata
 }) => {
 
   const toggle = () => setIsOpenScheduleModal(!isOpenScheduleModal);
+  console.log('업데이트 폼 데이터',updatedata)
 
   const [formObj, setFormObj] = useState([]);
   const [endDate, setEndDate] = useState(end);

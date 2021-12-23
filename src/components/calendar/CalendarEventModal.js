@@ -27,11 +27,11 @@ const EventModalMediaContent = ({ icon, heading, content, children }) => (
 );
 
 
-const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent,setModalEventContent,updatecallback,deletecallback}) => {
+const CalendarEventModal = ({ isOpenModal, setIsOpenModal,scheduledetailData, modalEventContent,setModalEventContent,updatecallback,deletecallback}) => {
   const toggle = () => setIsOpenModal(!isOpenModal);
-  const { id,title, end, start } = isOpenModal && modalEventContent.event;
+  const { id,title, end, start } = isOpenModal && scheduledetailData;
 
-  const { description, location, organizer, schedules } = isOpenModal && modalEventContent.event.extendedProps;
+  // const { description, location, organizer, schedules } = isOpenModal && modalEventContent.event.extendedProps;
   //false 모달 상태값 생성
   const [isOpenScheduleModal, setIsOpenScheduleModal] = useState(false);
   const [addScheduleStartDate, setAddScheduleStartDate] = useState();
@@ -52,13 +52,14 @@ const CalendarEventModal = ({ isOpenModal, setIsOpenModal, modalEventContent,set
   // console.log('detailDatas.title는?',detailData);
   // const [detailDatas,setDetailDatas] = useState(detailData);
   // console.log('detailDatas는?',detailDatas);
-  console.log('detailData.no:',id);
+  // console.log('detailData.no:',id);
   const [detailData,setDetailData] = useState();
 
   useEffect(() => {
     const scheduleDetail = async() => {  
+      console.log('스케쥴 상세보기',scheduledetailData[0].id)
       try {
-         const response = await fetch('/haru/api/calendar/detail/'+id,{
+         const response = await fetch('/haru/api/calendar/detail/'+scheduledetailData[0].id,{
              method: "get",
              headers:{
                  'Content-Type':'application/json',
@@ -147,16 +148,16 @@ const call = () => {
       {/* title (제목) */}
       <ModalHeader toggle={toggle} tag="div" className="px-card bg-light border-0 flex-between-center" close={closeBtn}>
         <h5 className="mb-0">{detailData && detailData.title}</h5>
-        {organizer && (
+        {/* {organizer && (
           <p className="mb-0 fs--1 mt-1">
             by <a href="#!">{organizer}</a>
           </p>
-        )}
+        )} */}
       </ModalHeader>
 
       {/* 모달창 body */}
       <ModalBody className="px-card pb-card pt-1 fs--1">
-        {description && <EventModalMediaContent icon="align-left" heading="Description" content={description} />}
+        {/* {description && <EventModalMediaContent icon="align-left" heading="Description" content={description} />} */}
         {(detailData && detailData.end || detailData && detailData.start) && (
           <EventModalMediaContent icon="calendar-check" heading="Date and Time">
             <span>시작일 : {moment(detailData && detailData.start).format('YYYY-MM-DD HH:mm:ss')}</span>
@@ -194,10 +195,11 @@ const call = () => {
               setAddScheduleStartDate={setAddScheduleStartDate}
               callback={modifyCallbackFun}
               // eventData={eventData}
-              no ={id}
-              title = {title}
-              start = {start}
-              end = {end}
+              no ={scheduledetailData[0].id}
+              title = {scheduledetailData[0].title}
+              start = {scheduledetailData[0].start}
+              end = {scheduledetailData[0].end}
+              updatedata={detailData}
               />
 
       <ModalFooter tag={Flex} justify="end" className="bg-light px-card border-top-0">
