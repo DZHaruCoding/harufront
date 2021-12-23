@@ -66,18 +66,14 @@ const ModalCheckListContent = ({ clientRef, members, fetchInsertHistory }) => {
       taskName,
       projectNo,
       clientRef
-    )
-      .then(response => {
-        response.json();
+    ).then(res =>
+      activityLogDispatch({
+        type: 'ALADD',
+        payload: {
+          ...res
+        }
       })
-      .then(json =>
-        activityLogDispatch({
-          type: 'ALADD',
-          payload: {
-            ...json.data
-          }
-        })
-      );
+    );
   }
   /////////////////////////////////////////////////////////////////////////////////////
   function delCheckList(check) {
@@ -90,6 +86,7 @@ const ModalCheckListContent = ({ clientRef, members, fetchInsertHistory }) => {
       checklistState: check.checklistState === 'del' ? 'del' : 'del',
       taskNo: check.taskNo
     };
+
     data.checkListInfo.splice(index, 1, newCheckList);
     const delcheck = async () => {
       const response = await fetch(`/haru/api/tasksetting/checklist/${checklistNo}`, {
@@ -114,15 +111,6 @@ const ModalCheckListContent = ({ clientRef, members, fetchInsertHistory }) => {
     delcheck();
 
     const taskName = modalContent.taskCard.taskName;
-    fetchInsertHistory(
-      window.sessionStorage.getItem('authUserNo'),
-      window.sessionStorage.getItem('authUserName'),
-      members,
-      'checklistStateUpdate',
-      taskName,
-      projectNo,
-      clientRef
-    );
   }
   /////////////////////////////////////////////////////////////////////////////////////
   function insertcheck() {
@@ -148,18 +136,7 @@ const ModalCheckListContent = ({ clientRef, members, fetchInsertHistory }) => {
       taskName,
       projectNo,
       clientRef
-    )
-      .then(response => {
-        response.json();
-      })
-      .then(json =>
-        activityLogDispatch({
-          type: 'ALADD',
-          payload: {
-            ...json.data
-          }
-        })
-      );
+    );
 
     const fetchinsert = async () => {
       const response = await fetch(`/haru/api/tasksetting/checklist/add`, {

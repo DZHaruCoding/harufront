@@ -15,7 +15,7 @@ import {
   Row,
   UncontrolledButtonDropdown
 } from 'reactstrap';
-import { KanbanContext } from '../../context/Context';
+import AppContext, { KanbanContext } from '../../context/Context';
 import Background from '../common/Background';
 import ModalAttachmentsContent from './ModalAttachmentsContent';
 import ModalCheckListContent from './ModalCheckListContent';
@@ -27,9 +27,8 @@ import SockJsClient from 'react-stomp';
 import moment from 'moment';
 import axios from 'axios';
 import { HexColorPicker } from 'react-colorful';
-import { GCP_API_URL } from '../../config';
+import { API_URL, GCP_API_URL } from '../../config';
 
-const API_URL = 'http://localhost:8080/haru';
 const API_HEADERS = {
   'Context-Type': 'application/json'
 };
@@ -42,15 +41,14 @@ const KanbanModal = ({ modal, setModal, className }) => {
     kanbanColumnsDispatch,
     history,
     setHistory,
-    members,
-    activityLogDispatch,
-    projectNo
+    members
   } = useContext(KanbanContext);
   const [color, setColor] = useState('#aabbcc');
   const [selectedFile, setSelectedFile] = useState('');
   const [alerts, setAlerts] = useState([]);
   const [form, setForm] = useState('');
   const [open, setOpen] = useState(false);
+  const { projectNo, activityLog, activityLogDispatch } = useContext(AppContext);
   // const [addScheduleStartDate, setAddScheduleStartDate] = useState();
   const [isOpenScheduleModal, setIsOpenScheduleModal] = useState(false);
   const [endDate, setEndDate] = useState();
@@ -59,7 +57,7 @@ const KanbanModal = ({ modal, setModal, className }) => {
 
   async function fetchInsertHistory(senderNo, senderName, receiver, historyType, actionName, projectNo, clientRef) {
     //보내는사람,받는사람,받는사람배열,히스토리 타입,엑션이름,프로젝트넘버,
-    let userArray = [1, 2]; //받는사람들
+    let userArray = []; //받는사람들
     receiver.map(user => userArray.push(user.userNo)); //receiver 에서 userArray에 하나씩 넣어준다.
 
     const historyData = {
@@ -72,7 +70,7 @@ const KanbanModal = ({ modal, setModal, className }) => {
       projectNo: projectNo,
       authUserNo: sessionStorage.getItem('authUserNo')
     };
-    console.log('historyDatahistory', historyData);
+    console.log('히스토리데이터입니다.', historyData);
     clientRef.current.sendMessage('/app/history/all', JSON.stringify(historyData)); //서버로 메세지 전송
     /////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,16 +88,19 @@ const KanbanModal = ({ modal, setModal, className }) => {
     }
 
     const jsonResult = await response.json();
-
+    const AddArr = jsonResult.data;
+    console.log('insertHistory에서의 jsonResult.data', jsonResult.data);
     if (jsonResult.result != 'success') {
       throw new Error(`${jsonResult.result} ${jsonResult.message}`);
     }
+
     activityLogDispatch({
       type: 'ALADD',
       payload: {
-        ...jsonResult.data
+        AddArr
       }
     });
+
     // fetchinsert();
   }
   //////////////////////////////////////////////////////////////////////////////////////////////
@@ -327,18 +328,7 @@ const KanbanModal = ({ modal, setModal, className }) => {
       taskName,
       projectNo,
       clientRef
-    )
-      .then(response => {
-        response.json();
-      })
-      .then(json =>
-        activityLogDispatch({
-          type: 'ALADD',
-          payload: {
-            ...json.data
-          }
-        })
-      );
+    );
   };
 
   function updataTaskName() {
@@ -378,6 +368,17 @@ const KanbanModal = ({ modal, setModal, className }) => {
       payload: data2,
       id: id
     });
+    const taskContents = NewtaskName;
+    const clientRef = $websocket;
+    fetchInsertHistory(
+      window.sessionStorage.getItem('authUserNo'),
+      window.sessionStorage.getItem('authUserName'),
+      members,
+      'taskContentsUpdate',
+      taskContents,
+      projectNo,
+      clientRef
+    );
   }
   function handleFileChange(event) {
     setSelectedFile(event.target.files[0]);
@@ -433,8 +434,8 @@ const KanbanModal = ({ modal, setModal, className }) => {
       size="lg"
     >
       <SockJsClient
-        url={`${GCP_API_URL}/haru/socket`}
-        // url={`/haru/socket`}
+        // url={`${GCP_API_URL}/socket`}
+        url={`${API_URL}/haru/socket`}
         topics={[
           `/topic/all/${sessionStorage.getItem('authUserNo')}`,
           `/topic/history/all/${sessionStorage.getItem('authUserNo')}`

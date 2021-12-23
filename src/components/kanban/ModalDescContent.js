@@ -54,6 +54,7 @@ const ModalDescContent = ({ clientRef, members, fetchInsertHistory }) => {
     });
 
     const taskContents = value;
+
     fetchInsertHistory(
       window.sessionStorage.getItem('authUserNo'),
       window.sessionStorage.getItem('authUserName'),
@@ -62,18 +63,8 @@ const ModalDescContent = ({ clientRef, members, fetchInsertHistory }) => {
       taskContents,
       projectNo,
       clientRef
-    )
-      .then(response => {
-        response.json();
-      })
-      .then(json =>
-        activityLogDispatch({
-          type: 'ALADD',
-          payload: {
-            ...json.data
-          }
-        })
-      );
+    );
+
     // console.log('수정 후 내용', data.taskCard.taskContents);
 
     // try {
