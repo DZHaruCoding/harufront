@@ -70,18 +70,31 @@ export const arrayReducer = (state, action) => {
         return state;
       }
       return orderBy(state, sortBy, order);
-    case 'TASKNAME': {       
+    case 'TASKNAME': {
       let itemData = _.cloneDeep(state);
 
-      state.map((item1, i) => (itemData[i].taskVoList = item1.taskVoList.map(item2 => item2.taskNo === id ? payload : item2)));
-    
+      state.map(
+        (item1, i) => (itemData[i].taskVoList = item1.taskVoList.map(item2 => (item2.taskNo === id ? payload : item2)))
+      );
+
       return itemData;
     }
     case 'TASKDESC': {
       let itemData = _.cloneDeep(state);
 
-      state.map((item1, i) => (itemData[i].taskVoList = item1.taskVoList.map(item2 => item2.taskNo === id ? payload : item2)));
-    
+      state.map(
+        (item1, i) => (itemData[i].taskVoList = item1.taskVoList.map(item2 => (item2.taskNo === id ? payload : item2)))
+      );
+
+      return itemData;
+    }
+    case 'TASKLABEL': {
+      let itemData = _.cloneDeep(state);
+
+      state.map(
+        (item1, i) => (itemData[i].taskVoList = item1.taskVoList.map(item2 => (item2.taskNo === id ? payload : item2)))
+      );
+
       return itemData;
     }
     default:

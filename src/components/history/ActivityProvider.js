@@ -1,16 +1,16 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 import axios from 'axios';
-import AppContext, { ActivityContext } from '../../context/Context';
+import AppContext, { ActivityContext, KanbanContext } from '../../context/Context';
 import { localIp } from '../../config';
 import { historyReducer } from '../../reducers/historyReducer';
 
 const ActivityProvider = ({ children }) => {
-  const [activityLog, activityLogDispatch] = useReducer(historyReducer, []);
+  const { projectNo, activityLog, activityLogDispatch } = useContext(AppContext);
   useEffect(() => {
-    const run = async projectNo => {
+    const run = async () => {
+      console.log('projectNo아이이이이이이이', projectNo);
       // const response = await axios.get(`${localIp}/haru/api/history/${projectNo}`);
-      const response = await axios.get(`/haru/api/history/1`);
-      console.log(response.data);
+      const response = await axios.get(`/haru/api/history/${projectNo}`);
       const item = response.data;
       activityLogDispatch({
         type: 'ALADD',
@@ -23,6 +23,7 @@ const ActivityProvider = ({ children }) => {
   }, []);
 
   const value = {
+    projectNo,
     activityLog,
     activityLogDispatch
   };
