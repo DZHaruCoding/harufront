@@ -66,13 +66,6 @@ const ModalCheckListContent = ({ clientRef, members, fetchInsertHistory }) => {
       taskName,
       projectNo,
       clientRef
-    ).then(res =>
-      activityLogDispatch({
-        type: 'ALADD',
-        payload: {
-          ...res
-        }
-      })
     );
   }
   /////////////////////////////////////////////////////////////////////////////////////
