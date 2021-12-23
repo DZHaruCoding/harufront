@@ -2,8 +2,7 @@ import React, { useContext, useRef, useState } from 'react';
 import AppContext, { KanbanContext } from '../../context/Context';
 import { Button, Form, Input, Row, Col } from 'reactstrap';
 import { API_URL, GCP_API_URL, localIp } from '../../config';
-import SockJsClient from 'react-stomp'; 
-
+import SockJsClient from 'react-stomp';
 
 const AddAnotherCard = ({ kanbanColumnItem, setShowForm, websocket }) => {
   const { kanbanColumnsDispatch, kanbanTaskCards, kanbanTaskCardsDispatch } = useContext(KanbanContext);
@@ -19,14 +18,14 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm, websocket }) => {
       taskContents: value,
       taskListNo: kanbanColumnItem.taskListNo,
       taskOrder: kanbanColumnItem.taskVoList.length,
-      taskWriter: window.sessionStorage.getItem("authUserName")
-    }
+      taskWriter: window.sessionStorage.getItem('authUserName')
+    };
 
     const response = await fetch(`/haru/api/task/add`, {
       method: 'post',
       headers: {
-        "Content-Type": 'application/json',
-        'Accept': 'application/json'
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
       },
       body: JSON.stringify(json)
     });
@@ -40,15 +39,15 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm, websocket }) => {
     if (jsonResult.result != 'success') {
       throw new Error(`${jsonResult.result} ${jsonResult.message}`);
     }
-    
+
     const taskVoList = {
       taskNo: jsonResult.data,
       taskName: value,
       taskContents: value,
       taskListNo: kanbanColumnItem.taskListNo,
       taskOrder: kanbanColumnItem.taskVoList.length,
-      taskWriter: window.sessionStorage.getItem("authUserName"),
-      taskLabel:'#777777',
+      taskWriter: window.sessionStorage.getItem('authUserName'),
+      taskLabel: '#777777',
       taskVoList
     };
 
@@ -66,22 +65,21 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm, websocket }) => {
     });
 
     const kanbanboardSocketData = {
-      taskVoList : taskVoList,
-      kanbanColumnItem : kanbanColumnItem,
-      projectNo : projectNo,
-      projectTitle : projectTitle,
-      userNo : window.sessionStorage.getItem("authUserNo"),
-      userName : window.sessionStorage.getItem("authUserName")
-    }
+      taskVoList: taskVoList,
+      kanbanColumnItem: kanbanColumnItem,
+      projectNo: projectNo,
+      projectTitle: projectTitle,
+      userNo: window.sessionStorage.getItem('authUserNo'),
+      userName: window.sessionStorage.getItem('authUserName')
+    };
 
-
-    $webSocket.current.sendMessage("/app/task/add", JSON.stringify(kanbanboardSocketData));
+    $webSocket.current.sendMessage('/app/task/add', JSON.stringify(kanbanboardSocketData));
   };
 
   const socketCallback = e => {
-      console.log("sdsas" + e);
-  }
-  
+    console.log('sdsas' + e);
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
     handleAddCard(cardHeaderTitle);
@@ -91,12 +89,13 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm, websocket }) => {
   // 조진석 테스트
   return (
     <div className="p-3 border bg-white rounded-soft transition-none mt-3">
-
-    <SockJsClient
-          url={`${GCP_API_URL}/haru/socket`}
-          topics={[`/topic/kanban/task/add/${window.sessionStorage.getItem("authUserNo")}`]}
-          onMessage={socketData => {socketCallback(socketData)}}
-          ref={$webSocket}
+      <SockJsClient
+        url={`${GCP_API_URL}/haru/socket`}
+        topics={[`/topic/kanban/task/add/${window.sessionStorage.getItem('authUserNo')}`]}
+        onMessage={socketData => {
+          socketCallback(socketData);
+        }}
+        ref={$webSocket}
       />
 
       <Form onSubmit={e => handleSubmit(e)}>

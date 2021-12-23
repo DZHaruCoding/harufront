@@ -186,7 +186,7 @@ const Events = () => {
     // setModalFormObj({...modalformObj, members});
     console.log(modalformObj);
     const fetchfun = async() => {
-        const response = await fetch('/haru/api/project/add/1',{
+        const response = await fetch('/haru/api/project/add/'+window.sessionStorage.getItem("authUserNo"),{
           method:"post",
           headers:{
             'Content-Type':'application/json',

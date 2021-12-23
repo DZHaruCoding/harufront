@@ -65,6 +65,7 @@ const ModalCommentContent = ({ clientRef, members, fetchInsertHistory }) => {
     };
     insertComment();
   }
+
   function deleteComment(commentNo) {
     const delComment = async () => {
       const response = await fetch(`/haru/api/comment/${commentNo}`, {

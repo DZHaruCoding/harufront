@@ -17,6 +17,12 @@ const Filelist = ({ fileNo }) => {
     product => product.fileNo === fileNo
   );
 
+  function downloadFile(fileNo) {
+    if (window.confirm('파일을 다운로드 하시겠습니까?')) {
+      downloadData(fileNo);
+    }
+  }
+
   function downloadData(fileNo) {
     //blob : 이미지, 사운드, 비디오와 같은 멀티미디어 데이터를 다룰 때 사용, MIME 타입을 알아내거나, 데이터를 송수신
     fetch(`/haru/api/download/${fileNo}`).then(response => {
@@ -57,7 +63,7 @@ const Filelist = ({ fileNo }) => {
         ) : (
           <>
             {originName.split('.')[1] === 'txt' ? (
-              <Image src={txtimg} alt={originName} onClick={() => downloadFile(fileNo)} style={{ width: '50%' }} />
+              <Image src={txtimg} alt={originName} onClick={() => downloadData(fileNo)} style={{ width: '50%' }} />
             ) : (
               <>
                 {originName.split('.')[1] === 'png' || originName.split('.')[1] === 'jpg' ? (

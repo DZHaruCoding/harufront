@@ -50,8 +50,9 @@ const AddScheduleModal = ({
   };
 
 const handleAdd = async (formObj) =>{
+  console.log('생성 모달',formObj)
   try {
-    const response = await fetch('/haru/api/calendar/add',{
+    const response = await fetch('/haru/api/calendar/add/'+window.sessionStorage.getItem("authUserNo"),{
       method : "post",
       headers:{
         'Content-Type':'application/json',
@@ -86,7 +87,6 @@ const handleAdd = async (formObj) =>{
     !isOpenScheduleModal && setEndDate(null);
     !isOpenScheduleModal && setStartDate(null);
     setFormObj({ ...formObj, start: addScheduleStartDate });
-    setFormObj({ ...formObj, end: addScheduleEndDate });
     // eslint-disable-next-line
   }, [isOpenScheduleModal, addScheduleStartDate, addScheduleEndDate]);
 
@@ -121,7 +121,7 @@ const handleAdd = async (formObj) =>{
               value={startDate || addScheduleStartDate}
               onChange={dateTime => {
                 if (dateTime._isValid) {
-                  setStartDate(startDate || addScheduleStartDate);
+                  setStartDate(dateTime);
                   let date = {};
                   date.value = dateTime.format('YYYY-MM-DD HH:mm:ss');
                   date.name = 'scheduleStart';
@@ -129,8 +129,8 @@ const handleAdd = async (formObj) =>{
                 }
               }}
 
-              dateFormat="YYYY-DD-MM HH:mm:ss"
-              inputProps={{ placeholder: 'YYYY-MM-DD HH:mm:ss', id: 'eventStart' }}
+              dateFormat="YYYY-MM-DD HH:mm:ss"
+              inputProps={{ placeholder: 'YYYY-MM-DD HH:mm:ss', id: 'eventStart' ,name:"scheduleStart"}}
             />
           </FormGroup>
           
@@ -151,8 +151,8 @@ const handleAdd = async (formObj) =>{
                   handleChange(date);
                 }
               }}
-              dateFormat="YYYY-DD-MM HH:mm:ss"
-              inputProps={{ placeholder: 'YYYY-DD-MM HH:mm:ss', id: 'eventEnd' }}
+              dateFormat="YYYY-MM-DD HH:mm:ss"
+              inputProps={{ placeholder: 'YYYY-DD-MM HH:mm:ss', id: 'eventEnd',name:"scheduleEnd" }}
             />
           </FormGroup>
           
