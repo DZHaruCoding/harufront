@@ -85,24 +85,24 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
       </FormGroup>
       <div>{isfailCheck ? '로그인에 실패 하였습니다' : ''}</div>
       <Row className="justify-content-between align-items-center">
-        <Col xs="auto">
+        {/* <Col xs="auto">
           <CustomInput
             id="customCheckRemember"
-            label="Remember me"
+            label="아이디기억하기"
             checked={remember}
             onChange={({ target }) => setRemember(target.checked)}
             type="checkbox"
           />
-        </Col>
+        </Col> */}
         <Col xs="auto">
           <Link className="fs--1" to={`/authentication/${layout}/forget-password`}>
-            Forget Password?
+            비밀번호가 기억나지 않나요?
           </Link>
         </Col>
       </Row>
       <FormGroup>
         <Button color="primary" block className="mt-3">
-          Log in
+          로그인
         </Button>
       </FormGroup>
       {/* <Divider className="mt-4">or log in with</Divider>
