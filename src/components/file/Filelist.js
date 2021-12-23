@@ -19,7 +19,8 @@ const Filelist = ({ fileNo }) => {
 
   function downloadData(fileNo) {
     //blob : 이미지, 사운드, 비디오와 같은 멀티미디어 데이터를 다룰 때 사용, MIME 타입을 알아내거나, 데이터를 송수신
-    axios.get(`/haru/api/download/${fileNo}`).then(response => {
+    fetch(`/haru/api/download/${fileNo}`).then(response => {
+      console.log(`responseresponseresponseresponse`, response);
       const filename = response.headers.get('Content-Disposition').split('filename=')[1];
       response.blob().then(blob => {
         let url = window.URL.createObjectURL(blob);
