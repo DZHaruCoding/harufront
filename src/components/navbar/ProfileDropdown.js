@@ -4,17 +4,14 @@ import { Link } from 'react-router-dom';
 import { DropdownItem, DropdownMenu, DropdownToggle, Dropdown } from 'reactstrap';
 import Image from 'react-bootstrap/Image';
 import { ProfileContext } from '../../context/Context';
+import DefaultImage from '../../assets/img/Default.png';
+
 
 
 const ProfileDropdown = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const toggle = () => setDropdownOpen(prevState => !prevState);
   const {ProfilePhoto, setProfilePhoto} = useContext(ProfileContext);
-  
-  
-  useEffect(() =>{
-    console.log("우저 프로필 : " + ProfilePhoto);
-  },[ProfilePhoto])
   
   return (
     <Dropdown
@@ -32,10 +29,13 @@ const ProfileDropdown = () => {
       }}
     >
       <DropdownToggle nav className="pr-0">
+        {/* <Image style={{ width: '40px', height: '40px' }} src={`/haru${ProfilePhoto}`} roundedCircle/> */}
+        {ProfilePhoto === "/assets/upUserimages/Default.png" ?
+                        <Image style={{ width: '30px', height: '30px' }} src={`${DefaultImage}`} roundedCircle /> :  
+                        <Image style={{ width: '30px', height: '30px' }} src={`/haru${ProfilePhoto}`} roundedCircle />
+        }
 
-        {ProfilePhoto ? <Image style={{ width: '40px', height: '40px' }} src={`/haru${ProfilePhoto}`} roundedCircle/>
-                        :<Image style={{ width: '40px', height: '40px' }} src={`/haru${window.sessionStorage.getItem("authUserPhoto")}`} roundedCircle/>
-}      </DropdownToggle>
+      </DropdownToggle>
       <DropdownMenu right className="dropdown-menu-card">
         <div className="bg-white rounded-soft py-2">
           <DropdownItem tag={Link} to="/pages/auth/ProfileAndSettings">

@@ -18,7 +18,7 @@ import { Link } from 'react-router-dom';
 import Avatar from '../common/Avatar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AppContext, { KanbanContext } from '../../context/Context';
-import { localIp } from '../../config';
+import { API_URL, GCP_API_URL, localIp } from '../../config';
 import { backgroundColor } from 'echarts/lib/theme/dark';
 import axios from 'axios';
 
@@ -31,45 +31,50 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
   const { isAllRead, setIsAllRead } = useContext(AppContext);
 
   let clientRef = useRef(null);
-  const API_URL = 'http://localhost:8080/haru';
 
   const taskCardDelete = async () => {
 
-    const json = {
-      projectNo: projectNo,
-      projectTitle: projectTitle,
-      taskCardItemId: taskCardItemId
+    try {
+      const json = {
+        projectNo: projectNo,
+        projectTitle: projectTitle,
+        taskCardItemId: taskCardItemId
+      }
+  
+      const response = await fetch(`/haru/api/task/delete`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(json)
+      });
+  
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+  
+      const jsonResult = await response.json();
+  
+      if (jsonResult.result != 'success') {
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      }
+  
+      kanbanTaskCardsDispatch({
+        type: 'REMOVE',
+        id: taskCardItemId,
+        isCard: true
+      });
+  
+      kanbanColumnsDispatch({
+        type: 'TASKREMOVE',
+        id: taskCardItemId
+      });
+    } catch(err) {
+      console.error(err);
     }
 
-    const response = await fetch(`haru/api/task/delete`, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      },
-      body: JSON.stringify(json)
-    });
-
-    if (!response.ok) {
-      throw new Error(`${response.status} ${response.statusText}`);
-    }
-
-    const jsonResult = await response.json();
-
-    if (jsonResult.result != 'success') {
-      throw new Error(`${jsonResult.result} ${jsonResult.message}`);
-    }
-
-    kanbanTaskCardsDispatch({
-      type: 'REMOVE',
-      id: taskCardItemId,
-      isCard: true
-    });
-
-    kanbanColumnsDispatch({
-      type: 'TASKREMOVE',
-      id: taskCardItemId
-    });
+    
   };
 
   const socketCallback = (socketData) => {
@@ -110,7 +115,7 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
           style={provided.draggableProps.style}
         >
           <SockJsClient
-            url={`${API_URL}/socket`}
+            url={`${GCP_API_URL}/haru/socket`}
             topics={[`/topic/kanban/task/delete/${window.sessionStorage.getItem('authUserNo')}`]}
             onMessage={socketData => {
               socketCallback(socketData);

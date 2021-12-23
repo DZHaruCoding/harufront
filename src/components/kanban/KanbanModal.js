@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import _ from 'lodash';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Collapse, FormControl, InputGroup } from 'react-bootstrap';
 import Datetime from 'react-datetime';
 import {
@@ -23,26 +23,88 @@ import ModalCommentContent from './ModalCommentContent';
 import ModalDescContent from './ModalDescContent';
 import ModalLabelContent from './ModalLabelContent';
 import ModalMediaContent from './ModalMediaContent';
+import SockJsClient from 'react-stomp';
+import moment from 'moment';
+import axios from 'axios';
+import { HexColorPicker } from 'react-colorful';
+import { GCP_API_URL } from '../../config';
 
 const API_URL = 'http://localhost:8080/haru';
 const API_HEADERS = {
   'Context-Type': 'application/json'
 };
 const KanbanModal = ({ modal, setModal, className }) => {
-  const { modalContent, setModalContent, kanbanTaskCards, kanbanTaskCardsDispatch, kanbanColumnsDispatch } = useContext(
-    KanbanContext
-  );
-
+  const {
+    modalContent,
+    setModalContent,
+    kanbanTaskCards,
+    kanbanTaskCardsDispatch,
+    kanbanColumnsDispatch,
+    history,
+    setHistory,
+    members,
+    activityLogDispatch,
+    projectNo
+  } = useContext(KanbanContext);
+  const [color, setColor] = useState('#aabbcc');
   const [selectedFile, setSelectedFile] = useState('');
   const [alerts, setAlerts] = useState([]);
   const [form, setForm] = useState('');
   const [open, setOpen] = useState(false);
-
   // const [addScheduleStartDate, setAddScheduleStartDate] = useState();
   const [isOpenScheduleModal, setIsOpenScheduleModal] = useState(false);
   const [endDate, setEndDate] = useState();
   const [startDate, setStartDate] = useState();
+  const $websocket = useRef(null);
 
+  async function fetchInsertHistory(senderNo, senderName, receiver, historyType, actionName, projectNo, clientRef) {
+    //보내는사람,받는사람,받는사람배열,히스토리 타입,엑션이름,프로젝트넘버,
+    let userArray = [1, 2]; //받는사람들
+    receiver.map(user => userArray.push(user.userNo)); //receiver 에서 userArray에 하나씩 넣어준다.
+
+    const historyData = {
+      senderNo: senderNo, // 보내는사람 한명
+      senderName: senderName,
+      receiver: userArray, // 받는사람 여러명
+      historyType: historyType,
+      historyDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+      actionName: actionName, // 행위
+      projectNo: projectNo,
+      authUserNo: sessionStorage.getItem('authUserNo')
+    };
+    console.log('historyDatahistory', historyData);
+    clientRef.current.sendMessage('/app/history/all', JSON.stringify(historyData)); //서버로 메세지 전송
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    const response = await fetch(`/haru/api/history/insertHistory`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(historyData)
+    });
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+
+    const jsonResult = await response.json();
+
+    if (jsonResult.result != 'success') {
+      throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+    }
+    activityLogDispatch({
+      type: 'ALADD',
+      payload: {
+        ...jsonResult.data
+      }
+    });
+    // fetchinsert();
+  }
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////
   const toggle = () => {
     setModal(!modal);
     setIsOpenScheduleModal(!isOpenScheduleModal);
@@ -50,8 +112,9 @@ const KanbanModal = ({ modal, setModal, className }) => {
 
   useEffect(() => {
     if (modal) {
-      !isOpenScheduleModal && setEndDate(null);
-      !isOpenScheduleModal && setStartDate(null);
+      !isOpenScheduleModal && setEndDate(modalContent.taskCard.taskEnd);
+      !isOpenScheduleModal && setStartDate(modalContent.taskCard.taskStart);
+
       const fun = async () => {
         try {
           const response = await fetch(`/haru/api/tasksetting/${modalContent.taskCard.taskNo}`, { method: 'get' });
@@ -87,20 +150,205 @@ const KanbanModal = ({ modal, setModal, className }) => {
   }, [modal]);
   // formData라는 instance에 담아 보냄
   // onChange역할
+  function receiveHistory(socketData) {
+    if (socketData.authUserNo !== sessionStorage.getItem('authUserNo')) {
+      if (socketData.historyType === 'taskContentsUpdate') {
+        //
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 으로 업무이름을 수정하셨습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+        setHistory(newHistoryData);
+      } else if (socketData.historyType === 'taskListInsert') {
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무리스트를 추가하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+        setHistory(newHistoryData);
+      } else if (socketData.historyType === 'taskListDelete') {
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무리스트를 삭제하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+        setHistory(newHistoryData);
+      } else if (socketData.historyType === 'taskDateUpdate') {
+        //
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무의 마감일을 수정하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+        setHistory(newHistoryData);
+      } else if (socketData.historyType === 'checklistInsert') {
+        //
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무에 체크리스트를 추가하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+        setHistory(newHistoryData);
+      } else if (socketData.historyType === 'checklistStateUpdate') {
+        //
+        let newHistoryData = {
+          logContents:
+            socketData.senderName + ' 님이' + socketData.actionName + ' 업무의 체크리스트 상태를 수정하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+        setHistory(newHistoryData);
+      } else if (socketData.historyType === 'taskDragNdrop') {
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무의 위치를 변경하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
 
-  const handleChange = target => {
-    let name = target.name;
-    let value = name === 'allDay' ? target.checked : target.value;
+        setHistory(newHistoryData);
+      } else if (socketData.historyType === 'taskListDragNdrop') {
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무리스트의 위치를 변경하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+        setHistory(newHistoryData);
+      } else if (socketData.historyType === 'taskStateUpdate') {
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무 상태를 변경하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+
+        setHistory(newHistoryData);
+      } else if (socketData.historyType === 'taskInsert') {
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무를 추가하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+        setHistory(newHistoryData);
+      } else if (socketData.historyType === 'taskDelete') {
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무를 삭제하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+        setHistory(newHistoryData);
+      }
+    } else {
+      return;
+    }
+    return;
+  }
+
+  const colorset = () => {
+    const taskNo = modalContent.taskCard.taskNo;
+    const taskLabel = color;
+    const taskData = { taskNo: taskNo, taskLabel: taskLabel };
+
+    const updatecolor = async () => {
+      const response = await fetch(`/haru/api/tasksetting/task/update`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(taskData)
+      });
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+
+      const jsonResult = await response.json();
+
+      if (jsonResult.result != 'success') {
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      }
+    };
+    updatecolor();
+    let data = _.cloneDeep(modalContent);
+    data.taskCard.taskLabel = taskLabel;
+
+    const data2 = data.taskCard;
+    const id = data2.taskNo;
+
+    kanbanColumnsDispatch({
+      type: 'TASKLABEL',
+      payload: data2,
+      id: id
+    });
+  };
+  const handleChange = async target => {
+    // modalContent.taskCard.taskStart;
+    // modalContent.taskCard.taskEnd;
+    let value = target.value;
+    let data = _.cloneDeep(modalContent);
+    const taskNo = data.taskCard.taskNo;
+    const taskName = data.taskCard.taskName;
+    console.log(value, ' value로 바뀜');
+    let newData = {};
+    if (target.name === 'scheduleStart') {
+      data.taskCard.taskStart = value;
+      setModalContent(data);
+      setStartDate(value);
+      newData = { taskNo: taskNo, taskStart: value };
+    } else if (target.name === 'scheduleEnd') {
+      data.taskCard.taskEnd = value;
+      setModalContent(data);
+      setEndDate(value);
+      newData = { taskNo: taskNo, taskEnd: value };
+    }
+    const updateDate = async () => {
+      const response = await fetch(`/haru/api/tasksetting/task/update`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(newData)
+      });
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+      const jsonResult = await response.json();
+      if (jsonResult.result != 'success') {
+        throw new Error(`${jsonResult.result} ${jsonResult.message}`);
+      }
+    };
+    updateDate();
+    const clientRef = $websocket;
+    fetchInsertHistory(
+      window.sessionStorage.getItem('authUserNo'),
+      window.sessionStorage.getItem('authUserName'),
+      members,
+      'taskDateUpdate',
+      taskName,
+      projectNo,
+      clientRef
+    )
+      .then(response => {
+        response.json();
+      })
+      .then(json =>
+        activityLogDispatch({
+          type: 'ALADD',
+          payload: {
+            ...json.data
+          }
+        })
+      );
   };
 
   function updataTaskName() {
     const NewtaskName = form;
     let data = _.cloneDeep(modalContent);
+    const taskNo = data.taskCard.taskNo;
     data.taskCard.taskName = NewtaskName;
     setForm('');
     setOpen(false);
 
-    const taskNo = data.taskCard.taskNo;
     const taskData = { taskNo: taskNo, taskName: NewtaskName };
     const updatetitle = async () => {
       const response = await fetch(`/haru/api/tasksetting/task/update`, {
@@ -125,7 +373,6 @@ const KanbanModal = ({ modal, setModal, className }) => {
     setModalContent(data);
     const data2 = data.taskCard;
     const id = data2.taskNo;
-    const order = data2.taskOrder;
     kanbanColumnsDispatch({
       type: 'TASKNAME',
       payload: data2,
@@ -185,6 +432,16 @@ const KanbanModal = ({ modal, setModal, className }) => {
       modalClassName="theme-modal"
       size="lg"
     >
+      <SockJsClient
+        url={`${GCP_API_URL}/haru/socket`}
+        // url={`/haru/socket`}
+        topics={[
+          `/topic/all/${sessionStorage.getItem('authUserNo')}`,
+          `/topic/history/all/${sessionStorage.getItem('authUserNo')}`
+        ]}
+        onMessage={receiveHistory}
+        ref={$websocket}
+      />
       <ModalBody className="p-0">
         {modalContent.taskCardImage && (
           <div className="position-relative overflow-hidden py-8">
@@ -236,7 +493,14 @@ const KanbanModal = ({ modal, setModal, className }) => {
           <Row>
             <Col lg="10">
               <ModalMediaContent title="할 일 리스트" icon="list-ul" headingClass="mb-3" isHr={false}>
-                <ModalCheckListContent />
+                <ModalCheckListContent
+                  clientRef={$websocket}
+                  members={members}
+                  fetchInsertHistory={fetchInsertHistory}
+                />
+              </ModalMediaContent>
+              <ModalMediaContent title="라벨 컬러" icon="list-ul" headingClass="mb-3" isHr={false}>
+                <HexColorPicker color={color} onChange={setColor} />;<button onClick={colorset}>컬러 셋팅 </button>
               </ModalMediaContent>
               <hr />
               <br />
@@ -257,7 +521,7 @@ const KanbanModal = ({ modal, setModal, className }) => {
                       handleChange(date);
                     }
                   }}
-                  dateFormat="YYYY-DD-MM"
+                  dateFormat="YYYY-MM-DD"
                   inputProps={{ placeholder: 'YYYY-MM-DD', id: 'eventStart' }}
                 />
               </FormGroup>
@@ -279,20 +543,25 @@ const KanbanModal = ({ modal, setModal, className }) => {
                       handleChange(date);
                     }
                   }}
-                  dateFormat="YYYY-DD-MM"
-                  inputProps={{ placeholder: 'YYYY-DD-MM', id: 'eventEnd' }}
+                  dateFormat="YYYY-MM-DD"
+                  inputProps={{ placeholder: 'YYYY-MM-DD', id: 'eventEnd' }}
                 />
               </FormGroup>
               <hr />
               <br />
               {/* //labels */}
               <ModalMediaContent title="태그" icon="tag">
-                <ModalLabelContent key={modalContent.taskCard && modalContent.taskCard.taskNo} />
+                <ModalLabelContent
+                  key={modalContent.taskCard && modalContent.taskCard.taskNo}
+                  clientRef={$websocket}
+                  members={members}
+                  fetchInsertHistory={fetchInsertHistory}
+                />
               </ModalMediaContent>
               {/* //description */}
               <ModalMediaContent title="테스크 설명" icon="paperclip">
                 <p className="text-word-break fs--1">{modalContent.taskCard && modalContent.taskCard.taskContents}</p>
-                <ModalDescContent />
+                <ModalDescContent clientRef={$websocket} members={members} fetchInsertHistory={fetchInsertHistory} />
               </ModalMediaContent>
               {/* //Attachment */}
               <ModalMediaContent
@@ -317,7 +586,7 @@ const KanbanModal = ({ modal, setModal, className }) => {
               </ModalMediaContent>
               {/* //Comment */}
               <ModalMediaContent title="댓글" icon={['far', 'comment']} headingClass="mb-3">
-                <ModalCommentContent />
+                <ModalCommentContent clientRef={$websocket} members={members} fetchInsertHistory={fetchInsertHistory} />
               </ModalMediaContent>
               {/* //Activity */}
             </Col>

@@ -7,7 +7,7 @@ import { isIterableArray } from '../../helpers/utils';
 import KanbanColumn from './KanbanColumn';
 import AddAnotherList from './AddAnotherList';
 import KanbanModal from './KanbanModal';
-import { localIp } from '../../config';
+import { API_URL, GCP_API_URL, localIp } from '../../config';
 import SockJS from 'sockjs-client';
 import StompJs from 'stompjs';
 import SockJsClient from 'react-stomp';
@@ -55,7 +55,6 @@ const KanbanContainer = () => {
 
   const containerRef = useRef(null);
   let clientRef = useRef(null);
-  const API_URL = 'http://localhost:8080/haru';
   const [kanban, setKanban] = useState();
 
   // Detect device
@@ -114,7 +113,7 @@ const KanbanContainer = () => {
   return (
     <Fragment>
       <SockJsClient
-        url={`${API_URL}/socket`}
+        url={`${GCP_API_URL}/haru/socket`}
         topics={[`/topic/kanban/task/move/${window.sessionStorage.getItem('authUserNo')}`]}
         onMessage={socketData => {
           socketCallback(socketData);

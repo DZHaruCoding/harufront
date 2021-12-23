@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Alert, Card, CardBody, Col, Row } from 'reactstrap';
 import { ActivityContext } from '../../context/Context';
 import { isIterableArray } from '../../helpers/utils';
@@ -9,7 +9,6 @@ import ActivityContent from './ActivityContent';
 
 const ActivityContainer = () => {
   const { activityLog, activityLogDispatch } = useContext(ActivityContext);
-  console.log(activityLog);
   const { loading, data: activities } = useFakeFetch(activityLog);
   return (
     <Card>

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Card, Dropdown, DropdownMenu, DropdownToggle } from 'reactstrap';
 import ListGroup from 'reactstrap/es/ListGroup';
 import ListGroupItem from 'reactstrap/es/ListGroupItem';
-import { localIp } from '../../config';
+import { API_URL, GCP_API_URL, localIp } from '../../config';
 import AppContext from '../../context/Context';
 import { rawEarlierNotifications, rawNewNotifications } from '../../data/notification/notification';
 import { isIterableArray } from '../../helpers/utils';
@@ -24,7 +24,6 @@ const NotificationDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const {isAllRead, setIsAllRead} = useContext(AppContext);
   const { loading, notifications, setNotifications } = useContext(AppContext);
-  const API_URL = "http://localhost:8080/haru";
   let clientRef = null;
 
   // useEffect(() => {
@@ -90,7 +89,6 @@ const NotificationDropdown = () => {
     e.preventDefault();
 
     try {
-      //TODO 조진석 : 더미데이터 사용
     const json = {
       noticeNo : k,
       userNo : window.sessionStorage.getItem("authUserNo")
@@ -148,7 +146,6 @@ const NotificationDropdown = () => {
     e.preventDefault();
 
     try {
-      //TODO 조진석 : 더미데이터 사용
 
     const response = await fetch(`/haru/api/notice/noticeAllCheck`, {
       method: 'post',
@@ -205,8 +202,8 @@ const NotificationDropdown = () => {
       }}
     >
       <SockJsClient
-          url={`${API_URL}/socket`}
-          topics={[`/${window.sessionStorage.getItem("authUserNo")}`]}
+          url={`${GCP_API_URL}/haru/socket`}
+          topics={[`/topic/kanban/tasklist/add/notice/${window.sessionStorage.getItem("authUserNo")}`]}
           onMessage={socketData => {socketCallback(socketData)}}
           ref={(client) => {
             clientRef = client

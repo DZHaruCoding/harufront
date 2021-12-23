@@ -103,10 +103,9 @@ const ModalAttachmentsContent = () => {
 
   function downloadData(fileNo) {
     //blob : 이미지, 사운드, 비디오와 같은 멀티미디어 데이터를 다룰 때 사용, MIME 타입을 알아내거나, 데이터를 송수신
-    fetch(`haru/api/download/${fileNo}`).then(response => {
-      console.log(`${fileNo}`);
+    fetch(`/haru/api/download/${fileNo}`).then(response => {
+      console.log(`responseresponseresponseresponse`, response);
       const filename = response.headers.get('Content-Disposition').split('filename=')[1];
-      console.log(filename);
       response.blob().then(blob => {
         let url = window.URL.createObjectURL(blob);
         let a = document.createElement('a');
@@ -125,13 +124,13 @@ const ModalAttachmentsContent = () => {
               <div className="bg-attachment mr-3">
                 {item.originName.split('.')[1] === 'png' || item.originName.split('.')[1] === 'jpg' ? (
                   <>
-                    <FalconLightBox imgSrc={`${API_URL}/haru${item.filePath}`}>
-                      <Image src={`${API_URL}/haru${item.filePath}`} className="rounded" />
+                    <FalconLightBox imgSrc={`/haru${item.filePath}`}>
+                      <Image src={`/haru${item.filePath}`} className="rounded" />
                     </FalconLightBox>
                   </>
                 ) : (
                   <span className="text-uppercase font-weight-bold">
-                    <Image src={`${API_URL}/haru${item.filePath}`} className="rounded" />
+                    <Image src={`/haru${item.filePath}`} className="rounded" />
                   </span>
                 )}
               </div>
@@ -140,12 +139,8 @@ const ModalAttachmentsContent = () => {
                 <h6 className="mb-1 text-primary">
                   {item.originName.split('.')[1] === 'png' || item.originName.split('.')[1] === 'jpg' ? (
                     <>
-                      <FalconLightBox imgSrc={`${API_URL}/haru${item.filePath}`}>
-                        <Link
-                          to={window.location.href}
-                          className="text-decoration-none"
-                          onClick={() => downloadFile(item.fileNo)}
-                        >
+                      <FalconLightBox imgSrc={`/haru${item.filePath}`}>
+                        <Link to={'#!'} className="text-decoration-none" onClick={() => downloadFile(item.fileNo)}>
                           {item.originName}
                         </Link>
                       </FalconLightBox>

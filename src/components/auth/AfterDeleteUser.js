@@ -8,6 +8,7 @@ import rocket from '../../assets/img/illustrations/rocket.png';
 const LogoutContent = ({ layout, titleTag: TitleTag }) => {
 
   useEffect(()=>{
+    sessionStorage.clear();
     try {
       const response = fetch(`/haru/api/logout`, {
         method: 'get'

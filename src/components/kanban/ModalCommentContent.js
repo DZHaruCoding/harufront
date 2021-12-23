@@ -14,7 +14,7 @@ const API_HEADERS = {
   'Context-Type': 'application/json'
 };
 
-const ModalCommentContent = () => {
+const ModalCommentContent = ({ clientRef, members, fetchInsertHistory }) => {
   const { modalContent, setModalContent } = useContext(KanbanContext);
   const [form, setForm] = useState('');
 

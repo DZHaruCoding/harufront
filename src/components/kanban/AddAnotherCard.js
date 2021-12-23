@@ -1,23 +1,19 @@
 import React, { useContext, useRef, useState } from 'react';
 import AppContext, { KanbanContext } from '../../context/Context';
 import { Button, Form, Input, Row, Col } from 'reactstrap';
-import { localIp } from '../../config';
-import SockJsClient from 'react-stomp';
+import { API_URL, GCP_API_URL, localIp } from '../../config';
+import SockJsClient from 'react-stomp'; 
 
 
 const AddAnotherCard = ({ kanbanColumnItem, setShowForm, websocket }) => {
   const { kanbanColumnsDispatch, kanbanTaskCards, kanbanTaskCardsDispatch } = useContext(KanbanContext);
 
   const [cardHeaderTitle, setCardHeaderTitle] = useState('');
-
-
-  const API_URL = 'http://localhost:8080/haru';
   let $webSocket = useRef(null);
 
   const { projectNo, projectTitle } = useContext(AppContext);
 
   const handleAddCard = async value => {
-//TODO 조진석 => 더미 데이터
     const json = {
       taskName: value,
       taskContents: value,
@@ -51,7 +47,7 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm, websocket }) => {
       taskContents: value,
       taskListNo: kanbanColumnItem.taskListNo,
       taskOrder: kanbanColumnItem.taskVoList.length,
-      taskWriter: '조진석',
+      taskWriter: window.sessionStorage.getItem("authUserName"),
       taskLabel:'#777777',
       taskVoList
     };
@@ -89,14 +85,15 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm, websocket }) => {
   const handleSubmit = e => {
     e.preventDefault();
     handleAddCard(cardHeaderTitle);
-    // setShowForm(true);
+    setShowForm(true);
     setCardHeaderTitle('');
   };
+  // 조진석 테스트
   return (
     <div className="p-3 border bg-white rounded-soft transition-none mt-3">
 
     <SockJsClient
-          url={`${API_URL}/socket`}
+          url={`${GCP_API_URL}/haru/socket`}
           topics={[`/topic/kanban/task/add/${window.sessionStorage.getItem("authUserNo")}`]}
           onMessage={socketData => {socketCallback(socketData)}}
           ref={$webSocket}

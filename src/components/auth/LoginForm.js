@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Button, Form, Row, Col, FormGroup, Input, CustomInput, Label } from 'reactstrap';
 import withRedirect from '../../hoc/withRedirect';
 import { localIp } from '../../config';
+import { ProfileContext } from '../../context/Context';
 
 const LoginForm = ({ setRedirect, hasLabel, layout }) => {
   // State
@@ -13,6 +14,7 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
   const [remember, setRemember] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
   const [isfailCheck, setIsfailCheck] = useState(false);
+  const {ProfilePhoto, setProfilePhoto} = useContext(ProfileContext);
 
   // 로그인
   const handleSubmit = async e => {
@@ -48,6 +50,7 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
         sessionStorage.setItem('authUserName', json.data.userName);
         sessionStorage.setItem('authUserNo', json.data.userNo);
         sessionStorage.setItem('authUserPhoto', json.data.userPhoto);
+        setProfilePhoto(json.data.userPhoto);
         toast.success(`Logged in as ${email}`);
         setRedirect(true);
       }
@@ -82,24 +85,24 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
       </FormGroup>
       <div>{isfailCheck ? '로그인에 실패 하였습니다' : ''}</div>
       <Row className="justify-content-between align-items-center">
-        <Col xs="auto">
+        {/* <Col xs="auto">
           <CustomInput
             id="customCheckRemember"
-            label="Remember me"
+            label="아이디기억하기"
             checked={remember}
             onChange={({ target }) => setRemember(target.checked)}
             type="checkbox"
           />
-        </Col>
+        </Col> */}
         <Col xs="auto">
           <Link className="fs--1" to={`/authentication/${layout}/forget-password`}>
-            Forget Password?
+            비밀번호가 기억나지 않나요?
           </Link>
         </Col>
       </Row>
       <FormGroup>
         <Button color="primary" block className="mt-3">
-          Log in
+          로그인
         </Button>
       </FormGroup>
       {/* <Divider className="mt-4">or log in with</Divider>

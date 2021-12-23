@@ -3,7 +3,6 @@ import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 import Image from 'react-bootstrap/Image';
 import DefaultImage from '../../assets/img/Default.png';
 import { toast } from 'react-toastify';
-import styles from '../../assets/scss/profile.scss';
 import axios from 'axios';
 import { ProfileContext } from '../../context/Context';
 
@@ -78,7 +77,7 @@ const ProfileDetail = () => {
         setUserName(json.data.userName);
         setUserDept(json.data.userDept);
         setUserTitle(json.data.usertitle);
-        setProfilePhoto(json.data.userPhoto);
+        setUserPhoto(json.data.userPhoto);
       } else {
       }
     } catch (err) {
@@ -120,7 +119,11 @@ const ProfileDetail = () => {
         setUserName(json.data.userName);
         setUserTitle(json.data.userTitle);
         setUserDept(json.data.userDept);
+        setUserPhoto(json.data.userPhoto);
         setProfilePhoto(json.data.userPhoto);
+
+        console.log("기본이미지 : "+DefaultImage)
+        console.log("변경된 이미지 : "+userPhoto)
       }
     } catch (err) {
       console.log(err);
@@ -152,9 +155,10 @@ const ProfileDetail = () => {
         <FormGroup>
           <Label for="exampleFile">프로필사진 변경 하기</Label>
           <div>
-             {ProfilePhoto === "/Default.png" ?
-                        <Image style={{ width: '150px', height: '150px' }} src={DefaultImage} roundedCircle /> : 
-                        <Image style={{ width: '150px', height: '150px' }} src={`/haru${ProfilePhoto}`} roundedCircle />}
+             {userPhoto === "/assets/upUserimages/Default.png" ?
+                        <Image style={{ width: '150px', height: '150px' }} src={`${DefaultImage}`} roundedCircle /> :  
+                        <Image style={{ width: '150px', height: '150px' }} src={`/haru${userPhoto}`} roundedCircle />
+            }
           </div>
           <Input type="file" onChange={ImgChange} />
         </FormGroup>

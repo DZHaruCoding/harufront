@@ -1,17 +1,15 @@
+import _ from 'lodash';
 import React, { useContext, useState } from 'react';
+import { Button, Col, Form, Input, Row } from 'reactstrap';
 import AppContext, { KanbanContext } from '../../context/Context';
-import { Button, Form, Input, Row, Col } from 'reactstrap';
 import ButtonIcon from '../common/ButtonIcon';
-import _, { isArray, set } from 'lodash';
-import { localIp } from '../../config';
-import SockJsClient from 'react-stomp';
 
-const ModalDescContent = () => {
+const ModalDescContent = ({ clientRef, members, fetchInsertHistory }) => {
   const { kanbanColumns, kanbanColumnsDispatch } = useContext(KanbanContext);
   const [showForm, setShowForm] = useState(false);
   const { modalContent, setModalContent } = useContext(KanbanContext);
   const [columnContent, setColumnContent] = useState('');
-  const { projectNo, projectTitle } = useContext(AppContext);
+  const { projectNo, projectTitle, activityLogDispatch } = useContext(AppContext);
   const API_URL = 'http://localhost:8080/haru';
 
   const handleAddColumn = async value => {
@@ -54,6 +52,28 @@ const ModalDescContent = () => {
       payload: taskData2,
       id: id
     });
+
+    const taskContents = value;
+    fetchInsertHistory(
+      window.sessionStorage.getItem('authUserNo'),
+      window.sessionStorage.getItem('authUserName'),
+      members,
+      'taskContentsUpdate',
+      taskContents,
+      projectNo,
+      clientRef
+    )
+      .then(response => {
+        response.json();
+      })
+      .then(json =>
+        activityLogDispatch({
+          type: 'ALADD',
+          payload: {
+            ...json.data
+          }
+        })
+      );
     // console.log('수정 후 내용', data.taskCard.taskContents);
 
     // try {
