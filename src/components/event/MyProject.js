@@ -15,7 +15,6 @@ import {faBell, faCheckCircle, faTimesCircle, faAt, faCog, faTimes, faPlus} from
 const Project = ({project, callback, deletecallback,key}) => {
   const {setProjectNo, setProjectTitle, projectNo, projectTitle,members,setMembers} = useContext(AppContext);
   const projectmembers = project.members;
-  console.log('멤버 : ',project.members);
   const [m,setM] = useState(projectmembers);
   //DetailModal 상태
   const [projectDetailModal, setProjectDetailModal] = useState(false);
@@ -270,7 +269,7 @@ const Project = ({project, callback, deletecallback,key}) => {
             <Link to={{pathname:"/pages/kanban" ,state:{ projectNo:project.projectNo, projectTitle:project.projectTitle, members:project.members} }}>{project.projectTitle}</Link>
           </h6>
           </div>
-            <Button style={{backgroundColor:"white", border:"0px", marginTop:"-5px"}} onClick={ () => { btnclick() }}><FontAwesomeIcon style={{color:"gray"}} icon={faCog}/></Button>
+            <Button style={{backgroundColor:"white", border:"0px", marginTop:"-5px", width:"5px"}} onClick={ () => { btnclick() }}><FontAwesomeIcon style={{color:"gray"}} icon={faCog}/></Button>
             
           </div>
 
@@ -298,8 +297,8 @@ const Project = ({project, callback, deletecallback,key}) => {
            </Label>
            {' '}
               {
-                projectmembers.map( member => <Member 
-                                          key={member.no}
+                projectmembers.map(( member,index) => <Member 
+                                          key={index}
                                           member={member}/>)
               }
           </div>

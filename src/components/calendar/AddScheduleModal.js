@@ -24,6 +24,8 @@ const AddScheduleModal = ({
   initialEvents,
   addScheduleStartDate,
   setAddScheduleStartDate,
+  addScheduleEndDate,
+  setAddScheduleEndDate,
   calendarList,
   setCalendarList,
   addcallback
@@ -79,12 +81,14 @@ const handleAdd = async (formObj) =>{
 };
 
   useEffect(() => {
+    console.log('마감일',addScheduleEndDate);
     !isOpenScheduleModal && setAddScheduleStartDate(null);
     !isOpenScheduleModal && setEndDate(null);
     !isOpenScheduleModal && setStartDate(null);
     setFormObj({ ...formObj, start: addScheduleStartDate });
+    setFormObj({ ...formObj, end: addScheduleEndDate });
     // eslint-disable-next-line
-  }, [isOpenScheduleModal, addScheduleStartDate]);
+  }, [isOpenScheduleModal, addScheduleStartDate, addScheduleEndDate]);
 
   return (
     <Modal isOpen={isOpenScheduleModal} toggle={toggle} modalClassName="theme-modal" contentClassName="border">
@@ -117,13 +121,14 @@ const handleAdd = async (formObj) =>{
               value={startDate || addScheduleStartDate}
               onChange={dateTime => {
                 if (dateTime._isValid) {
-                  setStartDate(dateTime);
+                  setStartDate(startDate || addScheduleStartDate);
                   let date = {};
                   date.value = dateTime.format('YYYY-MM-DD HH:mm:ss');
                   date.name = 'scheduleStart';
                   handleChange(date);
                 }
               }}
+
               dateFormat="YYYY-DD-MM HH:mm:ss"
               inputProps={{ placeholder: 'YYYY-MM-DD HH:mm:ss', id: 'eventStart' }}
             />
@@ -135,7 +140,7 @@ const handleAdd = async (formObj) =>{
             </Label>
             {/* 마감일 날짜 */}
             <Datetime
-              value={endDate}
+              value={endDate || addScheduleEndDate} 
               timeFormat={true}
               onChange={dateTime => {
                 if (dateTime._isValid) {
