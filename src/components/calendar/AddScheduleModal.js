@@ -152,7 +152,7 @@ const handleAdd = async (formObj) =>{
                 }
               }}
               dateFormat="YYYY-MM-DD HH:mm:ss"
-              inputProps={{ placeholder: 'YYYY-DD-MM HH:mm:ss', id: 'eventEnd',name:"scheduleEnd" }}
+              inputProps={{ placeholder: 'YYYY-MM-DD HH:mm:ss', id: 'eventEnd',name:"scheduleEnd" }}
             />
           </FormGroup>
           

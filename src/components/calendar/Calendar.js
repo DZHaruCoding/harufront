@@ -143,7 +143,7 @@ const Calendar = () => {
                                   end: task.taskEnd,
                                   color:task.taskLabel,
                                   textColor:"white",
-                                  url:"http://localhost:3000/pages/kanban"
+                                  // url:"http://localhost:3000/pages/kanban"
                                   }]);
                                   
         console.log('캘린더 데이터',test);
