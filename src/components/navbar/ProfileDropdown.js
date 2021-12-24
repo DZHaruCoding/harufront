@@ -41,6 +41,9 @@ const ProfileDropdown = () => {
           <DropdownItem tag={Link} to="/pages/auth/ProfileAndSettings">
             프로필수정 &amp; 개인설정
           </DropdownItem>
+          <DropdownItem tag={Link} to="/pages/calendar">
+            캘린더
+          </DropdownItem>
           <DropdownItem divider />
         </div>
       </DropdownMenu>
