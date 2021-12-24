@@ -185,7 +185,7 @@ const [detailData, setDetailData] = useState();
         }}
       >
         <ModalHeader toggle={toggle} className="bg-light d-flex flex-between-center border-bottom-0" close={closeBtn}>
-          일정 수정 {no}
+          일정 수정
         </ModalHeader>
         <ModalBody>
           <FormGroup>
