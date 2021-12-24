@@ -2,7 +2,8 @@ import _ from 'lodash';
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Form, Input, Media } from 'reactstrap';
-import { KanbanContext } from '../../context/Context';
+import { KanbanContext, ProfileContext } from '../../context/Context';
+import DefaultImage from '../../assets/img/Default.png';
 import Avatar from '../common/Avatar';
 import Flex from '../common/Flex';
 const API_URL = 'http://localhost:8080/haru';
@@ -10,7 +11,7 @@ const API_URL = 'http://localhost:8080/haru';
 const ModalCommentContent = ({ clientRef, members, fetchInsertHistory }) => {
   const { modalContent, setModalContent } = useContext(KanbanContext);
   const [form, setForm] = useState('');
-
+  const { ProfilePhoto, setProfilePhoto } = useContext(ProfileContext);
   // window.
   function updataComment() {
     const taskNo = modalContent.taskCard.taskNo;
@@ -30,6 +31,7 @@ const ModalCommentContent = ({ clientRef, members, fetchInsertHistory }) => {
     // userPhoto: "empty.jpg"
 
     const NewData2 = { taskNo, userNo, commentContents };
+    console.log('코멘트 이미지 변경 확인!!!!!!!!!!!!!!!!!!!!!!!!!!', ProfilePhoto);
 
     const insertComment = async () => {
       const response = await fetch(`/haru/api/comment`, {
@@ -121,10 +123,10 @@ const ModalCommentContent = ({ clientRef, members, fetchInsertHistory }) => {
           return (
             <Media className="mb-3" key={index}>
               <Link to="window.location.href">
-                {comment.userPhoto == `${DefaultImage}` ? (
+                {comment.userPhoto == '/assets/upUserimages/Default.png' ? (
                   <Avatar src={`${DefaultImage}`} size="l" />
                 ) : (
-                  <Avatar src={`${API_URL}${comment.userPhoto}`} size="l" />
+                  <Avatar src={`/haru${ProfilePhoto}`} size="l" />
                 )}
               </Link>
               <Media body className="ml-2 fs--1">
