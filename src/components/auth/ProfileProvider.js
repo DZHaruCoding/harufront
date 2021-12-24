@@ -24,16 +24,13 @@ const ProfileProvider = ({children}) => {
                   }
             
                   const json = await response.json();
-                  console.log(json);
-            
-                  console.log(json.data);
+
                   if (json.result !== 'success') {
                     throw json.message;
                   }
             
                   
                   if (json.data) {
-                    console.log("유저 프로필" + json.data.userPhoto);
                     setProfilePhoto(json.data.userPhoto);
                   }
             } catch(err) {

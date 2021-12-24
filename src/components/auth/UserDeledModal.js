@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
   Modal,
@@ -9,11 +9,10 @@ import {
   Form,
   FormGroup,
   Label,
-  Input,
-  CustomInput
+  Input
 } from 'reactstrap';
 import Datetime from 'react-datetime';
-import { v4 as uuid } from 'uuid';
+// import { v4 as uuid } from 'uuid';
 import Flex from '../common/Flex';
 import { localIp } from '../../config';
 

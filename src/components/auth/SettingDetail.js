@@ -63,16 +63,13 @@ const SettingDetail = ({ setRedirect, setRedirectUrl, layout}) => {
             }
 
             const json = await response.json();
-            console.log(json);
 
-            console.log(json.data);
             if (json.result !== 'success') {
                 throw json.message;
             }
 
             if (json.data) {
                 setIsNowPassword(true)
-                console.log("비밀번호 일치함")
             } else {
                 setIsNowPassword(false)
                 setNowPasswordMessage("비밀번호가 일치하지 않습니다")
@@ -117,7 +114,6 @@ const SettingDetail = ({ setRedirect, setRedirectUrl, layout}) => {
             }
 
             const json = await response.json();
-            console.log(json)
 
             // 비밀번호가 틀린 경우
             if (json.data === false) {
@@ -144,7 +140,6 @@ const SettingDetail = ({ setRedirect, setRedirectUrl, layout}) => {
 
     const onChangePassword = e => {
         setChangedPassword(e.target.value);
-        console.log(changedPassword)
         setIsPassword(true);
         const passwords = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/
         if (!passwords.test(changedPassword)) {
@@ -159,8 +154,6 @@ const SettingDetail = ({ setRedirect, setRedirectUrl, layout}) => {
     const onChangeCkPoassword = e => {
         setCkPassword(e.target.value);
         // setIsCkPassword(true)
-        console.log(changedPassword)
-        console.log(ckPassword)
         if (e.target.value === changedPassword) {
             setCkPasswordMessage("변경할 비밀번호가 동일합니다")
             setIsCkPassword(true)
