@@ -68,8 +68,11 @@ const SettingDetail = ({ setRedirect, setRedirectUrl, layout}) => {
                 throw json.message;
             }
 
+            console.log(json.data)
+
             if (json.data) {
                 setIsNowPassword(true)
+                setRedirect(true);
             } else {
                 setIsNowPassword(false)
                 setNowPasswordMessage("비밀번호가 일치하지 않습니다")
@@ -82,7 +85,6 @@ const SettingDetail = ({ setRedirect, setRedirectUrl, layout}) => {
 
 
 
-        setRedirect(true);
     }
 
     
