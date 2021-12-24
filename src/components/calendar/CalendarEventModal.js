@@ -121,7 +121,7 @@ const call = () => {
       try {
         console.log(id);
        
-        const response = await fetch('/haru/api/calendar/delete/'+id, {
+        const response = await fetch('/haru/api/calendar/delete/'+scheduledetailData[0].id, {
           method:"delete",
           headers:{
             'Content-Type':'application/json',
@@ -212,7 +212,7 @@ const call = () => {
            }>
 
           <FontAwesomeIcon icon="pencil-alt" className="fs--2 mr-2"/>
-          <span>no값:{detailData && detailData.id} 수정</span>
+          <span>수정</span>
         </Button>
  
         {/* 삭제버튼 (수정 해야함)*/}

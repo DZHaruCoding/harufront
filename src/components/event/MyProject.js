@@ -247,7 +247,7 @@ const Project = ({ project, callback, deletecallback, key }) => {
       <div
         className="mt-2"
         style={{
-          height: '320px',
+          height: '350px',
           borderRadius: '10px',
           padding: '15px',
           backgroundColor:"white",
