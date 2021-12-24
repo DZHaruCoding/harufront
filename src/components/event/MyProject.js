@@ -461,14 +461,14 @@ const Project = ({ project, callback, deletecallback, key }) => {
                       if (dateTime._isValid) {
                         setStartDate(dateTime);
                         let date = {};
-                        date.value = dateTime.format('YYYY-DD-MM');
+                        date.value = dateTime.format('YYYY-MM-DD');
                         date.name = 'projectUpdateStart';
                         modalhandleChange(date);
                       }
                     } //onChange 끝
                   }
-                  dateFormat="YYYY-DD-MM "
-                  inputProps={{ placeholder: 'YYYY-DD-MM ', id: 'eventStart' }}
+                  dateFormat="YYYY-MM-DD "
+                  inputProps={{ placeholder: 'YYYY-MM-DD ', id: 'eventStart' }}
                 />
               </FormGroup>
 
@@ -484,13 +484,13 @@ const Project = ({ project, callback, deletecallback, key }) => {
                     if (dateTime._isValid) {
                       setEndDate(dateTime);
                       let date = {};
-                      date.value = dateTime.format('YYYY-DD-MM');
+                      date.value = dateTime.format('YYYY-MM-DD');
                       date.name = 'projectUpdateEnd';
                       modalhandleChange(date);
                     }
                   }}
-                  dateFormat="YYYY-DD-MM"
-                  inputProps={{ placeholder: 'YYYY-DD-MM', id: 'eventEnd' }}
+                  dateFormat="YYYY-MM-DD"
+                  inputProps={{ placeholder: 'YYYY-MM-DD', id: 'eventEnd' }}
                 />
               </FormGroup>
 

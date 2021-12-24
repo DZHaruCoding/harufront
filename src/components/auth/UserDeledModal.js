@@ -120,7 +120,7 @@ const AddScheduleModal = ({
                   handleChange(date);
                 }
               }}
-              dateFormat="YYYY-DD-MM HH:mm:ss"
+              dateFormat="YYYY-MM-DD HH:mm:ss"
               inputProps={{ placeholder: 'YYYY-MM-DD HH:mm:ss', id: 'eventStart' }}
             />
           </FormGroup>
@@ -142,8 +142,8 @@ const AddScheduleModal = ({
                   handleChange(date);
                 }
               }}
-              dateFormat="YYYY-DD-MM HH:mm:ss"
-              inputProps={{ placeholder: 'YYYY-DD-MM HH:mm:ss', id: 'eventEnd' }}
+              dateFormat="YYYY-MM-DD HH:mm:ss"
+              inputProps={{ placeholder: 'YYYY-MM-DD HH:mm:ss', id: 'eventEnd' }}
             />
           </FormGroup>
         </ModalBody>
