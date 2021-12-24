@@ -29,6 +29,7 @@ const API_HEADERS = {
   'Context-Type': 'application/json'
 };
 const KanbanModal = ({ modal, setModal, className }) => {
+  
   const {
     fetchInsertHistory,
     modalContent,
