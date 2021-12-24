@@ -1,7 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import _ from 'lodash';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Collapse, FormControl, InputGroup } from 'react-bootstrap';
+import { HexColorPicker } from 'react-colorful';
 import Datetime from 'react-datetime';
 import {
   Button,
@@ -23,17 +24,13 @@ import ModalCommentContent from './ModalCommentContent';
 import ModalDescContent from './ModalDescContent';
 import ModalLabelContent from './ModalLabelContent';
 import ModalMediaContent from './ModalMediaContent';
-import SockJsClient from 'react-stomp';
-import moment from 'moment';
-import axios from 'axios';
-import { HexColorPicker } from 'react-colorful';
-import { API_URL, GCP_API_URL } from '../../config';
 
 const API_HEADERS = {
   'Context-Type': 'application/json'
 };
 const KanbanModal = ({ modal, setModal, className }) => {
   const {
+    fetchInsertHistory,
     modalContent,
     setModalContent,
     kanbanTaskCards,
@@ -41,7 +38,8 @@ const KanbanModal = ({ modal, setModal, className }) => {
     kanbanColumnsDispatch,
     history,
     setHistory,
-    members
+    members,
+    $websocket
   } = useContext(KanbanContext);
   const [color, setColor] = useState('#aabbcc');
   const [selectedFile, setSelectedFile] = useState('');
@@ -53,56 +51,6 @@ const KanbanModal = ({ modal, setModal, className }) => {
   const [isOpenScheduleModal, setIsOpenScheduleModal] = useState(false);
   const [endDate, setEndDate] = useState();
   const [startDate, setStartDate] = useState();
-  const $websocket = useRef(null);
-
-  async function fetchInsertHistory(senderNo, senderName, receiver, historyType, actionName, projectNo, clientRef) {
-    //보내는사람,받는사람,받는사람배열,히스토리 타입,엑션이름,프로젝트넘버,
-    let userArray = []; //받는사람들
-    receiver.map(user => userArray.push(user.userNo)); //receiver 에서 userArray에 하나씩 넣어준다.
-
-    const historyData = {
-      senderNo: senderNo, // 보내는사람 한명
-      senderName: senderName,
-      receiver: userArray, // 받는사람 여러명
-      historyType: historyType,
-      historyDate: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
-      actionName: actionName, // 행위
-      projectNo: projectNo,
-      authUserNo: sessionStorage.getItem('authUserNo')
-    };
-    console.log('히스토리데이터입니다.', historyData);
-    clientRef.current.sendMessage('/app/history/all', JSON.stringify(historyData)); //서버로 메세지 전송
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    const response = await fetch(`/haru/api/history/insertHistory`, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      },
-      body: JSON.stringify(historyData)
-    });
-    if (!response.ok) {
-      throw new Error(`${response.status} ${response.statusText}`);
-    }
-
-    const jsonResult = await response.json();
-    const AddArr = jsonResult.data;
-    console.log('insertHistory에서의 jsonResult.data', jsonResult.data);
-    if (jsonResult.result != 'success') {
-      throw new Error(`${jsonResult.result} ${jsonResult.message}`);
-    }
-
-    activityLogDispatch({
-      type: 'ALADD',
-      payload: {
-        AddArr
-      }
-    });
-
-    // fetchinsert();
-  }
   //////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,98 +99,6 @@ const KanbanModal = ({ modal, setModal, className }) => {
   }, [modal]);
   // formData라는 instance에 담아 보냄
   // onChange역할
-  function receiveHistory(socketData) {
-    if (socketData.authUserNo !== sessionStorage.getItem('authUserNo')) {
-      if (socketData.historyType === 'taskContentsUpdate') {
-        //
-        let newHistoryData = {
-          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 으로 업무이름을 수정하셨습니다.',
-          logDate: socketData.historyDate,
-          projectNo: socketData.projectNo
-        };
-        setHistory(newHistoryData);
-      } else if (socketData.historyType === 'taskListInsert') {
-        let newHistoryData = {
-          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무리스트를 추가하였습니다.',
-          logDate: socketData.historyDate,
-          projectNo: socketData.projectNo
-        };
-        setHistory(newHistoryData);
-      } else if (socketData.historyType === 'taskListDelete') {
-        let newHistoryData = {
-          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무리스트를 삭제하였습니다.',
-          logDate: socketData.historyDate,
-          projectNo: socketData.projectNo
-        };
-        setHistory(newHistoryData);
-      } else if (socketData.historyType === 'taskDateUpdate') {
-        //
-        let newHistoryData = {
-          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무의 마감일을 수정하였습니다.',
-          logDate: socketData.historyDate,
-          projectNo: socketData.projectNo
-        };
-        setHistory(newHistoryData);
-      } else if (socketData.historyType === 'checklistInsert') {
-        //
-        let newHistoryData = {
-          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무에 체크리스트를 추가하였습니다.',
-          logDate: socketData.historyDate,
-          projectNo: socketData.projectNo
-        };
-        setHistory(newHistoryData);
-      } else if (socketData.historyType === 'checklistStateUpdate') {
-        //
-        let newHistoryData = {
-          logContents:
-            socketData.senderName + ' 님이' + socketData.actionName + ' 업무의 체크리스트 상태를 수정하였습니다.',
-          logDate: socketData.historyDate,
-          projectNo: socketData.projectNo
-        };
-        setHistory(newHistoryData);
-      } else if (socketData.historyType === 'taskDragNdrop') {
-        let newHistoryData = {
-          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무의 위치를 변경하였습니다.',
-          logDate: socketData.historyDate,
-          projectNo: socketData.projectNo
-        };
-
-        setHistory(newHistoryData);
-      } else if (socketData.historyType === 'taskListDragNdrop') {
-        let newHistoryData = {
-          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무리스트의 위치를 변경하였습니다.',
-          logDate: socketData.historyDate,
-          projectNo: socketData.projectNo
-        };
-        setHistory(newHistoryData);
-      } else if (socketData.historyType === 'taskStateUpdate') {
-        let newHistoryData = {
-          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무 상태를 변경하였습니다.',
-          logDate: socketData.historyDate,
-          projectNo: socketData.projectNo
-        };
-
-        setHistory(newHistoryData);
-      } else if (socketData.historyType === 'taskInsert') {
-        let newHistoryData = {
-          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무를 추가하였습니다.',
-          logDate: socketData.historyDate,
-          projectNo: socketData.projectNo
-        };
-        setHistory(newHistoryData);
-      } else if (socketData.historyType === 'taskDelete') {
-        let newHistoryData = {
-          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무를 삭제하였습니다.',
-          logDate: socketData.historyDate,
-          projectNo: socketData.projectNo
-        };
-        setHistory(newHistoryData);
-      }
-    } else {
-      return;
-    }
-    return;
-  }
 
   const colorset = () => {
     const taskNo = modalContent.taskCard.taskNo;
@@ -370,6 +226,7 @@ const KanbanModal = ({ modal, setModal, className }) => {
     });
     const taskContents = NewtaskName;
     const clientRef = $websocket;
+
     fetchInsertHistory(
       window.sessionStorage.getItem('authUserNo'),
       window.sessionStorage.getItem('authUserName'),
@@ -433,16 +290,6 @@ const KanbanModal = ({ modal, setModal, className }) => {
       modalClassName="theme-modal"
       size="lg"
     >
-      <SockJsClient
-        url={`${GCP_API_URL}/haru/socket`}
-        // url={`${API_URL}/haru/socket`}
-        topics={[
-          `/topic/all/${window.sessionStorage.getItem('authUserNo')}`,
-          `/topic/history/all/${window.sessionStorage.getItem('authUserNo')}`
-        ]}
-        onMessage={receiveHistory}
-        ref={$websocket}
-      />
       <ModalBody className="p-0">
         {modalContent.taskCardImage && (
           <div className="position-relative overflow-hidden py-8">

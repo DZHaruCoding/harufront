@@ -1,11 +1,103 @@
-import React, { useContext, useEffect, useReducer, useState } from 'react';
-import axios from 'axios';
-import AppContext, { ActivityContext, KanbanContext } from '../../context/Context';
-import { localIp } from '../../config';
-import { historyReducer } from '../../reducers/historyReducer';
+import moment from 'moment';
+import React, { useContext, useEffect, useRef } from 'react';
+import SockJsClient from 'react-stomp';
+import { GCP_API_URL } from '../../config';
+import AppContext, { ActivityContext } from '../../context/Context';
 
 const ActivityProvider = ({ children }) => {
   const { projectNo, activityLog, activityLogDispatch } = useContext(AppContext);
+  const $websocket = useRef(null);
+
+  const receiveHistory = socketData => {
+    console.log('socketData소켓데이터입니다.ㅏ아앙', socketData);
+    if (socketData.authUserNo !== sessionStorage.getItem('authUserNo')) {
+      if (socketData.historyType === 'taskContentsUpdate') {
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 으로 업무이름을 수정하셨습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+        activityLogDispatch({ type: 'HISADD', payload: newHistoryData });
+      } else if (socketData.historyType === 'taskListInsert') {
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무리스트를 추가하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+        activityLogDispatch({ type: 'HISADD', payload: newHistoryData });
+      } else if (socketData.historyType === 'taskListDelete') {
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무리스트를 삭제하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+        activityLogDispatch({ type: 'HISADD', payload: newHistoryData });
+      } else if (socketData.historyType === 'taskDateUpdate') {
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무의 마감일을 수정하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+        activityLogDispatch({ type: 'HISADD', payload: newHistoryData });
+      } else if (socketData.historyType === 'checklistInsert') {
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무에 체크리스트를 추가하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+        activityLogDispatch({ type: 'HISADD', payload: newHistoryData });
+      } else if (socketData.historyType === 'checklistStateUpdate') {
+        let newHistoryData = {
+          logContents:
+            socketData.senderName + ' 님이' + socketData.actionName + ' 업무의 체크리스트 상태를 수정하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+        activityLogDispatch({ type: 'HISADD', payload: newHistoryData });
+      } else if (socketData.historyType === 'taskDragNdrop') {
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무의 위치를 변경하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+
+        activityLogDispatch({ type: 'HISADD', payload: newHistoryData });
+      } else if (socketData.historyType === 'taskListDragNdrop') {
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무리스트의 위치를 변경하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+        activityLogDispatch({ type: 'HISADD', payload: newHistoryData });
+      } else if (socketData.historyType === 'taskStateUpdate') {
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무 상태를 변경하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+
+        activityLogDispatch({ type: 'HISADD', payload: newHistoryData });
+      } else if (socketData.historyType === 'taskInsert') {
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무를 추가하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+        activityLogDispatch({ type: 'HISADD', payload: newHistoryData });
+      } else if (socketData.historyType === 'taskDelete') {
+        let newHistoryData = {
+          logContents: socketData.senderName + ' 님이' + socketData.actionName + ' 업무를 삭제하였습니다.',
+          logDate: socketData.historyDate,
+          projectNo: socketData.projectNo
+        };
+        activityLogDispatch({ type: 'HISADD', payload: newHistoryData });
+      }
+    } else {
+      return;
+    }
+    return;
+  };
+
   useEffect(() => {
     const run = async () => {
       try {
@@ -51,7 +143,21 @@ const ActivityProvider = ({ children }) => {
     activityLog,
     activityLogDispatch
   };
-  return <ActivityContext.Provider value={value}>{children}</ActivityContext.Provider>;
+  return (
+    <>
+      <SockJsClient
+        // url={`${GCP_API_URL}/haru/socket`}
+        url={`${GCP_API_URL}/haru/socket`}
+        topics={[`/topic/history/all/${window.sessionStorage.getItem('authUserNo')}`]}
+        onMessage={sock => {
+          console.log('sockjsclient :::: 여기까지 왔니');
+          receiveHistory(sock);
+        }}
+        ref={$websocket}
+      />
+      <ActivityContext.Provider value={value}>{children}</ActivityContext.Provider>;
+    </>
+  );
 };
 
 export default ActivityProvider;

@@ -32,12 +32,14 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 
 const KanbanContainer = () => {
   const {
+    $websocket,
     kanbanColumns,
     UpdateColumnData,
     UpdateColumnData2,
     modalContent,
     modal,
     setModal,
+    receiveHistory,
     setModalContent
   } = useContext(KanbanContext);
 

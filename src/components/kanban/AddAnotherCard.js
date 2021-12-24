@@ -5,12 +5,18 @@ import { API_URL, GCP_API_URL, localIp } from '../../config';
 import SockJsClient from 'react-stomp';
 
 const AddAnotherCard = ({ kanbanColumnItem, setShowForm, websocket }) => {
-  const { kanbanColumnsDispatch, kanbanTaskCards, kanbanTaskCardsDispatch } = useContext(KanbanContext);
+  const {
+    kanbanColumnsDispatch,
+    kanbanTaskCards,
+    kanbanTaskCardsDispatch,
+    $websocket,
+    fetchInsertHistory
+  } = useContext(KanbanContext);
 
   const [cardHeaderTitle, setCardHeaderTitle] = useState('');
-  let $webSocket = useRef(null);
+  let $webSocket2 = useRef(null);
 
-  const { projectNo, projectTitle } = useContext(AppContext);
+  const { projectNo, projectTitle, members } = useContext(AppContext);
 
   const handleAddCard = async value => {
     const json = {
@@ -73,7 +79,18 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm, websocket }) => {
       userName: window.sessionStorage.getItem('authUserName')
     };
 
-    $webSocket.current.sendMessage('/app/task/add', JSON.stringify(kanbanboardSocketData));
+    $webSocket2.current.sendMessage('/app/task/add', JSON.stringify(kanbanboardSocketData));
+
+    const clientRef = $websocket;
+    fetchInsertHistory(
+      window.sessionStorage.getItem('authUserNo'),
+      window.sessionStorage.getItem('authUserName'),
+      members,
+      'taskInsert',
+      value,
+      projectNo,
+      clientRef
+    );
   };
 
   const socketCallback = e => {
@@ -95,7 +112,7 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm, websocket }) => {
         onMessage={socketData => {
           socketCallback(socketData);
         }}
-        ref={$webSocket}
+        ref={$webSocket2}
       />
 
       <Form onSubmit={e => handleSubmit(e)}>
