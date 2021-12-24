@@ -14,9 +14,11 @@ import SockJsClient from 'react-stomp';
 import { API_URL, GCP_API_URL } from '../../config';
 
 const KanbanColumn = ({ kanbanColumnItem, index }) => {
-  const { kanbanTaskCards, kanbanTaskCardsDispatch, kanbanColumnsDispatch } = useContext(KanbanContext);
+  const { kanbanTaskCards, kanbanTaskCardsDispatch, kanbanColumnsDispatch, fetchInsertHistory } = useContext(
+    KanbanContext
+  );
   const [showForm, setShowForm] = useState(false);
-  const $websocket = useRef (null);
+  const $websocket = useRef(null);
 
   useEffect(() => {
     const kanbanContainer = document.getElementById(`container-${index}`);
@@ -24,7 +26,7 @@ const KanbanColumn = ({ kanbanColumnItem, index }) => {
   }, [showForm, index]);
 
   const socketCallback = e => {
-    console.log("asdsadsad", e);
+    console.log('asdsadsad', e);
 
     kanbanTaskCardsDispatch({
       type: 'ADD',
@@ -38,16 +40,18 @@ const KanbanColumn = ({ kanbanColumnItem, index }) => {
       payload: { ...e.kanbanColumnItem, taskVoList: [...e.kanbanColumnItem.taskVoList, e.taskVoList] },
       id: e.kanbanColumnItem.taskListNo
     });
-}
+  };
 
   return (
     <div className={classNames('kanban-column', { 'form-added': showForm })}>
       <SockJsClient
-          url={`${GCP_API_URL}/haru/socket`}
-          topics={[`/topic/kanban/task/add/${window.sessionStorage.getItem("authUserNo")}`]}
-          onMessage={socketData => {socketCallback(socketData)}}
-          ref={$websocket}
-      />    
+        url={`${GCP_API_URL}/haru/socket`}
+        topics={[`/topic/kanban/task/add/${window.sessionStorage.getItem('authUserNo')}`]}
+        onMessage={socketData => {
+          socketCallback(socketData);
+        }}
+        ref={$websocket}
+      />
       <KanbanColumnHeder kanbanColumnItem={kanbanColumnItem} />
       <Droppable droppableId={`${kanbanColumnItem.taskListNo}`}>
         {(provided, snapshot) => (
@@ -83,7 +87,9 @@ const KanbanColumn = ({ kanbanColumnItem, index }) => {
                     />
                   );
                 })}
-              {showForm && <AddAnotherCard kanbanColumnItem={kanbanColumnItem} setShowForm={setShowForm} websocket={$websocket} />}
+              {showForm && (
+                <AddAnotherCard kanbanColumnItem={kanbanColumnItem} setShowForm={setShowForm} websocket={$websocket} />
+              )}
               {provided.placeholder}
             </div>
             {!showForm && (

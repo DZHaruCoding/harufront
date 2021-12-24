@@ -13,6 +13,8 @@ export const fileReducer = (state, action) => {
         console.error('payload is required!');
         return state;
       }
+      console.log('FileReducer안에 State', state);
+      console.log('FileReducer안에 data', payload.data);
       return [...state, ...payload.data];
     case 'FREMOVE':
       if (id !== 0 && !id) {
