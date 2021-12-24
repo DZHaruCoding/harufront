@@ -40,7 +40,6 @@ const LoginForm = ({ setRedirect, hasLabel, layout }) => {
       }
 
       const json = await response.json();
-      console.log(json);
 
       if (json.result !== 'success') {
         setIsfailCheck(true);

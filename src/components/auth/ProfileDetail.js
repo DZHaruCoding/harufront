@@ -19,20 +19,16 @@ const ProfileDetail = () => {
 
   const CheckedEmail = e => {
     setUserEmail(e.target.value);
-    console.log(userEmail);
   };
   const ChangeUserName = e => {
     setUserName(e.target.value);
-    console.log(userName);
     console.log(selectedFile);
   };
   const ChangeUserdept = e => {
     setUserDept(e.target.value);
-    console.log(userdept);
   };
   const ChangeUsertitle = e => {
     setUserTitle(e.target.value);
-    console.log(usertitle);
   };
 
   const handlerSubmit = async e => {
@@ -66,9 +62,7 @@ const ProfileDetail = () => {
       }
 
       const json = await response.json();
-      console.log(json);
 
-      console.log(json.data);
       if (json.result !== 'success') {
         throw json.message;
       }
@@ -106,14 +100,10 @@ const ProfileDetail = () => {
       }
 
       const json = await response.json();
-      console.log(json);
 
-      console.log(json.data);
       if (json.result !== 'success') {
         throw json.message;
       }
-
-      console.log(json.data.userPhoto);
 
       if (json.data) {
         setUserName(json.data.userName);

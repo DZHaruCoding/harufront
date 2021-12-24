@@ -18,8 +18,6 @@ const LogoutContent = ({ layout, titleTag: TitleTag }) => {
         throw new Error(`${response.status} ${response.statusText}`)
       }
 
-      console.log("로그아웃!!")
-
     } catch (err) {
       console.error(err);
     }

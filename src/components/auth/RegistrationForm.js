@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Button, CustomInput, Form, FormGroup, Input, Label, Spinner } from 'reactstrap';
+import { Button, Form, FormGroup, Input, Label, Spinner } from 'reactstrap';
 import withRedirect from '../../hoc/withRedirect';
-
 import '../../assets/scss/FormBox.scss';
 
 const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => {
@@ -14,7 +12,6 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isDisabled, setIsDisabled] = useState(true);
-  const [isClick, setIsClick] = useState(true);
 
   const [showProgress, setShowProgress] = useState(true);
   // 오류 메세지 출력을 위한 상태값
@@ -30,7 +27,6 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
   const onChangeEmail = e => {
     setEmail(e.target.value);
     const emails = /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-    console.log("이메일 : " + email);
     if (emails.test(email)) {
       setEmailMessage('올바른 이메일 형식입니다')
       setIsEmail(true)
@@ -42,7 +38,6 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
 
   const onChangeName = e => {
     setName(e.target.value);
-    console.log("이름 : " + name)
     if (name.length < 2) {
       setNameMessage('2글자 이상 입력해주세요')
       setIsName(false)
@@ -111,7 +106,6 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
   }
 
   const findEmail = async () => {
-    console.log("확인할 email : " + email)
     const emails = { userEmail: email }
 
     try {
@@ -129,9 +123,7 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
       }
 
       const json = await response.json();
-      console.log(json);
 
-      console.log(json.data);
       if (json.result !== 'success') {
         throw json.message;
       }
@@ -149,10 +141,6 @@ const RegistrationForm = ({ setRedirect, setRedirectUrl, layout, hasLabel }) => 
       console.log(err);
     }
   }
-
-  // useEffect(() => {
-  //   console.log("가자아앙아")
-  // }, [handleSubmit])
 
   useEffect(() => {
     if (isEmail) {
