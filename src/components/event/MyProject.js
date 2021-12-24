@@ -247,15 +247,16 @@ const Project = ({ project, callback, deletecallback, key }) => {
       <div
         className="mt-2"
         style={{
-          border: '1px solid black',
-          height: '300px',
-          borderRadius: '20px',
-          padding: '10px'
+          height: '320px',
+          borderRadius: '10px',
+          padding: '15px',
+          backgroundColor:"white",
+          boxShadow: '6px 6px 1px 1px #748194'
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <h6 className="fs-0 mb-1 " style={{ color: 'red' }}>
+            <h6 className="fs-0 mb-1 ">
               제목 : {/* <Button className="ml-5">수정</Button> */}
               <Link
                 to={{
@@ -277,21 +278,29 @@ const Project = ({ project, callback, deletecallback, key }) => {
           </Button>
         </div>
 
-        <div className="mb-1">
+        <div className="">
           <Label>내용 :</Label> {project.projectDesc}
         </div>
-        <div className="mb-1">
+        <div className="">
           <Label>시작일 :</Label> {project.projectStart}
         </div>
-        <div className="mb-1">
+        <div className="">
           <Label>마감일 :</Label> {project.projectEnd}
         </div>
-        <div className="mb-1">
-          <Label>멤버</Label>{' '}
+        <div className="">
+          <Label>작성자 :</Label> {project.ownerName}
+        </div>
+        <div className="" style={{border:"1px solid black", borderRadius:"5px",height:"150px"}}>
+          <Label style={{display:"flex",justifyContent:"center"}} className="mt-1">멤버</Label>{' '}
+          <div style={{display:"flex",justifyContent:"center"}}>
+            <div>
           {projectmembers.map((member, index) => (
             <Member key={index} member={member} />
           ))}
+          </div>
+          </div>
         </div>
+        
       </div>
 
       {/* DetailModal 모달창 생성 */}
@@ -316,49 +325,52 @@ const Project = ({ project, callback, deletecallback, key }) => {
               </button>
             </headers>
 
-            <body className="p-2" style={{ borderRadius: '10px' }}>
-              <FormGroup>
+            <body className="p-2" style={{ borderRadius: '10px'}}>
+              <div style={{marginLeft:"70px"}}>
+                <div>
+              <FormGroup className='mt-2'>
                 <Label className="fs-0" for="eventTitle" style={{ color: 'black', fontWeight: 'bold' }}>
-                  제목
+                  제목 : {" "}
                 </Label>
-                <br />
                 <label style={{ color: '#27BCFD', fontSize: '20px' }}>{project.projectTitle}</label>
                 <Label />
               </FormGroup>
 
               <FormGroup>
                 <Label className="fs-0" for="eventTitle" style={{ color: 'black', fontWeight: 'bold' }}>
-                  내용
+                  내용 : 
                 </Label>
-                <br />
-                <p style={{ fontWeight: 'bold', fontSize: '20px' }}>{project.projectDesc}</p>
+                <label style={{ fontWeight: 'bold', fontSize: '17px' }}>{' '}{project.projectDesc}</label>
               </FormGroup>
 
               <FormGroup>
                 <Label className="fs-0" for="eventStart" style={{ color: 'black', fontWeight: 'bold' }}>
-                  시작일
+                  시작일 : 
                 </Label>
-                <br />
-                <p style={{ fontWeight: 'bold', fontSize: '20px' }}>{project.projectStart}</p>
+                <label style={{ fontWeight: 'bold', fontSize: '17px' }}>{project.projectStart}</label>
               </FormGroup>
 
               <FormGroup>
                 <Label className="fs-0" for="eventEnd" style={{ color: 'black', fontWeight: 'bold' }}>
-                  마감일
+                  마감일 : 
                 </Label>
-                <br />
-                <p style={{ fontWeight: 'bold', fontSize: '20px' }}>{project.projectEnd}</p>
+                <label style={{ fontWeight: 'bold', fontSize: '17px' }}>{project.projectEnd}</label>
               </FormGroup>
-
+              </div>
+              </div>
               <FormGroup>
-                <Label className="fs-0" for="eventEnd" style={{ color: 'black', fontWeight: 'bold' }}>
-                  멤버
-                </Label>
-                <div style={{ marginLeft: '20px' }}>
+                <div style={{display:"flex",justifyContent:"center"}}>
+              <div className="" style={{border:"1px solid black", borderRadius:"5px",height:"150px", width:"300px"}}>
+               <Label style={{display:"flex",justifyContent:"center",fontSize:"20px",color:"black"}} className="mt-1">멤버</Label>{' '}
+               <div style={{display:"flex",justifyContent:"center"}}>
+                 <div>
                   {projectmembers.map(member => (
                     <Member member={member} />
                   ))}
                 </div>
+               </div>
+              </div>
+              </div>
               </FormGroup>
 
               <FormGroup style={{ display: 'flex', justifyContent: 'end' }}>
@@ -563,7 +575,7 @@ const Project = ({ project, callback, deletecallback, key }) => {
 
               <FormGroup>
                 <Label className="fs-0" for="eventEnd">
-                  추가된 멤버 Update
+                  추가된 멤버
                 </Label>
                 {!m ? null : (
                   <div style={{ marginLeft: '20px' }}>
