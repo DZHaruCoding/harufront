@@ -6,10 +6,9 @@ import ButtonIcon from '../common/ButtonIcon';
 import excelimg from '../../assets/img/excel.png';
 import txtimg from '../../assets/img/txt.png';
 import attachimg from '../../assets/img/attach.png';
-import { localIp } from '../../config';
+import { GCP_API_URL, localIp } from '../../config';
 import axios from 'axios';
 import { Image } from 'react-bootstrap';
-const API_URL = 'http://localhost:8080';
 const Filelist = ({ fileNo }) => {
   const { products, productsDispatch } = useContext(ProductContext);
 
@@ -68,7 +67,7 @@ const Filelist = ({ fileNo }) => {
               <>
                 {originName.split('.')[1] === 'png' || originName.split('.')[1] === 'jpg' ? (
                   <Image
-                    src={`${API_URL}/haru${filePath}`}
+                    src={`${GCP_API_URL}/haru${filePath}`}
                     alt={originName}
                     onClick={() => downloadFile(fileNo)}
                     style={{ width: '50%' }}

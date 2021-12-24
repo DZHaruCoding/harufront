@@ -1,16 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Button, Modal, ModalBody } from 'reactstrap';
-
-import { attachments } from '../../data/kanban/kanbanItems';
-import FalconLightBox from '../common/FalconLightBox';
-import { Link } from 'react-router-dom';
-import Background from '../common/Background';
-import { Media } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { KanbanContext, ProductContext } from '../../context/Context';
-import { Image } from 'react-bootstrap';
-import axios from 'axios';
 import _ from 'lodash';
+import React, { useContext, useEffect, useState } from 'react';
+import { Image } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Media, Modal } from 'reactstrap';
+import { KanbanContext } from '../../context/Context';
+import FalconLightBox from '../common/FalconLightBox';
+import DefaultImage from '../../assets/img/Default.png';
 const API_URL = 'http://localhost:8080';
 const ModalAttachmentsContent = () => {
   const [nestedModal, setNestedModal] = useState(false);
@@ -130,7 +126,7 @@ const ModalAttachmentsContent = () => {
                   </>
                 ) : (
                   <span className="text-uppercase font-weight-bold">
-                    <Image src={`/haru${item.filePath}`} className="rounded" />
+                    <Image src={`${DefaultImage}`} className="rounded" />
                   </span>
                 )}
               </div>
