@@ -138,7 +138,7 @@ const Calendar = () => {
                                   }]);
         jsonResult.data.taskList.map(task => test = [...test,{
                                   id: task.taskNo,
-                                  title: task.taskContents,
+                                  title: task.projectTitle+" | "+task.taskContents,
                                   start: task.taskStart,
                                   end: task.taskEnd,
                                   color:task.taskLabel,
