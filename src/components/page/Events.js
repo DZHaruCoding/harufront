@@ -317,7 +317,8 @@ const Events = () => {
           </FormGroup>
 
           <FormGroup>
-            <h3>멤버 추가</h3>
+            <Label>멤버 추가</Label>
+            <br />
             <button style={{backgroundColor:"#EDF2F9",border:"0px" }} onClick={ () => {
               memberSearchandInput(memberInputOpen);
             }} className='mr-3 '>
@@ -347,7 +348,7 @@ const Events = () => {
           </FormGroup>
 
           <FormGroup>
-              <h3>추가된 멤버</h3>
+              <Label>추가된 멤버</Label>
               {
                 !mSelects ?
                 null 
@@ -376,7 +377,7 @@ const Events = () => {
 
 
       </FalconCardHeader>
-      <CardBody className="fs--1">
+      <CardBody className="fs--1" style={{backgroundColor:"#EDF2F9"}}>
         {/* {loading ? (
           <Loader />
         ) : isIterableArray(events) ? ( */}
