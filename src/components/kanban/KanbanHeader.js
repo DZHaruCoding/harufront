@@ -16,8 +16,8 @@ const KanbanHeader = () => {
           <FontAwesomeIcon icon={['far', 'star']} />
         </Button> */}
         <div className="vertical-line vertical-line-400 position-relative h-100 mx-3" />
-        <GroupMember avatarSize="l" showMembers={4} users={users} className="d-none d-md-flex" />
-        <div className="vertical-line vertical-line-400 position-relative h-100 mx-3 d-none d-md-flex" />
+        {/* <GroupMember avatarSize="l" showMembers={4} users={users} className="d-none d-md-flex" /> */}
+        {/* <div className="vertical-line vertical-line-400 position-relative h-100 mx-3 d-none d-md-flex" /> */}
         <InviteToBoard />
         <div className="vertical-line vertical-line-400 position-relative h-100 mx-3" />
         <ButtonIcon icon="chevron-left" color="info" size="sm-2" className="border-300" tag={Link} to="/pages/kanban">
@@ -34,12 +34,12 @@ const KanbanHeader = () => {
         <div className="vertical-line vertical-line-400 position-relative h-100 mx-3" />
       </Col>
       <Col xs="auto" className="d-flex">
-        <Button color="falcon-default" size="sm" className="mr-2 d-none d-md-block">
+        {/* <Button color="falcon-default" size="sm" className="mr-2 d-none d-md-block">
           <FontAwesomeIcon icon="plus" className="mr-2" />
           Add Column
-        </Button>
+        </Button> */}
 
-        <UncontrolledDropdown className="text-sans-serif ">
+        {/* <UncontrolledDropdown className="text-sans-serif ">
           <DropdownToggle color="falcon-default" size="sm">
             <FontAwesomeIcon icon="ellipsis-h" />
           </DropdownToggle>
@@ -53,7 +53,7 @@ const KanbanHeader = () => {
               <DropdownItem className="text-danger">Remove</DropdownItem>
             </div>
           </DropdownMenu>
-        </UncontrolledDropdown>
+        </UncontrolledDropdown> */}
       </Col>
     </Row>
   );
