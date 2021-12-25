@@ -25,6 +25,7 @@ const Project = ({ project, callback, deletecallback, key }) => {
   const btnclick = () => {
     setProjectDetailModal(true);
     console.log(project.projectNo);
+    console.log("프로젝트 만든 얘 no",project.userNo)
   };
 
   //프로젝트 생성,업데이트 모달 끄기
@@ -374,6 +375,9 @@ const Project = ({ project, callback, deletecallback, key }) => {
               </FormGroup>
 
               <FormGroup style={{ display: 'flex', justifyContent: 'end' }}>
+                
+                {
+                  window.sessionStorage.getItem("authUserNo")==project.userNo ?
                 <div style={{ marginRight: '100px' }}>
                   <Button
                     style={{ marginRight: '10px', backgroundColor: 'white', color: 'black' }}
@@ -391,7 +395,12 @@ const Project = ({ project, callback, deletecallback, key }) => {
                   >
                     삭제
                   </Button>
-                </div>
+                </div> :
+                null
+                }
+
+                
+                
                 <div style={{}}>
                   <Button
                     style={{ backgroundColor: 'white', color: 'black' }}
