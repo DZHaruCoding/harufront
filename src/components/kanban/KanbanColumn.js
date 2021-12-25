@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import KanbanColumnHeder from './KanbanColumnHeader';
-import { KanbanContext } from '../../context/Context';
+import AppContext, { KanbanContext } from '../../context/Context';
 import { Droppable } from 'react-beautiful-dnd';
 
 import AddAnotherCard from './AddAnotherCard';
@@ -16,6 +16,7 @@ import { API_URL, GCP_API_URL } from '../../config';
 const KanbanColumn = ({ kanbanColumnItem, index }) => {
   const { kanbanTaskCards, kanbanTaskCardsDispatch, kanbanColumnsDispatch ,} = useContext(KanbanContext);
   const [showForm, setShowForm] = useState(false);
+  const {projectNo} = useContext(AppContext);
   const $websocket = useRef (null);
 
   useEffect(() => {
@@ -44,7 +45,7 @@ const KanbanColumn = ({ kanbanColumnItem, index }) => {
     <div className={classNames('kanban-column', { 'form-added': showForm })}>
       <SockJsClient
           url={`${GCP_API_URL}/haru/socket`}
-          topics={[`/topic/kanban/task/add/${window.sessionStorage.getItem("authUserNo")}`]}
+          topics={[`/topic/kanban/task/add/${window.sessionStorage.getItem("authUserNo")}/${projectNo}`]}
           onMessage={socketData => {socketCallback(socketData)}}
           ref={$websocket}
       />    

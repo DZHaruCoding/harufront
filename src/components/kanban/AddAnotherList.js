@@ -87,7 +87,7 @@ const AddAnotherList = () => {
     <div className="kanban-column mr-3">
       <SockJsClient
           url={`${GCP_API_URL}/haru/socket`}
-          topics={[`/topic/kanban/tasklist/add/${window.sessionStorage.getItem("authUserNo")}`]}
+          topics={[`/topic/kanban/tasklist/add/${window.sessionStorage.getItem("authUserNo")}/${projectNo}`]}
           onMessage={socketData => {socketCallback(socketData)}}
           ref={(client) => {
             clientRef = client

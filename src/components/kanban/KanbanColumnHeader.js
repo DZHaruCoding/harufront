@@ -61,7 +61,7 @@ const KanbanColumnHeder = ({ kanbanColumnItem }) => {
     <div className="kanban-column-header">
       <SockJsClient
           url={`${GCP_API_URL}/haru/socket`}
-          topics={[`/topic/kanban/tasklist/remove/${window.sessionStorage.getItem("authUserNo")}`]}
+          topics={[`/topic/kanban/tasklist/remove/${window.sessionStorage.getItem("authUserNo")}/${projectNo}`]}
           onMessage={socketData => {socketCallback(socketData)}}
           ref={(client) => {
             clientRef = client

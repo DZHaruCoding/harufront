@@ -3,7 +3,7 @@ import React, { Fragment, useContext, useEffect, useRef, useState } from 'react'
 import { DragDropContext } from 'react-beautiful-dnd';
 import SockJsClient from 'react-stomp';
 import { GCP_API_URL } from '../../config';
-import { KanbanContext } from '../../context/Context';
+import AppContext, { KanbanContext } from '../../context/Context';
 import AddAnotherList from './AddAnotherList';
 import KanbanColumn from './KanbanColumn';
 import KanbanModal from './KanbanModal';
@@ -48,6 +48,7 @@ const KanbanContainer = () => {
   const containerRef = useRef(null);
   let clientRef = useRef(null);
   const [kanban, setKanban] = useState();
+  const {projectNo} = useContext(AppContext);
 
   // Detect device
   useEffect(() => {
@@ -106,7 +107,7 @@ const KanbanContainer = () => {
     <Fragment>
       <SockJsClient
         url={`${GCP_API_URL}/haru/socket`}
-        topics={[`/topic/kanban/task/move/${window.sessionStorage.getItem('authUserNo')}`]}
+        topics={[`/topic/kanban/task/move/${window.sessionStorage.getItem('authUserNo')}/${projectNo}`]}
         onMessage={socketData => {
           socketCallback(socketData);
         }}

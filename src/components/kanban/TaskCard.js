@@ -125,7 +125,7 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, taskCardIndex }) =>
         >
           <SockJsClient
             url={`${GCP_API_URL}/haru/socket`}
-            topics={[`/topic/kanban/task/delete/${window.sessionStorage.getItem('authUserNo')}`]}
+            topics={[`/topic/kanban/task/delete/${window.sessionStorage.getItem('authUserNo')}/${projectNo}`]}
             onMessage={socketData => {
               socketCallback(socketData);
             }}

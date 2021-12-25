@@ -108,7 +108,7 @@ const AddAnotherCard = ({ kanbanColumnItem, setShowForm, websocket }) => {
     <div className="p-3 border bg-white rounded-soft transition-none mt-3">
       <SockJsClient
         url={`${GCP_API_URL}/haru/socket`}
-        topics={[`/topic/kanban/task/add/${window.sessionStorage.getItem('authUserNo')}`]}
+        topics={[`/topic/kanban/task/add/${window.sessionStorage.getItem('authUserNo')}/${projectNo}`]}
         onMessage={socketData => {
           socketCallback(socketData);
         }}

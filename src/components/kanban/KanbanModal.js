@@ -349,7 +349,7 @@ const KanbanModal = ({ modal, setModal, className }) => {
                 />
               </ModalMediaContent>
               <ModalMediaContent title="라벨 컬러" icon="list-ul" headingClass="mb-3" isHr={false}>
-                <HexColorPicker color={color} onChange={setColor} />;<button onClick={colorset}>컬러 셋팅 </button>
+                <HexColorPicker color={color} onChange={setColor} /><button onClick={colorset}>컬러 셋팅 </button>
               </ModalMediaContent>
               <hr />
               <br />
