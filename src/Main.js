@@ -28,7 +28,7 @@ const Main = props => {
   const [profiles, setProfiles] = useState(null);
 
   //2개 title, no use만들고 value에 값,set
-  const [projectNo, setProjectNo] = useState(1);
+  const [projectNo, setProjectNo] = useState();
   const [projectTitle, setProjectTitle] = useState('');
   const [members, setMembers] = useState([]);
 
