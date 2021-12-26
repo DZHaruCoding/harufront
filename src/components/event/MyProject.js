@@ -25,6 +25,7 @@ const Project = ({ project, callback, deletecallback, key }) => {
   const btnclick = () => {
     setProjectDetailModal(true);
     console.log(project.projectNo);
+    console.log("프로젝트 만든 얘 no",project.userNo)
   };
 
   //프로젝트 생성,업데이트 모달 끄기
@@ -290,12 +291,12 @@ const Project = ({ project, callback, deletecallback, key }) => {
         <div className="">
           <Label>작성자 :</Label> {project.ownerName}
         </div>
-        <div className="" style={{border:"1px solid black", borderRadius:"5px",height:"150px"}}>
+        <div className="" style={{border:"1px solid black", borderRadius:"5px"}}>
           <Label style={{display:"flex",justifyContent:"center"}} className="mt-1">멤버</Label>{' '}
           <div style={{display:"flex",justifyContent:"center"}}>
-            <div>
-          {projectmembers.map((member, index) => (
-            <Member key={index} member={member} />
+            <div style={{whiteSpace:'nowrap',overflow:"hidden",textOverflow:'ellipsis'}}>
+              {projectmembers.map((member, index) => (
+              <Member key={index} member={member} />
           ))}
           </div>
           </div>
@@ -374,6 +375,11 @@ const Project = ({ project, callback, deletecallback, key }) => {
               </FormGroup>
 
               <FormGroup style={{ display: 'flex', justifyContent: 'end' }}>
+                
+                {
+                  
+                  window.sessionStorage.getItem("authUserNo")==project.userNo ?
+
                 <div style={{ marginRight: '100px' }}>
                   <Button
                     style={{ marginRight: '10px', backgroundColor: 'white', color: 'black' }}
@@ -391,7 +397,12 @@ const Project = ({ project, callback, deletecallback, key }) => {
                   >
                     삭제
                   </Button>
-                </div>
+                </div> :
+                null
+                }
+
+                
+                
                 <div style={{}}>
                   <Button
                     style={{ backgroundColor: 'white', color: 'black' }}
