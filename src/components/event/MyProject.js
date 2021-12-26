@@ -377,7 +377,7 @@ const Project = ({ project, callback, deletecallback, key }) => {
               <FormGroup style={{ display: 'flex', justifyContent: 'end' }}>
                 
                 {
-                  
+                 
                   window.sessionStorage.getItem("authUserNo")==project.userNo ?
 
                 <div style={{ marginRight: '100px' }}>

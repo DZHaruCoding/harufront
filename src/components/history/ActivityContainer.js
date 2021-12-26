@@ -18,6 +18,7 @@ const ActivityContainer = () => {
           <Loader />
         ) : isIterableArray(activities) ? (
           activities.map((activity, index) => {
+            console.log('로그데이터들', activity);
             const roundedClass = activity.length === index + 1 ? 'rounded-top-0' : 'rounded-0';
             return (
               <ActivityContent

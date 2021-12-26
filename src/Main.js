@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer, useRef } from 'react';
 import PropTypes from 'prop-types';
 import AppContext from './context/Context';
 import { localIp, settings } from './config';
@@ -28,7 +28,7 @@ const Main = props => {
   const [profiles, setProfiles] = useState(null);
 
   //2개 title, no use만들고 value에 값,set
-  const [projectNo, setProjectNo] = useState(1);
+  const [projectNo, setProjectNo] = useState();
   const [projectTitle, setProjectTitle] = useState('');
   const [members, setMembers] = useState([]);
 

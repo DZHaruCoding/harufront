@@ -1,4 +1,4 @@
-import React, { useContext, useEffect,useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import {
   Card,
@@ -12,7 +12,6 @@ import {
   UncontrolledTooltip
 } from 'reactstrap';
 
-
 import SockJsClient from 'react-stomp';
 import { Link } from 'react-router-dom';
 import Avatar from '../common/Avatar';
@@ -22,9 +21,11 @@ import { API_URL, GCP_API_URL, localIp } from '../../config';
 import { backgroundColor } from 'echarts/lib/theme/dark';
 import axios from 'axios';
 
-const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIndex }) => {
-  const { kanbanColumns, kanbanColumnsDispatch, kanbanTaskCardsDispatch } = useContext(KanbanContext);
-  const { projectNo, projectTitle } = useContext(AppContext);
+const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, taskCardIndex }) => {
+  const { kanbanColumns, kanbanColumnsDispatch, kanbanTaskCardsDispatch, $websocket, fetchInsertHistory } = useContext(
+    KanbanContext
+  );
+  const { projectNo, projectTitle, members } = useContext(AppContext);
   // 알림 떴는지 안떳는지의 상태
   const { loading, notifications, setNotifications } = useContext(AppContext);
   // 알림을 읽었는지 않있었는지에 대한 상태
@@ -33,52 +34,61 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
   let clientRef = useRef(null);
 
   const taskCardDelete = async () => {
-
     try {
       const json = {
         projectNo: projectNo,
         projectTitle: projectTitle,
         taskCardItemId: taskCardItemId
-      }
-  
+      };
+
       const response = await fetch(`/haru/api/task/delete`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          Accept: 'application/json'
         },
         body: JSON.stringify(json)
       });
-  
+
       if (!response.ok) {
         throw new Error(`${response.status} ${response.statusText}`);
       }
-  
+
       const jsonResult = await response.json();
-  
+
       if (jsonResult.result != 'success') {
         throw new Error(`${jsonResult.result} ${jsonResult.message}`);
       }
-  
+
       kanbanTaskCardsDispatch({
         type: 'REMOVE',
         id: taskCardItemId,
         isCard: true
       });
-  
+
       kanbanColumnsDispatch({
         type: 'TASKREMOVE',
         id: taskCardItemId
       });
-    } catch(err) {
+    } catch (err) {
       console.error(err);
     }
-
-    
+    console.log('taskCard.taskNametaskCard.taskName', taskCard.taskName);
+    const taskName = taskCard.taskName;
+    const clientRef = $websocket;
+    fetchInsertHistory(
+      window.sessionStorage.getItem('authUserNo'),
+      window.sessionStorage.getItem('authUserName'),
+      members,
+      'taskDelete',
+      taskName,
+      projectNo,
+      clientRef
+    );
   };
 
-  const socketCallback = (socketData) => {
-    console.log("asdsad", socketData);
+  const socketCallback = socketData => {
+    console.log('asdsad', socketData);
 
     kanbanTaskCardsDispatch({
       type: 'REMOVE',
@@ -90,7 +100,7 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
       type: 'TASKREMOVE',
       id: socketData.data
     });
-  }
+  };
 
   const tempStyle = {
     display: 'inline-block',
@@ -106,7 +116,6 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
   return (
     <Draggable draggableId={`draggableId${taskCardItemId}`} index={taskCardIndex}>
       {(provided, snapshot) => (
-
         <div
           className="kanban-item"
           ref={provided.innerRef}
@@ -116,7 +125,7 @@ const TaskCard = ({ taskCardItemId, taskCard, taskCardImage, members, taskCardIn
         >
           <SockJsClient
             url={`${GCP_API_URL}/haru/socket`}
-            topics={[`/topic/kanban/task/delete/${window.sessionStorage.getItem('authUserNo')}`]}
+            topics={[`/topic/kanban/task/delete/${window.sessionStorage.getItem('authUserNo')}/${projectNo}`]}
             onMessage={socketData => {
               socketCallback(socketData);
             }}
